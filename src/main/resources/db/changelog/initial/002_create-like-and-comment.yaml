@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-like-table
+      author: Aisha
+      changes:
+        - createTable:
+            tableName: likes
+            columns:
+              - column:
+                  name: id
+                  autoIncrement: true
+                  type: Long
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: liker
+                  type: varchar(55)
+                  constraints:
+                    foreignKeyName: fk_liker_email
+                    deleteCascade: true
+                    references: users(email)
+                    nullable: false
+              - column:
+                  name: post_id
+                  type: Long
+                  constraints:
+                    foreignKeyName: fk_liked_post_id
+                    deleteCascade: true
+                    references: posts(id)
+                    nullable: false
+  - changeSet:
+      id: create-comment-table
+      author: Aisha
+      changes:
+        - createTable:
+            tableName: comments
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: content
+                  type: varchar(355)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: post
+                  type: Long
+                  constraints:
+                    foreignKeyName: fk_post_id
+                    deleteCascade: true
+                    references: posts(id)
+                    nullable: false
+              - column:
+                  name: commenter
+                  type: varchar(55)
+                  constraints:
+                    foreignKeyName: fk_commenter_email
+                    references: users(email)
+                    deleteCascade: true
+                    nullable: false
+              - column:
+                  name: commented_time
+                  type: timestamp
+                  constraints:
+                    nullable: false

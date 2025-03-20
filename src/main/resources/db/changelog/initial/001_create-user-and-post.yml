@@ -1,0 +1,90 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-users-table
+      author: Aisha
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  type: varchar(55)
+                  constraints:
+                    unique: true
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: gender
+                  type: text
+                  constraints:
+                    nullable: true
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: surname
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: username
+                  type: text
+                  constraints:
+                    nullable: true
+              - column:
+                  name: password
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: avatar
+                  type: text
+                  constraints:
+                    nullable: true
+              - column:
+                  name: bio
+                  type: text
+                  constraints:
+                    nullable: true
+              - column:
+                  name: about_me
+                  type: text
+                  constraints:
+                    nullable: true
+  - changeSet:
+      id: create-posts-table
+      author: Aisha
+      changes:
+        - createTable:
+            tableName: Posts
+            columns:
+              - column:
+                  name: id
+                  type: Long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: content
+                  type: text
+                  constraints:
+                    nullable: true
+              - column:
+                  name: image
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: owner
+                  type: varchar(55)
+                  constraints:
+                    foreignKeyName: fk_owner_email
+                    references: users(email)
+              - column:
+                  name: posted_time
+                  type: timestamp
+                  constraints:
+                    nullable: false

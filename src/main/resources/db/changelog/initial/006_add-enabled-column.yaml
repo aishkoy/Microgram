@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: drop column - Account type
+      author: Aisha
+      changes:
+        - dropColumn:
+            columnName: bio
+            columns:
+              - column:
+                  name: bio
+            schemaName: public
+            tableName: users
+  - changeSet:
+      id: modify users
+      author: Aisha
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: enabled
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
