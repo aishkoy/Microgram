@@ -33,6 +33,11 @@
                                placeholder="Enter password" name="password"/>
                         <label class="form-label" for="password">Password</label>
                     </div>
+                    <div  class="form-outline mb-3">
+                        <input class="form-check-input" type="checkbox" id="remember-me"
+                               name="remember-me"/>
+                        <label class="form-check-label" for="remember-me">Remember me?</label>
+                    </div>
 
 
                     <div class="text-center text-lg-start mt-4 pt-2">

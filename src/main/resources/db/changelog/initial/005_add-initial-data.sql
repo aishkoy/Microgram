@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset Abu:add_initial_data
+--changeset Aisha:add_initial_data
 
 INSERT INTO PUBLIC.USERS (EMAIL, GENDER, NAME, SURNAME, USERNAME, PASSWORD, AVATAR, ABOUT_ME)
 VALUES ('john.doe@example.com', 'Male', 'John', 'Doe', 'johndoe',

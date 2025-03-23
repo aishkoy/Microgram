@@ -47,8 +47,8 @@ public class UserService {
                 .aboutMe(u.getAboutMe())
                 .build();
     }
-    
-    
+
+
     public void editUser(UserEditDto edit, String email) {
         UserModel user = UserModel.builder()
                 .email(email)
@@ -88,15 +88,15 @@ public class UserService {
     public ResponseEntity<InputStreamResource> downloadImage(String name) {
         return util.getOutputFile(name, "/images");
     }
-    
+
     public List<UserDto> getAllFollowers(String username) {
         return dao.getAllFollowers(getEmail(username)).stream().map(this :: getUserDto).collect(Collectors.toList());
     }
-    
+
     public List<UserDto> getAllFollowings(String username) {
         return dao.getAllFollowings(getEmail(username)).stream().map(this :: getUserDto).collect(Collectors.toList());
     }
-    
+
     private String getEmail(String username) {
         return dao.getUserByUsername(username)
                 .map(UserModel :: getEmail)
@@ -107,21 +107,19 @@ public class UserService {
     public List<UserDto> searchByUsernameOrEmail(String search) {
         return dao.searchByUsernameOrEmail(search).stream().map(this::getUserDto).collect(Collectors.toList());
     }
-    
+
     public void addAvatar(MultipartFile avatar, String authUserName) {
         if (dao.getUserByEmail(authUserName).isEmpty()) throw new NoSuchElementException("User not found: " + authUserName);
-        
+
         long maxFileSizeBytes = 3 * 1024 * 1024;
         if (avatar.getSize() > maxFileSizeBytes)
             throw new IllegalArgumentException("File size exceeds the maximum allowed size (3MB)");
-        
+
         String fileName = util.saveUploadedFile(avatar, "img");
-        
+
         dao.saveAvatar(fileName, authUserName);
-        
+
         log.info("Avatar saved for user: {}", authUserName);
     }
-    
-    
 }
 

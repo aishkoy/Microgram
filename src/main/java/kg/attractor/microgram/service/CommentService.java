@@ -75,7 +75,6 @@ public class CommentService {
             log.info("Deleted comment with ID {}", id);
         }
             log.info("Couldn't delete comment with ID {} cause is not belongs to user "+email, id);
-
     }
 
     public CommentDto getCommentsLastCommentsByPost(Long lastId) {
