@@ -1,71 +1,124 @@
 <#macro layout>
-    <!doctype html>
+    <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport"
-              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>MICROGRAM</title>
-        <link rel="stylesheet" href="/css/style.css/">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-              integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <title>Suslike</title>
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <style>
+            .nav-icon {
+                width: 28px;
+                height: 28px;
+                stroke-width: 1.5;
+                color: #6b7280;
+                transition: color 0.2s, transform 0.2s;
+            }
+
+            .nav-icon:hover, .active-nav .nav-icon {
+                color: #111827;
+                transform: scale(1.1);
+            }
+
+            .content-with-sidebar {
+                margin-left: 80px;
+                width: calc(100% - 80px);
+            }
+
+            @media (max-width: 640px) {
+                .nav-sidebar {
+                    width: 100%;
+                    height: auto;
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    z-index: 50;
+                }
+
+                .nav-sidebar ul {
+                    flex-direction: row;
+                    justify-content: space-around;
+                    width: 100%;
+                    padding: 0.5rem;
+                }
+
+                .content-with-sidebar {
+                    margin-left: 0;
+                    width: 100%;
+                    padding-bottom: 60px;
+                }
+            }
+        </style>
     </head>
-
-    <header>
-        <nav class="navbar navbar-expand-md bg-dark " data-bs-theme="dark">
-            <div class="container">
-
-                <a class="navbar-brand" href="/"><img src="/logo.png/" width="120px" alt="Microgram"></a>
-                <button class="navbar-toggler text-light bg-orange btn-user ms-auto" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <i class="bi bi-list-nested"></i>
-                </button>
-
-                <button type="button"
-                        class="btn btn-link btn-user bg-orange rounded-1 text-light bg-orange order-md-1 ms-3"
-                        onclick="window.location.href='/user'"
-                        data-bs-toggle="tooltip" data-bs-placement="left" title="Profile">
-                    <i class="bi bi-person-circle"></i>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav fw-medium mx-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="/">Лента</a>
-                        </li>
-                        <li class="mx-3 nav-item">
-                            <a class="nav-link " href="#">Поиск</a>
-                        </li>
-                        <li class="mx-3 nav-item">
-                            <a class="nav-link" href="/register">Зарегистрироваться</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
+    <body class="bg-gray-50 min-h-screen">
+    <#-- Check if user is logged in -->
+    <#assign known = SPRING_SECURITY_CONTEXT??>
+    <#if known>
+        <#assign username = SPRING_SECURITY_CONTEXT.authentication.name>
+        <#assign myProfileUrl = "/user">
+    <#else>
+        <#assign myProfileUrl = "/login">
+    </#if>
 
 
-    <body>
+    <!-- Navigation Sidebar -->
+    <nav class="nav-sidebar w-20 h-screen bg-white shadow-sm fixed left-0 top-0 flex flex-col items-center justify-center py-6 border-r border-gray-200">
+        <ul class="flex flex-col gap-8">
+            <li>
+                <a href="/" >
+                    <i data-lucide="home" class="nav-icon"></i>
+                </a>
+            </li>
+            <li>
+                <a href="/search">
+                    <i data-lucide="search" class="nav-icon"></i>
+                </a>
+            </li>
+            <li>
+                <a href="/post">
+                    <i data-lucide="plus-circle" class="nav-icon"></i>
+                </a>
+            </li>
+            <li>
+                <a href="/favorites">
+                    <i data-lucide="heart" class="nav-icon"></i>
+                </a>
+            </li>
+            <li>
+                <a href="${myProfileUrl}">
+                    <i data-lucide="user" class="nav-icon"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
 
-
-    <div class="container">
-        <#nested >
+    <!-- Main Content -->
+    <div class="content-with-sidebar">
+        <main class="container mx-auto px-4 py-5">
+            <#nested>
+        </main>
     </div>
 
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-            integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-            crossorigin="anonymous"></script>
+        // Additional JavaScript for active link detection in case server-side detection fails
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('nav a');
+
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (currentPath === href ||
+                    (href !== '/' && currentPath.startsWith(href))) {
+                    link.classList.add('active-nav');
+                }
+            });
+        });
+    </script>
     </body>
-</html>
+    </html>
 </#macro>

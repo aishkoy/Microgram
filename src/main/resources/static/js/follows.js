@@ -33,7 +33,7 @@ window.onload = async function () {
     const followingModalBody = document.querySelector('#following-modal .modal-body');
     followingModalBody.innerHTML = '';
     dataFollowings.forEach(user => {
-        let userAvatar = user.avatar ? '/api/post/' + user.avatar : '/defaultAvatar.jpg';
+        let userAvatar = user.avatar ? '/api/post/' + user.avatar : 'defaultAvatar.jpg';
         let userUserName = user.username;
 
         followingModalBody.innerHTML += `

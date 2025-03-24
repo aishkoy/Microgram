@@ -1,132 +1,153 @@
 <#import "../layout.ftlh" as main>
 
 <@main.layout>
+<#assign known = SPRING_SECURITY_CONTEXT??>
+<#if known>
+    <#assign authorizedUserEmail = SPRING_SECURITY_CONTEXT.authentication.name>
+</#if>
+<body class="bg-gray-50 min-h-screen">
+
+<div class="container max-w-2xl mx-auto px-4 py-5">
+    <div class="flex justify-between items-center mb-4 gap-3 border border-gray-400 rounded-lg p-3 cursor-pointer"
+         onclick="window.location.href='/post'">
+        <input
+                placeholder="What's new?"
+                class="w-full p-2 rounded focus:outline-none cursor-pointer"
+                readonly
+        />
+        <button type="button"
+                class="bg-amber-50 text-gray-700 px-4 py-2 border rounded-2xl cursor-pointer hover:text-black hover:bg-amber-100 transition-colors">
+            Post
+        </button>
+    </div>
+
     <#assign known = SPRING_SECURITY_CONTEXT??>
     <#if known>
         <#assign authorizedUserEmail = SPRING_SECURITY_CONTEXT.authentication.name>
     </#if>
 
-    <div class="col col-sm-10 col-md-9 col-lg-7 col-xl-6 mx-auto my-5">
-        <form class="input-group my-3 col-auto" method="POST" action="/user/search">
-            <label>
-                <input name="search" class="form-control" placeholder="Type username or email..." type="text">
-            </label>
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
-        <#if posts??>
-            <#if posts?size != 0>
-                <div class="row row-cols-1 my-2 gap-2">
-                    <#list posts as post>
-                        <div class="col">
-                            <div class="card">
-                                <div class="card-header bg-white d-flex flex-nowrap flex-row column-gap-2 align-items-center">
-                                    <#if post.owner.avatar??>
-                                        <img alt="${post.owner.username}" class="rounded-circle"
-                                             src="api/post/${post.owner.avatar}"
-                                             height="40px">
-                                    <#else >
-                                        <img alt="${post.owner.username}" class="rounded-circle"
-                                             src="https://images.squarespace-cdn.com/content/v1/54b7b93ce4b0a3e130d5d232/1519987020970-8IQ7F6Z61LLBCX85A65S/icon.png?format=500w"
-                                             height="40px">
-                                    </#if>
-                                    <h6 class="m-0"><a href="user/profile/${post.owner.username}">${post.owner.username}</a>
-                                    </h6>
-                                    <span class="text-body-secondary ms-auto align-self-end">${post.postedTime}</span>
-                                </div>
-                                <img src="/api/post/${post.image}"
-                                     class="card-img-top" onclick="window.location.href ='/${post.id}'"
-                                     alt="${post.content}">
-                                <div class="card-body">
-                                    <div id="actions" class="row">
-                                        <h3 onclick="like(event)" class="col-auto px-2"><i class="bi bi-heart" id="${authorizedUserEmail}/${post.id}"></i></h3>
+    <#if posts??>
+        <#if posts?size != 0>
+            <div class="space-y-0">
+                <#list posts as post>
+                    <#assign isFirstPost = post?index == 0>
+                    <#assign isLastPost = post?index == posts?size - 1>
+                    <#assign isOnlyPost = posts?size == 1>
 
-                                        <h3 class="col-auto px-2"><i class="bi bi-chat d-flex mb-auto"
-                                                                     style="margin-top: 2px;"></i></h3>
-                                    </div>
-                                    <#if post.likesNum == 1>
-                                        <div class="card-text fw-bold">1 like</div>
-                                    </#if>
-                                    <#if post.likesNum gt 1>
-                                        <div class="card-text fw-bold">${post.likesNum} like</div>
-                                    </#if>
-                                    <p class="card-text">
-                                        <span class="fw-semibold">${post.owner.username}</span>
-                                        ${post.content}
-                                    </p>
-                                    <a href="#<#--TODO комменты-->" class="card-text text-body-secondary"
-                                       style="text-decoration: none; display: inline-block">
-                                        View comments
-                                    </a>
-                                </div>
-                            </div>
+                    <div class="p-4 border border-gray-400
+                            <#if isOnlyPost>
+                                rounded-lg
+                            <#else>
+                                <#if isFirstPost>rounded-t-lg</#if>
+                                <#if isLastPost>rounded-b-lg border-b<#else>border-b-0</#if>
+                            </#if>
+                        ">
+                        <a href="/user/profile/${post.owner.username}" class="inline-flex items-center justify-center text-gray-900">
+                            <#if post.owner.avatar??>
+                                <img src="/api/post/${post.owner.avatar}"
+                                     alt="${post.owner.username}'s avatar"
+                                     class="w-10 h-10 rounded-full mr-3 object-cover cursor-pointer" />
+                            <#else>
+                                <img src="https://images.squarespace-cdn.com/content/v1/54b7b93ce4b0a3e130d5d232/1519987020970-8IQ7F6Z61LLBCX85A65S/icon.png?format=500w"
+                                     alt="${post.owner.username}'s avatar"
+                                     class="w-10 h-10 rounded-full mr-3 object-cover cursor-pointer" />
+                            </#if>
+                            <span class="text-gray-600">@${post.owner.username}</span>
+                            <span class="text-gray-400 ml-auto text-sm">${post.postedTime}</span>
+                        </a>
+
+                        <#if post.image??>
+                            <img src="/api/post/${post.image}"
+                                 alt="${post.content}"
+                                 class="w-full h-60 object-cover rounded-lg my-3 cursor-pointer"
+                                 onclick="window.location.href='/${post.id}'" />
+                        </#if>
+
+                        <p class="mt-2">${post.content}</p>
+
+                        <div class="flex items-center mt-3">
+                            <button onclick="likePost(event)" class="flex items-center gap-1 text-gray-600 hover:text-gray-900">
+                                <i data-lucide="heart"
+                                   id="${authorizedUserEmail}/${post.id}"
+                                   class="w-5 h-5 <#if post.isLiked?? && post.isLiked>text-red-500 fill-red-500</#if>"></i>
+                            </button>
+
+                            <button onclick="window.location.href='/${post.id}'" class="flex items-center gap-1 ml-4 text-gray-600 hover:text-gray-900">
+                                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                            </button>
                         </div>
-                    </#list>
-                </div>
-            <#else>
-                <h5 class="my-5">Nothing new...</h5>
-            </#if>
+
+                        <#if post.likesNum??>
+                            <#if post.likesNum == 1>
+                                <div class="text-sm font-bold mt-1">1 like</div>
+                            <#elseif post.likesNum gt 1>
+                                <div class="text-sm font-bold mt-1">${post.likesNum} likes</div>
+                            </#if>
+                        </#if>
+
+                        <a href="/${post.id}" class="text-sm text-gray-500 hover:text-gray-700 mt-2 inline-block">
+                            View comments
+                        </a>
+                    </div>
+                </#list>
+            </div>
         <#else>
-            <h5 class="my-5"><a href="/register">Log in</a> to see what people in your following are posting.</h5>
+            <div class="text-center py-10">
+                <h5 class="text-gray-600">Nothing new...</h5>
+            </div>
         </#if>
-    </div>
+    <#else>
+        <div class="text-center py-10">
+            <h5 class="text-gray-600"><a href="/login" class="text-blue-500 hover:text-blue-700">Log in</a> to see what people in your following are posting.</h5>
+        </div>
+    </#if>
+</div>
 
-    <script>
-        window.onload = async () => {
-            let likes = document.getElementsByClassName('bi-heart');
-            for (let like of likes) {
-                try {
-                    let likeRequest = await fetch ('http://localhost:9880/api/like/isLiked')
-                    if (likeRequest.ok) {
-                        fillLikeBtn(like);
-                    } else {
-                        throw new Error();
-                    }
-                } catch (e) {
-                    console.log (e);
-                }
-            }
-        }
+<script>
+    lucide.createIcons();
 
+    async function likePost(event) {
+        event.preventDefault();
 
-        function fillLikeBtn (heartIcon) {
-            if (!heartIcon.classList.contains('text-danger')) {
-                heartIcon.classList.replace('bi-heart', 'bi-heart-fill');
-                heartIcon.classList.add('text-danger');
-            } else {
-                heartIcon.classList.replace('bi-heart-fill', 'bi-heart');
-                heartIcon.classList.remove('text-danger');
-            }
-        }
+        const heartIcon = event.currentTarget.querySelector('[data-lucide="heart"]');
+        const id = heartIcon.id;
+        const [authorizedUserEmail, postId] = id.split('/');
 
-        async function like(event) {
-            event.preventDefault();
-            console.log(event.target.id)
-            let id = event.target.id;
-            let idarr = id.split('/')
-            let authorizedUserEmail = idarr[0];
-            let postId = idarr[1];
-            console.log('email = ' + authorizedUserEmail + ' postId' + postId);
+        try {
+            const response = await fetch('/api/like/like', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    likerEmail: authorizedUserEmail,
+                    postId: postId
+                })
+            });
 
-            try {
-                let request = await fetch('/api/like/like', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        likerEmail: authorizedUserEmail,
-                        postId: postId
-                    })
-                });
-
-                if (request.ok) {
-                    fillLikeBtn(event.target);
+            if (response.ok) {
+                if (heartIcon.classList.contains('text-red-500')) {
+                    heartIcon.classList.remove('text-red-500', 'fill-red-500');
                 } else {
-                    throw new Error();
+                    heartIcon.classList.add('text-red-500', 'fill-red-500');
                 }
-            } catch (e) {
-                console.log(e)
+            } else {
+                throw new Error('Failed to like post');
             }
+        } catch (error) {
+            console.error('Error liking post:', error);
         }
-    </script>
+    }
+
+    window.addEventListener('load', async () => {
+        try {
+            const response = await fetch('/api/like/isLiked');
+            if (response.ok) {
+                console.log('Likes loaded successfully');
+            }
+        } catch (error) {
+            console.error('Error loading likes:', error);
+        }
+    });
+</script>
 </@main.layout>

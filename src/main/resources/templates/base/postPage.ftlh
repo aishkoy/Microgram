@@ -1,89 +1,112 @@
-<#import "../layout.ftlh" as main>
-
-<@main.layout>
-
-    <div class="container my-5">
-        <div class="row g-2">
-            <div class="col-6 border bg-light" style="height: 800px; overflow-y: auto;">
-                <div class="p-3 d-flex flex-column">
-                    <div class="card flex-grow-1">
-                        <div class="card-header">
-                            ${post.owner.username}
-                        </div>
-                        <div class="card-body">
-                            <img src="/api/post/${post.image}" style="width: 500px; height: auto" alt="${post.content}">
-                        </div>
-                        <div class="card-footer">
-                            <p class="text-bold">${post.content}</p>
-                            <div id="actions" class="row">
-                                <h3 onclick="likePost()" class="col-auto px-2"><i
-                                            class="bi bi-heart bi-heart-fill text-danger"></i></h3>
-                            </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Post</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<div class="container mx-auto px-4 py-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Post Content Section -->
+        <div class="border border-gray-200 rounded-lg bg-white shadow-sm h-[800px] overflow-y-auto">
+            <div class="p-4 flex flex-col h-full">
+                <div class="flex-grow bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="px-4 py-3 border-b border-gray-200 font-medium">
+                        ${post.owner.username}
+                    </div>
+                    <div class="p-4">
+                        <img src="/api/post/${post.image}" class="max-w-full h-auto rounded" alt="${post.content}">
+                    </div>
+                    <div class="px-4 py-3 border-t border-gray-200">
+                        <p class="font-medium">${post.content}</p>
+                        <div id="actions" class="flex items-center mt-2">
+                            <button onclick="likePost(event)" class="text-2xl px-2 cursor-pointer flex items-center">
+                                <i data-lucide="heart" class="w-6 h-6"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-6 border bg-light d-flex flex-column" style="height: 800px; overflow-y: auto;">
-                <div class="p-3">
-                    <div id="commentBox" class="row flex-grow-1">
-                        <#if comments??>
-                            <#list comments as comment>
-                                <div class="col-12 mb-3">
-                                    <div id="${comment.id}" class="card d-flex">
-                                        <div class="card-header">
-                                            <#if comment.commenter.username??>
-                                                ${comment.commenter.username}
-                                            <#else >
-                                                ${comment.commenter.email}
-                                            </#if>
-                                        </div>
-                                        <div class="card-body">
-                                            ${comment.content}
-                                        </div>
-                                        <div class="card-footer">
-                                            ${comment.commentedTime.getDayOfMonth()}
-                                            -${comment.commentedTime.getMonth()} ${comment.commentedTime.getHour()}
-                                            :${comment.commentedTime.getMinute()}
-                                            <#if authEmail == comment.commenter.email>
-                                                <button class="btn btn-danger fa-align-right"
-                                                        onclick="deleteComment(${comment.id})" style="width: 200px">
-                                                    delete comment
-                                                </button>
-                                            </#if>
-                                        </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="border border-gray-200 rounded-lg bg-white shadow-sm h-[800px] flex flex-col">
+            <!-- Comments List -->
+            <div class="p-4 flex-grow overflow-y-auto">
+                <div id="commentBox" class="space-y-4">
+                    <#if comments??>
+                        <#list comments as comment>
+                            <div class="mb-4">
+                                <div id="${comment.id}" class="border border-gray-200 rounded-lg shadow-sm">
+                                    <div class="px-4 py-2 border-b border-gray-200 font-medium bg-gray-50 rounded-t-lg">
+                                        <#if comment.commenter.username??>
+                                            ${comment.commenter.username}
+                                        <#else>
+                                            ${comment.commenter.email}
+                                        </#if>
+                                    </div>
+                                    <div class="px-4 py-3">
+                                        ${comment.content}
+                                    </div>
+                                    <div class="px-4 py-2 border-t border-gray-200 text-sm text-gray-500 flex justify-between items-center rounded-b-lg">
+                                            <span>
+                                                ${comment.commentedTime.getDayOfMonth()}-${comment.commentedTime.getMonth()}
+                                                ${comment.commentedTime.getHour()}:${comment.commentedTime.getMinute()}
+                                            </span>
+                                        <#if authEmail == comment.commenter.email>
+                                            <button class="bg-red-50 hover:bg-red-100 text-red-700 px-3 py-1 rounded-2xl text-sm transition-colors border border-red-200 flex items-center gap-1"
+                                                    onclick="deleteComment(${comment.id})">
+                                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                                Delete
+                                            </button>
+                                        </#if>
                                     </div>
                                 </div>
-                            </#list>
-                        </#if>
-                    </div>
+                            </div>
+                        </#list>
+                    </#if>
                 </div>
-                <div class="chat-input">
-                    <input type="text" id="commentInput" placeholder="Type a comment...">
-                    <button class="btn btn-primary btn-send" type="submit">Send</button>
+            </div>
+
+            <!-- Comment Input -->
+            <div class="p-4 border-t border-gray-200 bg-gray-50 rounded-b-lg">
+                <div class="flex gap-2">
+                    <input type="text" id="commentInput" placeholder="Type a comment..."
+                           class="flex-grow p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button class="bg-amber-50 text-gray-700 px-4 py-2 border rounded-2xl cursor-pointer hover:text-black hover:bg-amber-100 transition-colors flex items-center gap-1 btn-send"
+                            type="button">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                        Send
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/postPage.js/"></script>
-    <script>
-        let lastCommentNum = ${comments?size}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="/js/postPage.js"></script>
+<script>
+    // Initialize Lucide icons
+    lucide.createIcons();
 
-        function likePost(event) {
-            event.preventDefault();
-            const heartIcon = event.target;
-            if (!heartIcon.classList.contains('text-danger')) {
-                heartIcon.classList.replace('bi-heart', 'bi-heart-fill');
-                heartIcon.classList.add('text-danger');
-            } else {
-                heartIcon.classList.replace('bi-heart-fill', 'bi-heart');
-                heartIcon.classList.remove('text-danger');
-            }
+    let lastCommentNum = ${comments?size};
+
+    function likePost(event) {
+        const heartIcon = event.currentTarget.querySelector('[data-lucide="heart"]');
+
+        if (heartIcon.classList.contains('text-red-500')) {
+            heartIcon.classList.remove('text-red-500', 'fill-red-500');
+            heartIcon.classList.add('text-gray-500');
+        } else {
+            heartIcon.classList.remove('text-gray-500');
+            heartIcon.classList.add('text-red-500', 'fill-red-500');
         }
-    </script>
-</@main.layout>
+    }
+</script>
+</body>
+</html>

@@ -44,28 +44,36 @@ function displayComments(comment) {
     const shouldScrollToBottom = commentBox.scrollHeight - commentBox.scrollTop === commentBox.clientHeight;
 
     const commentElement = document.createElement('div');
-    commentElement.classList.add('col-12', 'mb-3');
-    let commenter = comment.commenter.username || comment.commenter.email
+    commentElement.classList.add('mb-4');
+    let commenter = comment.commenter.username || comment.commenter.email;
+
     commentElement.innerHTML = `
-        <div id="${comment.id}" class="card d-flex">
-                                        <div class="card-header">
-                                                ${commenter}
-                                        </div>
-                                        <div class="card-body">
-                                            ${comment.content}
-                                        </div>
-                                        <div class="card-footer">
-                                            ${comment.commentedTime}
-                                            <button class="btn btn-danger fa-align-right" onclick="deleteComment(${comment.id})" style="width: 200px">
-                                                delete comment
-                                            </button>
-                                        </div>
-                                    </div>
-        `
-    commentBox.appendChild(commentElement)
+        <div id="${comment.id}" class="border border-gray-200 rounded-lg shadow-sm">
+            <div class="px-4 py-2 border-b border-gray-200 font-medium bg-gray-50 rounded-t-lg">
+                ${commenter}
+            </div>
+            <div class="px-4 py-3">
+                ${comment.content}
+            </div>
+            <div class="px-4 py-2 border-t border-gray-200 text-sm text-gray-500 flex justify-between items-center rounded-b-lg">
+                <span>${comment.commentedTime}</span>
+                <button class="bg-red-50 hover:bg-red-100 text-red-700 px-3 py-1 rounded-2xl text-sm transition-colors border border-red-200 flex items-center gap-1"
+                        onclick="deleteComment(${comment.id})">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    Delete
+                </button>
+            </div>
+        </div>
+    `;
+
+    commentBox.appendChild(commentElement);
 
     if (shouldScrollToBottom) {
         commentBox.scrollTop = commentBox.scrollHeight;
+    }
+
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
     }
 }
 
