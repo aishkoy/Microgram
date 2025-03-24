@@ -25,13 +25,12 @@ public class BaseController {
 		if (auth != null) {
 			model.addAttribute("posts", postService.getPostsFromFeed(auth.getName()));
 		}
-		return "base/feed";
-		//todo need main page as album mb
+		return "feed";
 	}
 	
 	@GetMapping("register")
 	public String registerPage() {
-		return "base/register";
+		return "register";
 	}
 	
 	@PostMapping("register")
@@ -42,7 +41,7 @@ public class BaseController {
 	
 	@GetMapping("login")
 	public String loginPage() {
-		return "base/login";
+		return "login";
 	}
 }
 

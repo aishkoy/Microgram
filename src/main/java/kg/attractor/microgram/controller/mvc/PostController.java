@@ -26,7 +26,7 @@ public class PostController {
 
 	@GetMapping("post")
 	public String postPage() {
-		return "base/post";
+		return "post";
 	}
 
 	@GetMapping("{id}")
@@ -37,7 +37,7 @@ public class PostController {
 		model.addAttribute("post",post);
 		model.addAttribute("comments",comments);
 		model.addAttribute("authEmail",email);
-		return "base/postPage";
+		return "postPage";
 	}
 	
 	@PostMapping("post")

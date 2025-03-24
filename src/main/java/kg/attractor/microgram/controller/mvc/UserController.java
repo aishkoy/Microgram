@@ -33,7 +33,7 @@ public class UserController {
         List<PostDto> posts = postService.getAllPostsByOwner(user.getEmail());
         model.addAttribute("user",user);
         model.addAttribute("posts",posts);
-        return "user/profile";
+        return "profile";
     }
 
     @GetMapping("/profile/{username}")
@@ -47,24 +47,24 @@ public class UserController {
         }
         model.addAttribute("user",user);
         model.addAttribute("posts",posts);
-        return "user/profile";
+        return "profile";
     }
 
     @GetMapping("/search")
     public String searchPage() {
-        return "base/searchPage";
+        return "searchPage";
     }
 
-    @PostMapping("/searchPage")
+    @PostMapping("/search")
     public String searchByUsernameOrEmail (String search, Model model) {
         List<UserDto> results = userService.searchByUsernameOrEmail(search);
         model.addAttribute("results", results);
-        return "base/search";
+        return "search";
     }
     
     @GetMapping("/profile/upload")
     public String uploadProfileAvatarPAge() {
-        return "user/avatar_upl";
+        return "avatar_upl";
         
     }
     
@@ -77,7 +77,7 @@ public class UserController {
     @GetMapping("/profile/edit")
     public String editProfile(Model model) {
         model.addAttribute("profile", adapter.getAuthUser());
-        return "user/edit_profile";
+        return "edit_profile";
     }
 
     @PostMapping("/profile/edit")

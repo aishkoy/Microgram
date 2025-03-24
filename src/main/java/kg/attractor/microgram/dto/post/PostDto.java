@@ -14,4 +14,5 @@ public class PostDto {
     private UserDto owner;
     private String postedTime;
     private Integer likesNum;
+    private Integer commentsNum;
 }

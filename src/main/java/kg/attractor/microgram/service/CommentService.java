@@ -21,6 +21,9 @@ public class CommentService {
     private final CommentDao dao;
     private final UserService userService;
 
+    public List<CommentDto> getAllCommentsByPostId(Long id) {
+        return dao.getCommentsByPostId(id).stream().map(this::toDto).collect(Collectors.toList());
+    }
     private CommentDto toDto(Comment comment) {
         return CommentDto.builder()
                 .id(comment.getId())

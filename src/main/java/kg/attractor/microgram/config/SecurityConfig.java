@@ -74,18 +74,18 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().hasAnyAuthority("USER", "ADMIN")
                 ).rememberMe(remember -> remember
-//                .key("someSecretKey")
+                .key("someSecretKey")
                                 .tokenValiditySeconds(7 * 24 * 60 * 60)
                                 .userDetailsService(userDetailsService())
-                                .tokenRepository(persistentTokenRepository())
+//                                .tokenRepository(persistentTokenRepository())
                 );
         return http.build();
     }
 
-    @Bean
-    public PersistentTokenRepository persistentTokenRepository() {
-        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
-        tokenRepository.setDataSource(dataSource);
-        return tokenRepository;
-    }
+//    @Bean
+//    public PersistentTokenRepository persistentTokenRepository() {
+//        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+//        tokenRepository.setDataSource(dataSource);
+//        return tokenRepository;
+//    }
 }

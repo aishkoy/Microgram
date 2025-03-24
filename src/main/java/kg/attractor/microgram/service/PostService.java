@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class PostService {
     private final UserService userService;
     private final LikeService likeService;
+    private final CommentService commentService;
     private final PostDao postDao;
     private final FileUtil fileUtil;
 
@@ -79,6 +80,7 @@ public class PostService {
                 .postedTime(p.getPostedTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .owner(userService.getUserByEmail(p.getOwner()))
                 .likesNum(likeService.getAllLikesByPostId(p.getId()).size())
+                .commentsNum(commentService.getAllCommentsByPostId(p.getId()).size())
                 .build();
     }
 
