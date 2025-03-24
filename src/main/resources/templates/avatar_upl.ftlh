@@ -1,25 +1,79 @@
 <#import "layout.ftlh" as main>
 <@main.layout>
+    <div class="max-w-2xl mx-auto px-4 py-8">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                <i data-lucide="user" class="text-amber-500"></i>
+                Upload Avatar
+            </h2>
 
-    <div class="container py-5">
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <h1 class="text-center">Upload Avatar</h1>
-                <hr>
-                <form action="/user/profile/upload" method="post" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="avatar" class="form-label">Select File:</label>
-                        <input type="file" class="form-control" id="avatar" name="avatar">
+            <form action="/user/profile/upload" method="post" enctype="multipart/form-data" class="space-y-6">
+                <!-- File Upload Field -->
+                <div class="space-y-2">
+                    <label for="avatar" class="block text-sm font-medium text-gray-700 flex items-center gap-2">
+                        <i data-lucide="upload" class="text-gray-500"></i>
+                        Select Image:
+                    </label>
+                    <input type="file"
+                           class="hidden"
+                           id="avatar"
+                           name="avatar"
+                           onchange="previewFile(event)">
+                    <label for="avatar" class="cursor-pointer block w-full px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md bg-amber-50 hover:bg-amber-100 transition-colors flex items-center gap-2">
+                        <i data-lucide="image" class="text-gray-500"></i>
+                        Choose an avatar image
+                    </label>
+                    <div id="filePreview" class="mt-2 hidden">
+                        <img id="previewImage" class="max-w-full h-40 object-cover rounded-full border border-gray-300 mx-auto">
                     </div>
-                    <button type="submit" class="btn btn-primary">Upload</button>
-                </form>
-
-                <div class="mt-5">
-                    <p><strong>Allowed formats:</strong> JPG, JPEG, PNG</p>
-                    <p><strong>Maximum size:</strong> 3 MB</p>
                 </div>
-            </div>
+
+                <!-- Information Box -->
+                <div class="bg-gray-50 p-4 rounded-md border border-gray-200 space-y-2">
+                    <p class="text-sm text-gray-700 flex items-center gap-2">
+                        <i data-lucide="check-circle" class="text-amber-500"></i>
+                        <span class="font-semibold">Allowed formats:</span> JPG, JPEG, PNG
+                    </p>
+                    <p class="text-sm text-gray-700 flex items-center gap-2">
+                        <i data-lucide="info" class="text-amber-500"></i>
+                        <span class="font-semibold">Maximum size:</span> 3 MB
+                    </p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="pt-2 flex gap-4">
+                    <button type="submit"
+                            class="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-amber-500 text-white font-semibold rounded-md hover:bg-amber-600 transition-all duration-300 shadow-md">
+                        <i data-lucide="upload-cloud"></i>
+                        Upload
+                    </button>
+
+                    <a href="/user"
+                       class="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-md hover:bg-gray-300 transition-all duration-300 shadow-md">
+                        <i data-lucide="x"></i>
+                        Cancel
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
 
+    <script>
+        function previewFile(event) {
+            const file = event.target.files[0];
+            const previewContainer = document.getElementById("filePreview");
+            const previewImage = document.getElementById("previewImage");
+
+            if (file && file.type.startsWith("image/")) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewContainer.classList.remove("hidden");
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewContainer.classList.add("hidden");
+            }
+        }
+    </script>
 </@main.layout>

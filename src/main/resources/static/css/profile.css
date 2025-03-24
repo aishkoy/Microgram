@@ -44,6 +44,34 @@ body {
     background-color: var(--neutral-100);
 }
 
+.profile-avatar {
+    cursor: pointer;
+    position: relative;
+}
+
+.profile-avatar::after {
+    content: "Change avatar";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.profile-avatar:hover::after {
+    opacity: 1;
+}
+
+.avatar-placeholder {
+    display: inline-block;
+}
+
 .profile-username {
     font-size: 2rem;
     font-weight: 700;
