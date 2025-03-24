@@ -1,49 +1,75 @@
-let responseFollower;
-let responseFollowing;
-let username;
+window.addEventListener("load", async function() {
+    try {
+        const username = document.querySelector('.profile-username').textContent;
 
-window.onload = async function () {
-    username = document.getElementById("userUserName").textContent
-    responseFollower = await fetch(`/api/user/follower/${username}`)
-    responseFollowing = await fetch(`/api/user/followings/${username}`)
+        const responseFollower = await fetch(`/api/user/follower/${username}`);
+        const responseFollowing = await fetch(`/api/user/followings/${username}`);
 
-    let dataFollower = await responseFollower.json()
-    let dataFollowings = await responseFollowing.json()
+        if (!responseFollower.ok || !responseFollowing.ok) {
+            throw new Error('Network response was not ok');
+        }
 
-    const followers = document.getElementById('followers')
-    const followings = document.getElementById('following')
+        const dataFollower = await responseFollower.json();
+        const dataFollowings = await responseFollowing.json();
 
-    followers.textContent = dataFollower.length + " followers"
-    followings.textContent = dataFollowings.length + " following"
+        document.getElementById('followers-count').textContent = dataFollower.length;
+        document.getElementById('following-count').textContent = dataFollowings.length;
 
-    const followersModalBody = document.querySelector('#followers-modal .modal-body');
-    followersModalBody.innerHTML = '';
+        const followersModalBody = document.querySelector('#followers-modal .modal-body');
+        followersModalBody.innerHTML = '';
 
-    dataFollower.forEach(user => {
-        let userAvatar = user.avatar ? '/api/post/' + user.avatar : '/defaultAvatar.jpg';
-        let userUserName = user.username;
-        followersModalBody.innerHTML += `
-        <div class="row">
-            <img class="col-4" src="${userAvatar}" style="width: 50px;" alt="userAvatar">
-                <span class="col-4 text-center"><a href="/user/profile/${userUserName}">${userUserName}</a></span>
-        </div>
-    `;
-    });
+        if (dataFollower.length === 0) {
+            followersModalBody.innerHTML = '<p class="text-center text-muted">No followers yet</p>';
+        } else {
+            dataFollower.forEach(user => {
+                let userAvatarHtml;
+                if (user.avatar) {
+                    userAvatarHtml = `<img src="/api/post/${user.avatar}" alt="${user.username}'s avatar" class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">`;
+                } else {
+                    userAvatarHtml = `<div class="rounded-circle me-3 bg-gray-100 flex justify-center items-center" style="width: 40px; height: 40px;">
+                        <i data-lucide="user" style="width: 24px; height: 24px; color: #d1d5db;"></i>
+                    </div>`;
+                }
 
-    const followingModalBody = document.querySelector('#following-modal .modal-body');
-    followingModalBody.innerHTML = '';
-    dataFollowings.forEach(user => {
-        let userAvatar = user.avatar ? '/api/post/' + user.avatar : 'defaultAvatar.jpg';
-        let userUserName = user.username;
+                followersModalBody.innerHTML += `
+                <div class="d-flex align-items-center mb-3">
+                    ${userAvatarHtml}
+                    <a href="/user/profile/${user.username}" class="text-decoration-none">${user.username}</a>
+                </div>
+                `;
+            });
+        }
 
-        followingModalBody.innerHTML += `
-        <div class="container px-4 text-center">
-            <div class="row">
-                <img class="col-4" src="${userAvatar}" style="width: 50px;" alt="userAvatar">
-                <p class="col-4 text-center"><a href="/user/profile/${userUserName}">${userUserName}</a></p>
-            </div>
-        </div>
-    `;
-    });
+        const followingModalBody = document.querySelector('#following-modal .modal-body');
+        followingModalBody.innerHTML = '';
 
-}
+        if (dataFollowings.length === 0) {
+            followingModalBody.innerHTML = '<p class="text-center text-muted">Not following anyone yet</p>';
+        } else {
+            dataFollowings.forEach(user => {
+                let userAvatarHtml;
+                if (user.avatar) {
+                    userAvatarHtml = `<img src="/api/post/${user.avatar}" alt="${user.username}'s avatar" class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">`;
+                } else {
+                    userAvatarHtml = `<div class="rounded-circle me-3 bg-gray-100 flex justify-center items-center" style="width: 40px; height: 40px;">
+                        <i data-lucide="user" style="width: 24px; height: 24px; color: #d1d5db;"></i>
+                    </div>`;
+                }
+
+                followingModalBody.innerHTML += `
+                <div class="d-flex align-items-center mb-3">
+                    ${userAvatarHtml}
+                    <a href="/user/profile/${user.username}" class="text-decoration-none">${user.username}</a>
+                </div>
+                `;
+            });
+        }
+
+        if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
+            lucide.createIcons();
+        }
+
+    } catch (error) {
+        console.error('Error loading follow data:', error);
+    }
+});

@@ -1,38 +1,74 @@
 <#import "layout.ftlh" as main>
 <@main.layout>
     <div class="max-w-2xl mx-auto px-4 py-8">
-        <form method="POST" enctype="multipart/form-data" action="/post" class="space-y-6">
-            <!-- File Upload Field -->
-            <div class="space-y-2">
-                <label for="mFile" class="block text-sm font-medium text-gray-700">Select File:</label>
-                <input type="file"
-                       class="block w-full text-sm text-gray-500
-                              file:mr-4 file:py-2 file:px-4
-                              file:rounded-md file:border-0
-                              file:text-sm file:font-semibold
-                              file:bg-amber-50 file:text-gray-700
-                              hover:file:bg-amber-100"
-                       id="mFile"
-                       name="mFile">
-            </div>
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                <i data-lucide="file-plus" class="text-amber-500"></i>
+                Create a New Post
+            </h2>
 
-            <!-- Content Field -->
-            <div class="space-y-2">
-                <label for="content" class="block text-sm font-medium text-gray-700">Content:</label>
-                <input placeholder="Title"
-                       type="text"
-                       id="content"
-                       name="content"
-                       class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm">
-            </div>
+            <form method="POST" enctype="multipart/form-data" action="/post" class="space-y-6">
+                <!-- File Upload Field -->
+                <div class="space-y-2">
+                    <label for="mFile" class="block text-sm font-medium text-gray-700 flex items-center gap-2">
+                        <i data-lucide="upload" class="text-gray-500"></i>
+                        Select File:
+                    </label>
+                    <input type="file"
+                           class="hidden"
+                           id="mFile"
+                           name="mFile"
+                           onchange="previewFile(event)">
+                    <label for="mFile" class="cursor-pointer block w-full px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md bg-amber-50 hover:bg-amber-100 transition-colors flex items-center gap-2">
+                        <i data-lucide="image" class="text-gray-500"></i>
+                        Choose a file
+                    </label>
+                    <div id="filePreview" class="mt-2 hidden">
+                        <img id="previewImage" class="max-w-full h-40 object-cover rounded-md border border-gray-300">
+                    </div>
+                </div>
 
-            <!-- Submit Button -->
-            <div class="pt-2">
-                <button type="submit"
-                        class="bg-amber-50 text-gray-700 px-4 py-2 border rounded-md hover:text-black hover:bg-amber-100 transition-colors">
-                    Submit
-                </button>
-            </div>
-        </form>
+                <!-- Content Field -->
+                <div class="space-y-2">
+                    <label for="content" class="block text-sm font-medium text-gray-700 flex items-center gap-2">
+                        <i data-lucide="type" class="text-gray-500"></i>
+                        Title:
+                    </label>
+                    <textarea placeholder="Write something amazing..."
+                              id="content"
+                              name="content"
+                              rows="4"
+                              class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm resize-none"></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-2">
+                    <button type="submit"
+                            class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-amber-500 text-white font-semibold rounded-md hover:bg-amber-600 transition-all duration-300 shadow-md">
+                        <i data-lucide="send"></i>
+                        Publish
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
+
+    <script>
+        function previewFile(event) {
+            const file = event.target.files[0];
+            const previewContainer = document.getElementById("filePreview");
+            const previewImage = document.getElementById("previewImage");
+
+            if (file && file.type.startsWith("image/")) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewContainer.classList.remove("hidden");
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewContainer.classList.add("hidden");
+            }
+        }
+    </script>
 </@main.layout>

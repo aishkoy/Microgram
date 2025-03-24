@@ -1,199 +1,180 @@
 :root {
-    font-size: 10px;
-}
-
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
+    --primary-color: #3b82f6;
+    --primary-light: #93c5fd;
+    --primary-dark: #1d4ed8;
+    --neutral-100: #f3f4f6;
+    --neutral-200: #e5e7eb;
+    --neutral-300: #d1d5db;
+    --neutral-500: #6b7280;
+    --neutral-700: #374151;
+    --neutral-900: #111827;
 }
 
 body {
-    font-family: "Open Sans", Arial, sans-serif;
-    min-height: 100vh;
-    background-color: #fafafa;
-    color: #262626;
-    padding-bottom: 3rem;
+    font-family: 'Inter', sans-serif;
+    background-color: #f9fafb;
+    color: var(--neutral-900);
 }
 
-img {
-    display: block;
+.profile-header {
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 2.5rem;
+    margin-bottom: 2rem;
 }
 
-
-.jw-modal {
-    display: none;
-
-    position: fixed;
-    inset: 0;
-
-    z-index: 1000;
-
-    background-color: rgba(0, 0, 0, .75);
-    padding: 40px;
-
-    overflow: auto;
+.profile-avatar img {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.jw-modal.open {
-    display: block;
-}
-
-.jw-modal-body {
-    padding: 20px;
-    background: #fff;
-}
-
-body.jw-modal-open {
-    /* body overflow is hidden to hide main scrollbar when modal window is open */
-    overflow: hidden;
-}
-
-.container {
-    max-width: 93.5rem;
-    margin: 0 auto;
-    padding: 0 2rem;
-}
-
-.btn {
-    display: inline-block;
-    font: inherit;
-    background: none;
-    border: none;
-    color: inherit;
-    padding: 0;
-    cursor: pointer;
-}
-
-.btn:focus {
-    outline: 0.5rem auto #4d90fe;
-}
-
-.visually-hidden {
-    position: absolute !important;
-    height: 1px;
-    width: 1px;
-    overflow: hidden;
-    clip: rect(1px, 1px, 1px, 1px);
-}
-
-/* Profile Section */
-
-.profile {
-    padding: 5rem 0;
-}
-
-.profile::after {
-    content: "";
-    display: block;
-    clear: both;
-}
-
-.profile-image {
-    float: left;
-    width: calc(33.333% - 1rem);
+.profile-avatar .avatar-placeholder {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 3px solid var(--neutral-300);
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 3rem;
+    background-color: var(--neutral-100);
 }
 
-.profile-image img {
-    border-radius: 50%;
+.profile-username {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--neutral-900);
 }
 
-.profile-user-settings,
-.profile-stats,
-.profile-bio {
-    float: left;
-    width: calc(66.666% - 2rem);
-}
-
-.profile-user-settings {
-    margin-top: 1.1rem;
-}
-
-.profile-user-name {
-    display: inline-block;
-    font-size: 3.2rem;
-    font-weight: 300;
+.profile-action-btn {
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
 }
 
 .profile-edit-btn {
-    font-size: 1.4rem;
-    line-height: 1.8;
-    border: 0.1rem solid #dbdbdb;
-    border-radius: 0.3rem;
-    padding: 0 2.4rem;
-    margin-left: 2rem;
+    background-color: var(--neutral-100);
+    color: var(--neutral-700);
 }
 
-.profile-settings-btn {
-    font-size: 2rem;
-    margin-left: 1rem;
+.profile-edit-btn:hover {
+    background-color: var(--neutral-200);
+}
+
+.profile-follow-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.profile-follow-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.profile-unfollow-btn {
+    background-color: var(--neutral-100);
+    color: var(--neutral-700);
+}
+
+.profile-unfollow-btn:hover {
+    background-color: var(--neutral-200);
 }
 
 .profile-stats {
-    margin-top: 2.3rem;
+    display: flex;
+    gap: 2rem;
+    margin: 1.5rem 0;
 }
 
-.profile-stats li {
-    display: inline-block;
-    font-size: 1.6rem;
-    line-height: 1.5;
-    margin-right: 4rem;
-    cursor: pointer;
+.profile-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.profile-stats li:last-of-type {
-    margin-right: 0;
+.profile-stat-count {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--neutral-900);
+}
+
+.profile-stat-label {
+    font-size: 0.875rem;
+    color: var(--neutral-500);
 }
 
 .profile-bio {
-    font-size: 1.6rem;
-    font-weight: 400;
-    line-height: 1.5;
-    margin-top: 2.3rem;
+    margin-top: 1.5rem;
+    line-height: 1.6;
+    color: var(--neutral-700);
 }
 
-.profile-real-name,
-.profile-stat-count,
-.profile-edit-btn {
+.profile-bio .profile-real-name {
     font-weight: 600;
+    color: var(--neutral-900);
 }
 
-/* Gallery Section */
+.gallery-container {
+    margin-top: 3rem;
+}
+
+.gallery-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--neutral-200);
+}
+
+.gallery-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
 .gallery-card {
-    transition: all 0.3s ease;
+    border-radius: 0.75rem;
     overflow: hidden;
-    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .gallery-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-.gallery-item {
+.gallery-image-container {
     position: relative;
     overflow: hidden;
-}
-
-.gallery-item-link {
-    text-decoration: none;
-    color: inherit;
-    cursor: pointer;
-    display: block;
+    padding-bottom: 100%;
 }
 
 .gallery-image {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 250px;
+    height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
 }
 
-.gallery-item:hover .gallery-image {
+.gallery-card:hover .gallery-image {
     transform: scale(1.05);
 }
 
@@ -211,194 +192,86 @@ body.jw-modal-open {
     transition: opacity 0.3s ease;
 }
 
-.gallery-item:hover .gallery-overlay {
+.gallery-card:hover .gallery-overlay {
     opacity: 1;
 }
 
 .gallery-item-info {
-    color: white;
-    text-align: center;
-}
-
-.gallery-item-info ul {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    gap: 1.5rem;
 }
 
 .gallery-item-info li {
     display: flex;
     align-items: center;
-    font-weight: bold;
+    color: white;
+    font-weight: 600;
 }
 
-/* Loader */
-
-.loader {
-    width: 5rem;
-    height: 5rem;
-    border: 0.6rem solid #999;
-    border-bottom-color: transparent;
-    border-radius: 50%;
-    margin: 0 auto;
-    animation: loader 500ms linear infinite;
+.gallery-item-info li svg {
+    margin-right: 0.5rem;
 }
 
-/* Media Query */
+.gallery-card-footer {
+    padding: 1rem;
+}
 
-@media screen and (max-width: 40rem) {
-    .profile {
-        display: flex;
-        flex-wrap: wrap;
-        padding: 4rem 0;
+.gallery-card-date {
+    font-size: 0.75rem;
+    color: var(--neutral-500);
+}
+
+.modal-content {
+    border-radius: 0.75rem;
+    border: none;
+    overflow: hidden;
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--neutral-200);
+    padding: 1rem 1.5rem;
+}
+
+.modal-header .modal-title {
+    font-weight: 600;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.no-posts-message {
+    text-align: center;
+    padding: 4rem 0;
+    color: var(--neutral-500);
+}
+
+.no-posts-message svg {
+    margin-bottom: 1rem;
+    color: var(--neutral-300);
+}
+
+@media (max-width: 768px) {
+    .profile-header {
+        padding: 1.5rem;
     }
 
-    .profile::after {
-        display: none;
+    .profile-avatar img,
+    .profile-avatar .avatar-placeholder {
+        width: 120px;
+        height: 120px;
     }
 
-    .profile-image,
-    .profile-user-settings,
-    .profile-bio,
-    .profile-stats {
-        float: none;
-        width: auto;
-    }
-
-    .profile-image img {
-        width: 7.7rem;
-    }
-
-    .profile-user-settings {
-        flex-basis: calc(100% - 10.7rem);
-        display: flex;
-        flex-wrap: wrap;
-        margin-top: 1rem;
-    }
-
-    .profile-user-name {
-        font-size: 2.2rem;
-    }
-
-    .profile-edit-btn {
-        order: 1;
-        padding: 0;
-        text-align: center;
-        margin-top: 1rem;
-    }
-
-    .profile-edit-btn {
-        margin-left: 0;
-    }
-
-    .profile-bio {
-        font-size: 1.4rem;
-        margin-top: 1.5rem;
-    }
-
-    .profile-edit-btn,
-    .profile-bio,
-    .profile-stats {
-        flex-basis: 100%;
+    .profile-username {
+        font-size: 1.5rem;
     }
 
     .profile-stats {
-        order: 1;
-        margin-top: 1.5rem;
+        gap: 1rem;
     }
 
-    .profile-stats ul {
-        display: flex;
-        text-align: center;
-        padding: 1.2rem 0;
-        border-top: 0.1rem solid #dadada;
-        border-bottom: 0.1rem solid #dadada;
-    }
-
-    .profile-stats li {
-        font-size: 1.4rem;
-        flex: 1;
-        margin: 0;
-    }
-
-    .profile-stat-count {
-        display: block;
-    }
-}
-
-/* Spinner Animation */
-
-@keyframes loader {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/*
-
-The following code will only run if your browser supports CSS grid.
-
-Remove or comment-out the code block below to see how the browser will fall-back to flexbox & floated styling.
-
-*/
-
-@supports (display: grid) {
-    .profile {
-        display: grid;
-        grid-template-columns: 1fr 2fr;
-        grid-template-rows: repeat(3, auto);
-        grid-column-gap: 3rem;
-        align-items: center;
-    }
-
-    .profile-image {
-        grid-row: 1 / -1;
-    }
-
-    .gallery {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
-        grid-gap: 2rem;
-    }
-
-    .profile-image,
-    .profile-user-settings,
-    .profile-stats,
-    .profile-bio,
-    .gallery-item,
-    .gallery {
-        width: auto;
-        margin: 0;
-    }
-
-    @media (max-width: 40rem) {
-        .profile {
-            grid-template-columns: auto 1fr;
-            grid-row-gap: 1.5rem;
-        }
-
-        .profile-image {
-            grid-row: 1 / 2;
-        }
-
-        .profile-user-settings {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            grid-gap: 1rem;
-        }
-
-        .profile-edit-btn,
-        .profile-stats,
-        .profile-bio {
-            grid-column: 1 / -1;
-        }
-
-        .profile-user-settings,
-        .profile-edit-btn,
-        .profile-settings-btn,
-        .profile-bio,
-        .profile-stats {
-            margin: 0;
-        }
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
     }
 }
