@@ -49,8 +49,13 @@ public class UserController {
         model.addAttribute("posts",posts);
         return "user/profile";
     }
-    
-    @PostMapping("/search")
+
+    @GetMapping("/search")
+    public String searchPage() {
+        return "base/searchPage";
+    }
+
+    @PostMapping("/searchPage")
     public String searchByUsernameOrEmail (String search, Model model) {
         List<UserDto> results = userService.searchByUsernameOrEmail(search);
         model.addAttribute("results", results);
@@ -74,6 +79,7 @@ public class UserController {
         model.addAttribute("profile", adapter.getAuthUser());
         return "user/edit_profile";
     }
+
     @PostMapping("/profile/edit")
     public String editProfile(UserEditDto user) {
         userService.editUser(user, adapter.getAuthUserName());

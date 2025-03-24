@@ -72,7 +72,7 @@ public class UserService {
                     .username(dto.getUsername())
                     .name(dto.getName())
                     .surname(dto.getSurname())
-                    .avatar("defaultAvatar.jpg")
+                    .avatar(null)
                     .gender(dto.getGender())
                     .password(passwordEncoder.encode(dto.getPassword()))
                     .build());

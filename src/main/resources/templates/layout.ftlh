@@ -72,7 +72,7 @@
                 </a>
             </li>
             <li>
-                <a href="/search">
+                <a href="user/search">
                     <i data-lucide="search" class="nav-icon"></i>
                 </a>
             </li>
