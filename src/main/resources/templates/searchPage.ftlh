@@ -1,4 +1,4 @@
-<#import "../layout.ftlh" as main>
+<#import "layout.ftlh" as main>
 
 <@main.layout>
 <form class="input-group my-3 col-auto" method="POST" action="/user/search">

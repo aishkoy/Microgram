@@ -1,4 +1,4 @@
-<#import "../layout.ftlh" as main>
+<#import "layout.ftlh" as main>
 
 <@main.layout>
 <#assign known = SPRING_SECURITY_CONTEXT??>
@@ -8,7 +8,6 @@
 <body class="bg-gray-50 min-h-screen">
 
 <div class="container max-w-2xl mx-auto px-4 py-5">
-
     <div class="flex justify-between items-center mb-4 gap-3 border border-gray-400 rounded-lg p-3 cursor-pointer"
          onclick="window.location.href='/post'">
         <input

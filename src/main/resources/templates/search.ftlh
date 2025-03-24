@@ -1,4 +1,4 @@
-<#import "../layout.ftlh" as main>
+<#import "layout.ftlh" as main>
 
 <@main.layout>
     <div class="row row-cols-1 col col-sm-9 col-md-8 col-lg-7 col-xl-6 my-5">

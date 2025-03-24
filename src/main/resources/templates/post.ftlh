@@ -1,4 +1,4 @@
-<#import "../layout.ftlh" as main>
+<#import "layout.ftlh" as main>
 <@main.layout>
     <div class="max-w-2xl mx-auto px-4 py-8">
         <form method="POST" enctype="multipart/form-data" action="/post" class="space-y-6">

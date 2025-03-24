@@ -1,4 +1,4 @@
-<#import "../layout.ftlh" as l>
+<#import "layout.ftlh" as l>
 
 <@l.layout>
     <link rel="stylesheet" href="/css/profile.css">
@@ -14,7 +14,9 @@
                     <#if user.avatar??>
                         <img src="/api/post/${user.avatar}" style="width: 150px" alt="user avatar">
                     <#else>
-                        <img src="../defaultAvatar.jpg" style="width: 150px" alt="user avatar">
+                        <div style="padding:5px; border: 5px solid #ccc; border-radius: 50%; width: 150px; height: 150px; display: flex; justify-content: center; align-items: center;">
+                            <i data-lucide="user" style="width: 150px; height: 150px; color: #ccc;"></i>
+                        </div>
                     </#if>
                 </div>
                 <div class="profile-user-settings">
@@ -81,37 +83,51 @@
         </div>
     </header>
 
-    <div id="modal" class="jw-modal">
-        <div class="jw-modal-body">
-            <div class="modal-body mx-2">
-                <div class="row g-2">
-                    <div id="right" class="col-md-6">Hello</div>
-                    <div id="left" class="col-md-6">Dosya</div>
-                </div>
-            </div>
-            <button onclick="closeModal()">Close</button>
-        </div>
-    </div>
-
-    <div class="container">
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Photo Gallery</h2>
         <div class="gallery">
-            <#if posts??>
-                <#list posts as post>
-                    <div class="gallery-item" tabindex="0" onclick="openModal('modal',${post.id})">
-                        <img src="/api/post/${post.image}"
-                             class="gallery-image" alt="">
-                        <div class="gallery-item-info">
-                            <ul>
-                                <li id="likes" class="gallery-item-likes" data-id="${post.id}">❤️<span
-                                            class="visually-hidden">Likes:</span> <span class="like-count">0</span>
-                                </li>
-                                <li id="comments" class="gallery-item-comments" data-id="${post.id}">💬<span
-                                            class="visually-hidden">Comments:</span> <span class="comment-count">0</span>
-                                </li>
-                            </ul>
+            <#if posts?? && posts?size gt 0>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+                    <#list posts as post>
+                        <div class="col">
+                            <div class="card h-100 gallery-card shadow-sm">
+                                <a href="/${post.id}" class="gallery-item-link">
+                                    <div class="gallery-item" tabindex="0">
+                                        <img src="/api/post/${post.image}"
+                                             class="card-img-top gallery-image" alt="Post image">
+                                        <div class="gallery-overlay">
+                                            <div class="gallery-item-info">
+                                                <ul class="list-unstyled d-flex justify-content-center">
+                                                    <li id="likes" class="gallery-item-likes me-4" data-id="${post.id}">
+                                                        <i data-lucide="heart" class="me-1"></i>
+                                                        <span class="like-count">${post.likesNum}</span>
+                                                    </li>
+                                                    <li id="comments" class="gallery-item-comments" data-id="${post.id}">
+                                                        <i data-lucide="message-circle" class="me-1"></i>
+                                                        <span class="comment-count">${post.commentsNum}</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="card-body">
+                                    <p class="card-text text-muted">
+                                        <small>
+                                            <#if post.createdAt??>
+                                                Posted: ${post.createdAt?string("dd MMM yyyy")}
+                                            </#if>
+                                        </small>
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </#list>
+                    </#list>
+                </div>
+            <#else>
+                <div class="text-center py-5">
+                    <p class="text-muted">No posts yet</p>
+                </div>
             </#if>
         </div>
     </div>
@@ -146,7 +162,6 @@
         </div>
     </div>
 
-    <!-- Bootstrap and other JS libraries -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
