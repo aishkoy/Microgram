@@ -7,7 +7,7 @@
                 Upload Avatar
             </h2>
 
-            <form action="/user/profile/upload" method="post" enctype="multipart/form-data" class="space-y-6">
+            <form action="/profile/upload" method="post" enctype="multipart/form-data" class="space-y-6">
                 <!-- File Upload Field -->
                 <div class="space-y-2">
                     <label for="avatar" class="block text-sm font-medium text-gray-700 flex items-center gap-2">
@@ -18,13 +18,18 @@
                            class="hidden"
                            id="avatar"
                            name="avatar"
-                           onchange="previewFile(event)">
-                    <label for="avatar" class="cursor-pointer block w-full px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md bg-amber-50 hover:bg-amber-100 transition-colors flex items-center gap-2">
+                           onchange="previewImage(this, {
+                               previewContainerId: 'filePreview',
+                               previewImageId: 'previewImage'
+                           })">
+                    <label for="avatar"
+                           class="cursor-pointer block w-full px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md bg-amber-50 hover:bg-amber-100 transition-colors flex items-center gap-2">
                         <i data-lucide="image" class="text-gray-500"></i>
                         Choose an avatar image
                     </label>
                     <div id="filePreview" class="mt-2 hidden">
-                        <img id="previewImage" class="max-w-full h-40 object-cover rounded-full border border-gray-300 mx-auto">
+                        <img id="previewImage"
+                             class="max-w-full h-40 object-cover rounded-full border border-gray-300 mx-auto">
                     </div>
                 </div>
 
@@ -48,7 +53,7 @@
                         Upload
                     </button>
 
-                    <a href="/user"
+                    <a href="/"
                        class="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-md hover:bg-gray-300 transition-all duration-300 shadow-md">
                         <i data-lucide="x"></i>
                         Cancel
@@ -58,22 +63,5 @@
         </div>
     </div>
 
-    <script>
-        function previewFile(event) {
-            const file = event.target.files[0];
-            const previewContainer = document.getElementById("filePreview");
-            const previewImage = document.getElementById("previewImage");
-
-            if (file && file.type.startsWith("image/")) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewImage.src = e.target.result;
-                    previewContainer.classList.remove("hidden");
-                };
-                reader.readAsDataURL(file);
-            } else {
-                previewContainer.classList.add("hidden");
-            }
-        }
-    </script>
+    <script src="/js/imagePreview.js"></script>
 </@main.layout>

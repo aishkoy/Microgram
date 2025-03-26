@@ -7,7 +7,7 @@
                 Create a New Post
             </h2>
 
-            <form method="POST" enctype="multipart/form-data" action="/post" class="space-y-6">
+            <form method="POST" enctype="multipart/form-data" action="/posts" class="space-y-6">
                 <!-- File Upload Field -->
                 <div class="space-y-2">
                     <label for="mFile" class="block text-sm font-medium text-gray-700 flex items-center gap-2">
@@ -18,7 +18,10 @@
                            class="hidden"
                            id="mFile"
                            name="mFile"
-                           onchange="previewFile(event)">
+                           onchange="previewImage(this, {
+           previewContainerId: 'filePreview',
+           previewImageId: 'previewImage'
+       })">
                     <label for="mFile" class="cursor-pointer block w-full px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md bg-amber-50 hover:bg-amber-100 transition-colors flex items-center gap-2">
                         <i data-lucide="image" class="text-gray-500"></i>
                         Choose a file
@@ -53,22 +56,5 @@
         </div>
     </div>
 
-    <script>
-        function previewFile(event) {
-            const file = event.target.files[0];
-            const previewContainer = document.getElementById("filePreview");
-            const previewImage = document.getElementById("previewImage");
-
-            if (file && file.type.startsWith("image/")) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewImage.src = e.target.result;
-                    previewContainer.classList.remove("hidden");
-                };
-                reader.readAsDataURL(file);
-            } else {
-                previewContainer.classList.add("hidden");
-            }
-        }
-    </script>
+    <script src="/js/imagePreview.js"></script>
 </@main.layout>

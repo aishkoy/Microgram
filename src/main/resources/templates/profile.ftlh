@@ -2,266 +2,209 @@
 
 <@l.layout>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
-    <link rel="stylesheet" href="/css/profile.css">
     <#assign known = SPRING_SECURITY_CONTEXT??>
     <#if known>
-        <#assign authorizedUserEmail = SPRING_SECURITY_CONTEXT.authentication.name>
+        <#assign authorizedUsername = SPRING_SECURITY_CONTEXT.authentication.name>
+        <#assign isOwner = authorizedUsername?? && authorizedUsername == user.username>
+        <#assign currentUserId = authorizedUserId>
     </#if>
 
-    <!-- Profile Header -->
-    <div class="profile-header">
-        <div class="row align-items-center">
-            <div class="col-md-3 text-center profile-avatar">
-                <a href="/user/profile/upload" title="Change avatar">
-                    <#if user.avatar??>
-                        <img src="/api/post/${user.avatar}" alt="${user.username}'s avatar">
-                    <#else>
-                        <div class="avatar-placeholder">
-                            <i data-lucide="user" style="width: 80px; height: 80px; color: #d1d5db;"></i>
-                        </div>
-                    </#if>
-                </a>
-            </div>
-
-            <div class="col-md-9">
-                <div class="d-flex justify-content-between align-items-center flex-wrap">
-                    <div>
-                        <h1 class="profile-username">${user.username}</h1>
-                        <#if user.name?? && user.surname??>
-                            <p class="text-muted mb-0">${user.name} ${user.surname}</p>
-                        </#if>
-                    </div>
-
-                    <div class="mt-2 mt-md-0">
-                        <#if (authorizedUserEmail)??>
-                            <#if authorizedUserEmail == user.email>
-                                <a href="/user/profile/edit" class="btn profile-action-btn profile-edit-btn">
-                                    <i data-lucide="edit-3" style="width: 16px; height: 16px; margin-right: 6px;"></i>
-                                    Edit Profile
-                                </a>
+    <!-- Main Container -->
+    <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-xl shadow-sm dark:shadow-gray-700 overflow-hidden">
+        <!-- Profile Header -->
+        <div class="w-full px-4 py-8">
+            <div class="flex flex-col md:flex-row items-center">
+                <!-- Avatar Section -->
+                <div class="w-full md:w-1/4 flex justify-center mb-6 md:mb-0">
+                    <div class="relative group cursor-pointer">
+                        <#if isOwner>
+                        <a href="/profile/upload" class="block">
                             <#else>
-                                <#assign found = false>
-                                <#list followings as following>
-                                    <#if following.actualUser == user.email>
-                                        <#assign found = true>
-                                        <form id="unfollowForm" style="display: inline-block">
-                                            <button type=submit class="btn profile-action-btn profile-unfollow-btn">
-                                                <i data-lucide="user-minus"
-                                                   style="width: 16px; height: 16px; margin-right: 6px;"></i> Unfollow
-                                            </button>
-                                        </form>
-                                        <form id="followForm" style="display: none">
-                                            <button type="submit" id="followBtn"
-                                                    class="btn profile-action-btn profile-follow-btn">
-                                                <i data-lucide="user-plus"
-                                                   style="width: 16px; height: 16px; margin-right: 6px;"></i> Follow
-                                            </button>
-                                        </form>
-                                    </#if>
-                                </#list>
-                                <#if !found>
-                                    <form id="followForm" style="display: inline-block">
-                                        <button type="submit" id="followBtn"
-                                                class="btn profile-action-btn profile-follow-btn">
-                                            <i data-lucide="user-plus"
-                                               style="width: 16px; height: 16px; margin-right: 6px;"></i> Follow
+                            <a href="/@${user.username}/avatar" class="block">
+                                </#if>
+                                <#if user.avatar??>
+                                    <img src="/api/post/image/${user.avatar}" alt="${user.username}'s avatar"
+                                         class="w-32 h-32 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700">
+                                <#else>
+                                    <div class="w-32 h-32 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                                        <i data-lucide="user" class="w-16 h-16 text-gray-300 dark:text-gray-500"></i>
+                                    </div>
+                                </#if>
+                            </a>
+                    </div>
+                </div>
+
+                <!-- Profile Info Section -->
+                <div class="w-full md:w-3/4">
+                    <div class="flex flex-col sm:flex-row justify-between items-center sm:items-start mb-4">
+                        <div class="text-center sm:text-left mb-4 sm:mb-0">
+                            <h1 class="text-2xl font-bold profile-username">${user.username}</h1>
+                            <#if user.name?? && user.surname??>
+                                <p class="text-gray-500 dark:text-gray-400">${user.name} ${user.surname}</p>
+                            </#if>
+                        </div>
+
+                        <div>
+                            <#if authorizedUsername??>
+                                <#if isOwner>
+                                    <a href="/profile"
+                                       class="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-md transition">
+                                        <i data-lucide="edit-3" class="w-4 h-4 mr-2"></i>
+                                        Edit Profile
+                                    </a>
+                                <#else>
+                                    <#assign found = false>
+                                    <#list followings as following>
+                                        <#if following.actualUser == user.id>
+                                            <#assign found = true>
+                                            <#break>
+                                        </#if>
+                                    </#list>
+
+                                    <form id="followForm" class="${found?string('hidden', 'inline-block')}">
+                                        <button type="submit"
+                                                class="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-md transition">
+                                            <i data-lucide="user-plus" class="w-4 h-4 mr-2"></i> Follow
                                         </button>
                                     </form>
-                                    <form id="unfollowForm" style="display: none;">
-                                        <button type=submit class="btn profile-action-btn profile-unfollow-btn">
-                                            <i data-lucide="user-minus"
-                                               style="width: 16px; height: 16px; margin-right: 6px;"></i> Unfollow
+                                    <form id="unfollowForm" class="${found?string('inline-block', 'hidden')}">
+                                        <button type="submit"
+                                                class="inline-flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-md transition">
+                                            <i data-lucide="user-minus" class="w-4 h-4 mr-2"></i> Unfollow
                                         </button>
                                     </form>
                                 </#if>
                             </#if>
-                        </#if>
-                    </div>
-                </div>
-
-                <div class="profile-stats">
-                    <div class="profile-stat-item">
-                        <span class="profile-stat-count">${posts?size!0}</span>
-                        <span class="profile-stat-label">Posts</span>
-                    </div>
-
-                    <button id="followers" class="btn p-0 border-0 bg-transparent"
-                            data-bs-toggle="modal" data-bs-target="#followers-modal">
-                        <div class="profile-stat-item">
-                            <span class="profile-stat-count" id="followers-count">0</span>
-                            <span class="profile-stat-label">Followers</span>
                         </div>
-                    </button>
-
-                    <button id="following" class="btn p-0 border-0 bg-transparent"
-                            data-bs-toggle="modal" data-bs-target="#following-modal">
-                        <div class="profile-stat-item">
-                            <span class="profile-stat-count" id="following-count">0</span>
-                            <span class="profile-stat-label">Following</span>
-                        </div>
-                    </button>
-                </div>
-
-                <#if user.aboutMe??>
-                    <div class="profile-bio">
-                        <p>${user.aboutMe}</p>
                     </div>
-                </#if>
+
+                    <!-- Stats Section -->
+                    <div class="flex justify-center sm:justify-start space-x-8 mb-4">
+                        <div class="flex flex-col items-center sm:items-start">
+                            <span class="font-bold">${posts?size!0}</span>
+                            <span class="text-gray-500 dark:text-gray-400 text-sm">Posts</span>
+                        </div>
+
+                        <div id="followers-count-container" class="flex flex-col items-center sm:items-start cursor-pointer hover:opacity-80 transition">
+                            <span class="font-bold" id="followers-count">0</span>
+                            <span class="text-gray-500 dark:text-gray-400 text-sm">Followers</span>
+                        </div>
+
+                        <div id="following-count-container" class="flex flex-col items-center sm:items-start cursor-pointer hover:opacity-80 transition">
+                            <span class="font-bold" id="following-count">0</span>
+                            <span class="text-gray-500 dark:text-gray-400 text-sm">Following</span>
+                        </div>
+                    </div>
+
+                    <!-- Bio Section -->
+                    <#if user.aboutMe??>
+                        <div class="mt-4 text-center sm:text-left">
+                            <p class="text-gray-700 dark:text-gray-300">${user.aboutMe}</p>
+                        </div>
+                    </#if>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Gallery Section -->
-    <div class="gallery-container">
-        <div class="gallery-header">
-            <h2>Posts</h2>
-        </div>
+        <!-- Posts Section -->
+        <div class="w-full px-4 py-8">
+            <div class="border-b border-gray-200 dark:border-gray-700 mb-6">
+                <h2 class="text-xl font-bold pb-4">Posts</h2>
+            </div>
 
-        <#if posts?? && posts?size gt 0>
-            <div class="gallery-grid">
-                <#list posts as post>
-                    <div class="gallery-card">
-                        <a href="/${post.id}" class="text-decoration-none">
-                            <div class="gallery-image-container">
-                                <img src="/api/post/${post.image}" class="gallery-image" alt="Post image">
-                                <div class="gallery-overlay">
-                                    <div class="gallery-item-info">
-                                        <li id="likes" class="gallery-item-likes" data-id="${post.id}">
-                                            <i data-lucide="heart" style="width: 20px; height: 20px;"></i>
-                                            <span class="like-count">${post.likesNum}</span>
-                                        </li>
-                                        <li id="comments" class="gallery-item-comments" data-id="${post.id}">
-                                            <i data-lucide="message-circle" style="width: 20px; height: 20px;"></i>
-                                            <span class="comment-count">${post.commentsNum}</span>
-                                        </li>
+            <#if posts?? && posts?size gt 0>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <#list posts as post>
+                        <div class="rounded-lg overflow-hidden bg-white dark:bg-gray-700 shadow-md hover:shadow-lg transition">
+                            <a href="/posts/${post.id}" class="block">
+                                <div class="relative">
+                                    <img src="/api/post/image/${post.image}" class="w-full aspect-square object-cover"
+                                         alt="Post image">
+                                    <div class="absolute inset-0 bg-black bg-opacity-20 opacity-0 hover:opacity-100 transition flex items-center justify-center text-white">
+                                        <div class="flex space-x-4">
+                                            <div class="flex items-center">
+                                                <i data-lucide="heart" class="w-5 h-5 mr-1"></i>
+                                                <span>${post.likesNum}</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <i data-lucide="message-circle" class="w-5 h-5 mr-1"></i>
+                                                <span>${post.commentsNum}</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                            </a>
+                            <div class="p-3">
+                                <p class="text-gray-500 dark:text-gray-400 text-sm flex items-center">
+                                    <#if post.postedTime??>
+                                        <i data-lucide="calendar" class="w-3.5 h-3.5 mr-1"></i>
+                                        ${post.postedTime}
+                                    </#if>
+                                </p>
                             </div>
-                        </a>
-                        <div class="gallery-card-footer">
-                            <p class="gallery-card-date mb-0">
-                                <#if post.createdAt??>
-                                    <i data-lucide="calendar"
-                                       style="width: 14px; height: 14px; display: inline; vertical-align: -2px;"></i>
-                                    ${post.createdAt?string("dd MMM yyyy")}
-                                </#if>
-                            </p>
                         </div>
-                    </div>
-                </#list>
-            </div>
-        <#else>
-            <div class="no-posts-message">
-                <i data-lucide="image" style="width: 48px; height: 48px;"></i>
-                <p>No posts yet</p>
-            </div>
-        </#if>
+                    </#list>
+                </div>
+            <#else>
+                <div class="flex flex-col items-center justify-center py-12 text-gray-400 dark:text-gray-500">
+                    <i data-lucide="image" class="w-12 h-12 mb-4"></i>
+                    <p class="text-lg">No posts yet</p>
+                </div>
+            </#if>
+        </div>
     </div>
 
-
-    <div class="modal fade" id="followers-modal" tabindex="-1" aria-labelledby="followers-modal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Followers</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Followers Modal -->
+    <div id="followers-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+            <div class="border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-800">Followers</h3>
+                <button class="modal-close text-gray-500 hover:text-gray-700 focus:outline-none" data-modal-id="followers-modal">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div id="followers-modal-content" class="max-h-80 overflow-y-auto">
+                <!-- Content will be loaded by JavaScript -->
+                <div class="flex justify-center items-center p-6">
+                    <i data-lucide="loader" class="w-8 h-8 animate-spin text-gray-400"></i>
                 </div>
-                <div class="modal-body">
-
-                </div>
+            </div>
+            <div class="border-t border-gray-200 px-6 py-4">
+                <button class="modal-close w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md transition" data-modal-id="followers-modal">
+                    Close
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Modal following -->
-    <div class="modal fade" id="following-modal" tabindex="-1" aria-labelledby="following-modal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Following</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Following Modal -->
+    <div id="following-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+            <div class="border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-800">Following</h3>
+                <button class="modal-close text-gray-500 hover:text-gray-700 focus:outline-none" data-modal-id="following-modal">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div id="following-modal-content" class="max-h-80 overflow-y-auto">
+                <div class="flex justify-center items-center p-6">
+                    <i data-lucide="loader" class="w-8 h-8 animate-spin text-gray-400"></i>
                 </div>
-                <div class="modal-body">
-
-                </div>
+            </div>
+            <div class="border-t border-gray-200 px-6 py-4">
+                <button class="modal-close w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md transition" data-modal-id="following-modal">
+                    Close
+                </button>
             </div>
         </div>
     </div>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script src="/js/profile.js"></script>
     <script src="/js/follows.js"></script>
-
     <script>
         window.addEventListener("load", () => {
-            let followForm = document.getElementById('followForm');
-            let unfollowForm = document.getElementById('unfollowForm');
-            let followersCount = document.getElementById('followers-count');
-
-            followForm.addEventListener('submit', async (event) => {
-                event.preventDefault();
-                try {
-                    let response = await fetch('/api/follow', {
-                        method: 'POST',
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(
-                            {
-                                followerEmail: '${authorizedUserEmail}',
-                                actualUser: '${user.email}'
-                            }
-                        )
-                    });
-                    if (response.ok) {
-                        followForm.style.display = 'none';
-                        unfollowForm.style.display = 'inline-block';
-
-                        const currentCount = parseInt(followersCount.textContent || '0');
-                        followersCount.textContent = currentCount + 1;
-                    } else {
-                        throw new Error();
-                    }
-                } catch (e) {
-                    console.log(e);
-                }
-            });
-
-            unfollowForm.addEventListener('submit', async (event) => {
-                event.preventDefault();
-                try {
-                    let response = await fetch('/api/follow/unfollow', {
-                        method: 'DELETE',
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(
-                            {
-                                followerEmail: '${authorizedUserEmail}',
-                                actualUser: '${user.email}'
-                            }
-                        )
-                    });
-                    if (response.ok) {
-                        followForm.style.display = 'inline-block';
-                        unfollowForm.style.display = 'none';
-
-                        const currentCount = parseInt(followersCount.textContent || '0');
-                        followersCount.textContent = Math.max(0, currentCount - 1);
-                    } else {
-                        throw new Error();
-                    }
-                } catch (e) {
-                    console.log(e);
-                }
-            })
-        })
+            window.followsJS.initFollows(${currentUserId!"null"}, ${user.id}, "${user.username}");
+        });
     </script>
 </@l.layout>

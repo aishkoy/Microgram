@@ -8,7 +8,7 @@
                 Find Users
             </h2>
 
-            <form class="mb-8" method="POST" action="/user/search">
+            <form class="mb-8" method="POST" action="/search">
                 <div class="space-y-2">
                     <label for="search" class="block text-sm font-medium text-gray-700 flex items-center gap-2">
                         <i data-lucide="user-search" class="text-gray-500"></i>
@@ -35,11 +35,11 @@
                 </h2>
                 <div class="divide-y divide-gray-200">
                     <#list results as user>
-                        <a href="/user/profile/${user.username}" class="block py-4 px-4 flex items-center gap-4 hover:bg-amber-50 transition-colors rounded-lg">
+                        <a href="/@${user.username}" class="block py-4 px-4 flex items-center gap-4 hover:bg-amber-50 transition-colors rounded-lg">
                             <#if user.avatar?? && user.avatar != "">
                                 <img alt="${user.username}"
                                      class="rounded-full h-12 w-12 object-cover border border-gray-300 shadow-sm"
-                                     src="/api/post/${user.avatar}">
+                                     src="/api/post/image/${user.avatar}">
                             <#else>
                                 <div class="flex items-center justify-center rounded-full bg-gray-200 h-12 w-12 border border-gray-300">
                                     <i data-lucide="user" class="text-gray-500"></i>

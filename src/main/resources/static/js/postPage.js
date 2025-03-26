@@ -6,7 +6,7 @@ const commentBox = document.getElementById('commentBox');
 async function fetchComment(commentId) {
     try {
         console.log(commentId)
-        const response = await fetch(`/api/comment/last/${commentId}`)
+        const response = await fetch(`/api/comment/${commentId}`)
         const comment = await response.json();
         displayComments(comment);
     } catch (error) {
@@ -80,7 +80,7 @@ function displayComments(comment) {
 async function deleteComment(id) {
     const cardWithCommentId = document.getElementById(id)
     try {
-        const urlFetch = await fetch(`/api/comment/delete/${id}`, {
+        const urlFetch = await fetch(`/api/comment/${id}`, {
             method: 'DELETE',
         });
         if (urlFetch.ok) {

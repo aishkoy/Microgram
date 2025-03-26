@@ -1,5 +1,5 @@
 async function openModal(id, postId) {
-    const response = await fetch(`api/post/get/` + postId)
+    const response = await fetch(`api/post/` + postId)
     const dataPost = await response.json()
 
     let right = document.getElementById('right')
