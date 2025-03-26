@@ -1,4 +1,4 @@
-package kg.attractor.microgram.models;
+package com.suslike.web.models;
 
 import lombok.*;
 
@@ -13,6 +13,6 @@ public class Post {
     private Long id;
     private String image;
     private String content;
-    private String owner;
+    private Long owner;
     private LocalDateTime postedTime;
 }

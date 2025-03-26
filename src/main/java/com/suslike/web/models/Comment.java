@@ -1,4 +1,4 @@
-package kg.attractor.microgram.models;
+package com.suslike.web.models;
 
 import lombok.*;
 
@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Comment {
     private Long id;
-    private Long postId;
-    private String commenter;
+    private Long post;
+    private Long commenter;
     private String content;
     private LocalDateTime commentedTime;
 }

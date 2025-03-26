@@ -1,4 +1,4 @@
-package kg.attractor.microgram.dto;
+package com.suslike.web.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FollowDto {
+public class LikeDto{
     private Long id;
-    private String followerEmail;
-    private String actualUser;
+    private Long liker;
+    private Long postId;
 }

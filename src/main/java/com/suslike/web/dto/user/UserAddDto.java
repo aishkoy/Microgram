@@ -1,4 +1,4 @@
-package kg.attractor.microgram.dto.user;
+package com.suslike.web.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

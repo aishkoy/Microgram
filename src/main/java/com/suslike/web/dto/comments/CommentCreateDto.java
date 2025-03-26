@@ -1,4 +1,4 @@
-package kg.attractor.microgram.dto.comments;
+package com.suslike.web.dto.comments;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

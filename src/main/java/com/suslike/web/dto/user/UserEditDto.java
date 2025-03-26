@@ -1,4 +1,4 @@
-package kg.attractor.microgram.dto.user;
+package com.suslike.web.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,12 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
-    private String email;
+public class UserEditDto {
     private String gender;
     private String name;
     private String surname;
     private String username;
-    private String avatar;
     private String aboutMe;
 }

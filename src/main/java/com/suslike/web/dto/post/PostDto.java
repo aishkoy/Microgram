@@ -1,7 +1,9 @@
-package kg.attractor.microgram.dto.post;
+package com.suslike.web.dto.post;
 
-import kg.attractor.microgram.dto.user.UserDto;
+import com.suslike.web.dto.user.UserDto;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -12,7 +14,8 @@ public class PostDto {
     private String image;
     private String content;
     private UserDto owner;
-    private String postedTime;
+    private LocalDateTime postedTime;
     private Integer likesNum;
     private Integer commentsNum;
+    private Boolean isLiked;
 }

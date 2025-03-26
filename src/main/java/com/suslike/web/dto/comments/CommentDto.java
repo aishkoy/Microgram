@@ -1,6 +1,6 @@
-package kg.attractor.microgram.dto.comments;
+package com.suslike.web.dto.comments;
 
-import kg.attractor.microgram.dto.user.UserDto;
+import com.suslike.web.dto.user.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CommentDto {
     private Long id;
-    private Long postId;
+    private Long post;
     private UserDto commenter;
     private String content;
     private LocalDateTime commentedTime;

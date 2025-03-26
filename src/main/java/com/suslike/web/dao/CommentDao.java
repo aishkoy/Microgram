@@ -1,6 +1,6 @@
-package kg.attractor.microgram.dao;
+package com.suslike.web.dao;
 
-import kg.attractor.microgram.models.Comment;
+import com.suslike.web.models.Comment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -27,8 +27,8 @@ public class CommentDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         template.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql,new String[]{"id"});
-            ps.setLong(1,comment.getPostId());
-            ps.setString(2,comment.getCommenter());
+            ps.setLong(1,comment.getPost());
+            ps.setLong(2,comment.getCommenter());
             ps.setString(3,comment.getContent());
             return ps;
         }, keyHolder);

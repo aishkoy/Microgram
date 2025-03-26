@@ -1,4 +1,4 @@
-package kg.attractor.microgram.models;
+package com.suslike.web.models;
 
 import lombok.*;
 
@@ -7,8 +7,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Likes {
+public class Follow {
     private Long id;
-    private String liker;
-    private Long postId;
+    private Long follower;
+    private Long actualUser;
 }

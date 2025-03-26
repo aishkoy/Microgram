@@ -1,4 +1,4 @@
-package kg.attractor.microgram.dto.post;
+package com.suslike.web.dto.post;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

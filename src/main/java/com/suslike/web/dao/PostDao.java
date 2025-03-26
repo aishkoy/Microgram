@@ -1,6 +1,6 @@
-package kg.attractor.microgram.dao;
+package com.suslike.web.dao;
 
-import kg.attractor.microgram.models.Post;
+import com.suslike.web.models.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,31 +13,29 @@ import java.util.List;
 public class PostDao {
     private final JdbcTemplate template;
     
-    public List<Post> getAllPostByEmail(String email){
+    public List<Post> getAllPostById(Long id){
         String sql = "SELECT * FROM posts WHERE owner = ?;";
-        return template.query(sql, new BeanPropertyRowMapper<>(Post.class), email);
-    }
-    
-    public List<Post> getAllPostByFollowedUser(String email){
-        String sql = """
-            SELECT * FROM posts P
-            INNER JOIN public.follows F ON P.owner = F.follower
-            WHERE actual_user = ?;
-            """;
-        return template.query(sql, new BeanPropertyRowMapper<>(Post.class), email);
+        return template.query(sql, new BeanPropertyRowMapper<>(Post.class), id);
     }
 
-    public List<Post> getPostsFromFeed (String email) {
+    public List<Post> getFavoritesPost(Long id){
+        String sql = """
+                SELECT * FROM posts where id in 
+                            (select POST_ID from LIKES where liker = ?);""";
+        return template.query(sql, new BeanPropertyRowMapper<>(Post.class), id);
+    }
+
+    public List<Post> getPostsFromFeed (Long id) {
         String sql = """
                 select p.* from POSTS p, FOLLOWS f
                 where p.OWNER = f.ACTUAL_USER
                 and f.FOLLOWER = ?
                 """;
 
-        return template.query(sql, new BeanPropertyRowMapper<>(Post.class), email);
+        return template.query(sql, new BeanPropertyRowMapper<>(Post.class), id);
     }
     
-    public Post getPostById(long id) {
+    public Post getPostById(Long id) {
         String sql = "SELECT * FROM posts WHERE id = ?";
         return template.queryForObject(sql, new BeanPropertyRowMapper<>(Post.class), id);
     }
@@ -48,15 +46,6 @@ public class PostDao {
             VALUES (?, ?, ?, ?);
             """;
         template.update(sql, post.getImage(), post.getContent(), post.getOwner(), post.getPostedTime());
-    }
-    
-    public void updatePost(Post post) {
-        String sql = """
-            UPDATE posts
-            SET image = ?, content = ?, posted_time = ?
-            WHERE id = ?;
-            """;
-        template.update(sql, post.getImage(), post.getContent(), post.getPostedTime(), post.getId());
     }
     
     public void deletePost(long id) {

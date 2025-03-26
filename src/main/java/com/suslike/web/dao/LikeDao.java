@@ -1,6 +1,6 @@
-package kg.attractor.microgram.dao;
+package com.suslike.web.dao;
 
-import kg.attractor.microgram.models.Likes;
+import com.suslike.web.models.Like;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -18,14 +18,14 @@ public class LikeDao {
     private final JdbcTemplate template;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public List<Likes> getAllLikesByPostID(Long id){
+    public List<Like> getAllLikesByPostID(Long id){
         String sql = """
                 select * from LIKES where POST_ID = ?;
                 """;
-        return template.query(sql, new BeanPropertyRowMapper<>(Likes.class),id);
+        return template.query(sql, new BeanPropertyRowMapper<>(Like.class),id);
     }
 
-    public void create(Likes like){
+    public void create(Like like){
         String sql = """
                 insert into LIKES (LIKER, POST_ID) values (:liker,:postId);
                 """;
@@ -42,7 +42,7 @@ public class LikeDao {
         template.update(sql,id);
     }
 
-    public Optional<Likes> getLikeBYEmailAndPost(String email, Long id) {
+    public Optional<Like> getLikeByIdAndPost(Long likerId, Long id) {
         String sql = """
                 select * from LIKES
                 where LIKER = ? and POST_ID = ?;
@@ -50,7 +50,7 @@ public class LikeDao {
 
         return Optional.ofNullable(
                 DataAccessUtils.singleResult(
-                     template.query(sql, new BeanPropertyRowMapper<>(Likes.class),email,id)
+                     template.query(sql, new BeanPropertyRowMapper<>(Like.class),likerId,id)
                 )
         );
     }
