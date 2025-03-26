@@ -9,24 +9,26 @@ databaseChangeLog:
               - column:
                   name: id
                   autoIncrement: true
-                  type: Long
+                  type: long
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: liker
-                  type: varchar(55)
+                  type: long
                   constraints:
-                    foreignKeyName: fk_liker_email
+                    foreignKeyName: fk_liker_id
                     deleteCascade: true
-                    references: users(email)
+                    updateCascade: true
+                    references: users(id)
                     nullable: false
               - column:
                   name: post_id
-                  type: Long
+                  type: long
                   constraints:
                     foreignKeyName: fk_liked_post_id
                     deleteCascade: true
+                    updateCascade: true
                     references: posts(id)
                     nullable: false
   - changeSet:
@@ -38,31 +40,33 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: integer
+                  type: long
                   autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: content
-                  type: varchar(355)
+                  type: varchar(1000)
                   constraints:
                     nullable: false
               - column:
                   name: post
-                  type: Long
+                  type: long
                   constraints:
                     foreignKeyName: fk_post_id
                     deleteCascade: true
+                    updateCascade: true
                     references: posts(id)
                     nullable: false
               - column:
                   name: commenter
-                  type: varchar(55)
+                  type: long
                   constraints:
-                    foreignKeyName: fk_commenter_email
-                    references: users(email)
+                    foreignKeyName: fk_commenter_id
+                    references: users(id)
                     deleteCascade: true
+                    updateCascade: true
                     nullable: false
               - column:
                   name: commented_time

@@ -1,19 +1,27 @@
 databaseChangeLog:
   - changeSet:
-      id: create user_authorities
+      id: create-user-authorities
       author: Aisha
       changes:
         - createTable:
             tableName: user_authority
             columns:
               - column:
-                  name: user_email
-                  type: varchar(55)
+                  name: id
+                  type: long
+                  autoIncrement: true
                   constraints:
-                    foreignKeyName: fk_user_email
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: long
+                  constraints:
+                    foreignKeyName: fk_user_id
                     nullable: false
                     deleteCascade: true
-                    references: users(email)
+                    updateCascade: true
+                    references: users(id)
               - column:
                   name: authority_id
                   type: long
@@ -21,4 +29,5 @@ databaseChangeLog:
                     foreignKeyName: fk_authority_id
                     nullable: false
                     deleteCascade: true
+                    updateCascade: true
                     references: authorities(id)

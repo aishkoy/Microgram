@@ -7,35 +7,42 @@ databaseChangeLog:
             tableName: users
             columns:
               - column:
-                  name: email
-                  type: varchar(55)
+                  name: id
+                  type: long
+                  autoIncrement: true
                   constraints:
-                    unique: true
                     primaryKey: true
                     nullable: false
               - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
                   name: gender
-                  type: text
+                  type: varchar(20)
                   constraints:
                     nullable: true
               - column:
                   name: name
-                  type: text
+                  type: varchar(100)
                   constraints:
                     nullable: false
               - column:
                   name: surname
-                  type: text
+                  type: varchar(100)
                   constraints:
                     nullable: false
               - column:
                   name: username
-                  type: text
+                  type: varchar(100)
                   constraints:
-                    nullable: true
+                    unique: true
+                    nullable: false
               - column:
                   name: password
-                  type: text
+                  type: varchar(255)
                   constraints:
                     nullable: false
               - column:
@@ -44,13 +51,8 @@ databaseChangeLog:
                   constraints:
                     nullable: true
               - column:
-                  name: bio
-                  type: text
-                  constraints:
-                    nullable: true
-              - column:
                   name: about_me
-                  type: text
+                  type: varchar(400)
                   constraints:
                     nullable: true
   - changeSet:
@@ -58,11 +60,11 @@ databaseChangeLog:
       author: Aisha
       changes:
         - createTable:
-            tableName: Posts
+            tableName: posts
             columns:
               - column:
                   name: id
-                  type: Long
+                  type: long
                   autoIncrement: true
                   constraints:
                     primaryKey: true
@@ -76,13 +78,16 @@ databaseChangeLog:
                   name: image
                   type: text
                   constraints:
-                    nullable: false
+                    nullable: true
               - column:
                   name: owner
-                  type: varchar(55)
+                  type: long
                   constraints:
-                    foreignKeyName: fk_owner_email
-                    references: users(email)
+                    foreignKeyName: fk_owner_id
+                    references: users(id)
+                    deleteCascade: true
+                    updateCascade: true
+                    nullable: false
               - column:
                   name: posted_time
                   type: timestamp

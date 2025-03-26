@@ -8,29 +8,31 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: Long
+                  type: long
                   autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: follower
-                  type: varchar(55)
+                  type: long
                   constraints:
-                    foreignKeyName: fk_follower_email
+                    foreignKeyName: fk_follower_id
                     deleteCascade: true
-                    references: users(email)
+                    updateCascade: true
+                    references: users(id)
                     nullable: false
               - column:
                   name: actual_user
-                  type: varchar(55)
+                  type: long
                   constraints:
-                    foreignKeyName: fk_actual_user_email
+                    foreignKeyName: fk_actual_user_id
                     deleteCascade: true
-                    references: users(email)
+                    updateCascade: true
+                    references: users(id)
                     nullable: false
   - changeSet:
-      id: create authorities
+      id: create-authorities
       author: Aisha
       changes:
         - createTable:
