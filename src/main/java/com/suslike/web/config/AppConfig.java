@@ -1,4 +1,4 @@
-package kg.attractor.microgram.config;
+package com.suslike.web.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

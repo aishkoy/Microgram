@@ -1,4 +1,4 @@
-package kg.attractor.microgram.exception.handler;
+package com.suslike.web.exception.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

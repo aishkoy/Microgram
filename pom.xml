@@ -8,8 +8,8 @@
         <version>3.2.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>kg.attractor</groupId>
-    <artifactId>Microgram</artifactId>
+    <groupId>com.suslike</groupId>
+    <artifactId>web</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Microgram</name>
     <description>Microgram</description>

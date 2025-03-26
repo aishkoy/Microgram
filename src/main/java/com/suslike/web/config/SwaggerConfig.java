@@ -1,4 +1,4 @@
-package kg.attractor.microgram.config;
+package com.suslike.web.config;
 
 
 import io.swagger.v3.oas.models.OpenAPI;
