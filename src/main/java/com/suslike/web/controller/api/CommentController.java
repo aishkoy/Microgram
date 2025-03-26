@@ -1,10 +1,10 @@
-package kg.attractor.microgram.controller.api;
+package com.suslike.web.controller.api;
 
-import kg.attractor.microgram.AuthAdapter;
-import kg.attractor.microgram.dto.comments.CommentCreateDto;
-import kg.attractor.microgram.dto.comments.CommentDto;
-import kg.attractor.microgram.dto.user.UserDto;
-import kg.attractor.microgram.service.CommentService;
+import com.suslike.web.AuthAdapter;
+import com.suslike.web.dto.comments.CommentCreateDto;
+import com.suslike.web.dto.comments.CommentDto;
+import com.suslike.web.dto.user.UserDto;
+import com.suslike.web.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,27 +18,27 @@ public class CommentController {
     private final CommentService service;
     private final AuthAdapter adapter;
 
-    @GetMapping("/{postId}")
-    public ResponseEntity<List<CommentDto>> getAllCommentsBYPostId(@PathVariable Long postId) {
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<List<CommentDto>> getAllCommentsByPostId(@PathVariable Long postId) {
         return ResponseEntity.ok(service.getCommentsByPostId(postId));
     }
 
-    @GetMapping("/last/{commentId}")
-    public ResponseEntity<CommentDto> getNewAddedComment(@PathVariable Long commentId) {
-        return ResponseEntity.ok(service.getCommentsLastCommentsByPost(commentId));
+    @GetMapping("/{id}")
+    public ResponseEntity<CommentDto> getNewComment(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getLastCommentByPost(id));
     }
 
     @PostMapping()
     public ResponseEntity<Long> addComment(@RequestBody CommentCreateDto dto) {
         UserDto user = adapter.getAuthUser();
-        Long id = service.addComment(dto, user.getEmail());
+        Long id = service.addComment(dto, user.getId());
         return ResponseEntity.ok(id);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Long> addComment(@PathVariable Long id) {
         UserDto user = adapter.getAuthUser();
-        service.deleteComment(id,user.getEmail());
+        service.deleteComment(id,user.getId());
         return ResponseEntity.ok(id);
     }
 }

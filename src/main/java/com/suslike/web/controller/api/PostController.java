@@ -1,7 +1,8 @@
-package kg.attractor.microgram.controller.api;
+package com.suslike.web.controller.api;
 
-import kg.attractor.microgram.dto.post.PostDto;
-import kg.attractor.microgram.service.PostService;
+import com.suslike.web.AuthAdapter;
+import com.suslike.web.dto.post.PostDto;
+import com.suslike.web.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
@@ -16,16 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/post")
 public class PostController {
     private final PostService service;
+    private final AuthAdapter adapter;
 
-
-    @GetMapping("/{postImage}")
+    @GetMapping("/image/{postImage}")
     public ResponseEntity<InputStreamResource> getPostImage(@PathVariable String postImage){
        return service.getPostImage(postImage);
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<PostDto> getPostsById(@PathVariable Long id){
-        return ResponseEntity.ok(service.getPostById(id));
+        return ResponseEntity.ok(service.getPostById(id, adapter.getAuthId()));
     }
     
     @DeleteMapping("{id}")

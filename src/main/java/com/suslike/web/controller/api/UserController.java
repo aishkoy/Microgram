@@ -1,10 +1,10 @@
-package kg.attractor.microgram.controller.api;
+package com.suslike.web.controller.api;
 
 
-import kg.attractor.microgram.AuthAdapter;
-import kg.attractor.microgram.dto.user.UserDto;
-import kg.attractor.microgram.dto.user.UserEditDto;
-import kg.attractor.microgram.service.UserService;
+import com.suslike.web.AuthAdapter;
+import com.suslike.web.dto.user.UserDto;
+import com.suslike.web.dto.user.UserEditDto;
+import com.suslike.web.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,24 +22,22 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final AuthAdapter authAdapter;
-    
-    
-    @PostMapping("")
+
+    @PostMapping()
     public HttpStatus editUser(UserEditDto edit) {
         userService.editUser(edit, authAdapter.getAuthUserName());
         return HttpStatus.OK;
     }
 
-    @GetMapping("/follower/{userUsername}")
-    public ResponseEntity<List<UserDto>> getAllFollowers(@PathVariable String userUsername){
-        List<UserDto> followers = userService.getAllFollowers(userUsername);
+    @GetMapping("/follower/{username}")
+    public ResponseEntity<List<UserDto>> getAllFollowers(@PathVariable String username){
+        List<UserDto> followers = userService.getAllFollowers(username);
         return ResponseEntity.ok(followers);
     }
 
-    @GetMapping("/followings/{userUsername}")
-    public ResponseEntity<List<UserDto>> getAllFollowings(@PathVariable String userUsername){
-
-        List<UserDto> followings = userService.getAllFollowings(userUsername);
+    @GetMapping("/followings/{username}")
+    public ResponseEntity<List<UserDto>> getAllFollowings(@PathVariable String username){
+        List<UserDto> followings = userService.getAllFollowings(username);
         return ResponseEntity.ok(followings);
     }
 }

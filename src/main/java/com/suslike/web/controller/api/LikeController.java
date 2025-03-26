@@ -1,7 +1,7 @@
-package kg.attractor.microgram.controller.api;
+package com.suslike.web.controller.api;
 
-import kg.attractor.microgram.dto.LikeDto;
-import kg.attractor.microgram.service.LikeService;
+import com.suslike.web.dto.LikeDto;
+import com.suslike.web.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,16 +30,5 @@ public class LikeController {
     public HttpStatus likePost (@RequestBody LikeDto likeDto) {
         likeService.create(likeDto);
         return HttpStatus.OK;
-    }
-
-    @GetMapping("isLiked")
-    public HttpStatus isPostLiked (@RequestBody LikeDto likeDto) {
-        List<LikeDto> likes = likeService.getAllLikesByPostId(likeDto.getPostId());
-        for (var like : likes) {
-            if (like.getLikerEmail().equals(likeDto.getLikerEmail())) {
-                return HttpStatus.OK;
-            }
-        }
-        return HttpStatus.NOT_FOUND;
     }
 }
