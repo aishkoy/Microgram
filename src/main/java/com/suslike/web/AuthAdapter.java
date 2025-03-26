@@ -1,7 +1,7 @@
-package kg.attractor.microgram;
+package com.suslike.web;
 
-import kg.attractor.microgram.dto.user.UserDto;
-import kg.attractor.microgram.service.UserService;
+import com.suslike.web.dto.user.UserDto;
+import com.suslike.web.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,10 +23,14 @@ public class AuthAdapter {
             throw new IllegalArgumentException("user not authorized");
         }
         String name = authentication.getName();
-        return service.getUserByEmail(name);
+        return service.getUserByUsername(name);
     }
     
     public String getAuthUserName() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    public Long getAuthId(){
+        return getAuthUser().getId();
     }
 }

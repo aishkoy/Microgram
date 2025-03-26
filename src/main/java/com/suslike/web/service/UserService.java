@@ -1,22 +1,19 @@
-package kg.attractor.microgram.service;
+package com.suslike.web.service;
 
-import kg.attractor.microgram.dao.UserDao;
-import kg.attractor.microgram.dto.user.UserAddDto;
-import kg.attractor.microgram.dto.user.UserDto;
-import kg.attractor.microgram.dto.user.UserEditDto;
-import kg.attractor.microgram.models.UserModel;
-import kg.attractor.microgram.util.FileUtil;
+import com.suslike.web.dao.UserDao;
+import com.suslike.web.dto.user.UserAddDto;
+import com.suslike.web.dto.user.UserDto;
+import com.suslike.web.dto.user.UserEditDto;
+import com.suslike.web.models.UserModel;
+import com.suslike.web.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -26,8 +23,8 @@ public class UserService {
     private final FileUtil util;
     private final PasswordEncoder passwordEncoder;
 
-    public UserDto getUserByEmail(String email){
-        UserModel userModel =  dao.getUserByEmail(email).orElseThrow(()->new NoSuchElementException("could not find user by email: "+email));
+    public UserDto getUserById(Long userId) {
+        UserModel userModel = dao.getUserById(userId).orElseThrow(() -> new NoSuchElementException("could not find user by id: " + userId));
         return getUserDto(userModel);
     }
 
@@ -36,8 +33,9 @@ public class UserService {
         return getUserDto(userModel);
     }
 
-    private UserDto getUserDto(UserModel u){
+    private UserDto getUserDto(UserModel u) {
         return UserDto.builder()
+                .id(u.getId())
                 .email(u.getEmail())
                 .name(u.getName())
                 .surname(u.getSurname())
@@ -65,51 +63,47 @@ public class UserService {
         return dao.getUserByEmail(email).isPresent();
     }
 
-    public void addUser(UserAddDto dto) throws Exception {
-        if (! userIsExist(dto.getEmail())) {
-            dao.createUser(UserModel.builder()
-                    .email(dto.getEmail())
-                    .username(dto.getUsername())
-                    .name(dto.getName())
-                    .surname(dto.getSurname())
-                    .avatar(null)
-                    .gender(dto.getGender())
-                    .password(passwordEncoder.encode(dto.getPassword()))
-                    .build());
+    public void addUser(UserAddDto dto){
+        if (Boolean.FALSE.equals(userIsExist(dto.getEmail()))) {
             try {
-                dao.addAuthority(dto.getEmail(), "USER");
-            } catch (IllegalArgumentException isae) {
-                throw new Exception("Account type not found");
+                Long userId = dao.createUser(UserModel.builder()
+                        .email(dto.getEmail())
+                        .username(dto.getUsername())
+                        .name(dto.getName())
+                        .surname(dto.getSurname())
+                        .avatar(null)
+                        .gender(dto.getGender())
+                        .password(passwordEncoder.encode(dto.getPassword()))
+                        .build());
+
+                dao.addAuthority(userId, "USER");
+            } catch (Exception e) {
+                log.error(e.getMessage());
             }
         } else throw new IllegalArgumentException("User already exists!");
-
-    }
-
-    public ResponseEntity<InputStreamResource> downloadImage(String name) {
-        return util.getOutputFile(name, "/images");
     }
 
     public List<UserDto> getAllFollowers(String username) {
-        return dao.getAllFollowers(getEmail(username)).stream().map(this :: getUserDto).collect(Collectors.toList());
+        return dao.getAllFollowers(getId(username)).stream().map(this::getUserDto).toList();
     }
 
     public List<UserDto> getAllFollowings(String username) {
-        return dao.getAllFollowings(getEmail(username)).stream().map(this :: getUserDto).collect(Collectors.toList());
+        return dao.getAllFollowings(getId(username)).stream().map(this::getUserDto).toList();
     }
 
-    private String getEmail(String username) {
+    private Long getId(String username) {
         return dao.getUserByUsername(username)
-                .map(UserModel :: getEmail)
-                .filter(e -> ! e.isEmpty())
-                .orElseThrow(IllegalArgumentException :: new);
+                .map(UserModel::getId)
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     public List<UserDto> searchByUsernameOrEmail(String search) {
-        return dao.searchByUsernameOrEmail(search).stream().map(this::getUserDto).collect(Collectors.toList());
+        return dao.searchByUsernameOrEmail(search).stream().map(this::getUserDto).toList();
     }
 
     public void addAvatar(MultipartFile avatar, String authUserName) {
-        if (dao.getUserByEmail(authUserName).isEmpty()) throw new NoSuchElementException("User not found: " + authUserName);
+        if (dao.searchByUsernameOrEmail(authUserName).isEmpty())
+            throw new NoSuchElementException("User not found: " + authUserName);
 
         long maxFileSizeBytes = 3 * 1024 * 1024;
         if (avatar.getSize() > maxFileSizeBytes)
@@ -117,7 +111,7 @@ public class UserService {
 
         String fileName = util.saveUploadedFile(avatar, "img");
 
-        dao.saveAvatar(fileName, authUserName);
+        dao.saveAvatar(fileName, getId(authUserName));
 
         log.info("Avatar saved for user: {}", authUserName);
     }

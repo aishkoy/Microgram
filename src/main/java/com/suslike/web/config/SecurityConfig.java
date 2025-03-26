@@ -1,6 +1,7 @@
-package kg.attractor.microgram.config;
+package com.suslike.web.config;
 
-import kg.attractor.microgram.service.AuthUserDetailsService;
+import com.suslike.web.service.AuthUserDetailsService;
+import com.suslike.web.service.RedirectIfAuthenticatedFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -27,12 +29,10 @@ import javax.sql.DataSource;
 public class SecurityConfig {
     private final DataSource dataSource;
     private final PasswordEncoder encoder;
-
     @Bean
     public UserDetailsService userDetailsService(){
         return new AuthUserDetailsService();
     }
-
     @Bean
     public DaoAuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
@@ -55,9 +55,9 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/user")
+                        .defaultSuccessUrl("/")
                         .failureUrl("/login?error=true")
-                        .permitAll())
+                        .permitAll()).addFilterBefore(new RedirectIfAuthenticatedFilter(), UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .permitAll())
@@ -74,18 +74,17 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().hasAnyAuthority("USER", "ADMIN")
                 ).rememberMe(remember -> remember
-                .key("someSecretKey")
                                 .tokenValiditySeconds(7 * 24 * 60 * 60)
                                 .userDetailsService(userDetailsService())
-//                                .tokenRepository(persistentTokenRepository())
+                                .tokenRepository(persistentTokenRepository())
                 );
         return http.build();
     }
 
-//    @Bean
-//    public PersistentTokenRepository persistentTokenRepository() {
-//        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
-//        tokenRepository.setDataSource(dataSource);
-//        return tokenRepository;
-//    }
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        return tokenRepository;
+    }
 }
