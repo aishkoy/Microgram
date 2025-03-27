@@ -39,7 +39,7 @@
                             <#if user.avatar?? && user.avatar != "">
                                 <img alt="${user.username}"
                                      class="rounded-full h-12 w-12 object-cover border border-gray-300 shadow-sm"
-                                     src="/api/post/image/${user.avatar}">
+                                     src="/api/posts/image/${user.avatar}">
                             <#else>
                                 <div class="flex items-center justify-center rounded-full bg-gray-200 h-12 w-12 border border-gray-300">
                                     <i data-lucide="user" class="text-gray-500"></i>

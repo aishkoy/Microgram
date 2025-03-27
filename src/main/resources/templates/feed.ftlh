@@ -40,7 +40,7 @@
                         ">
                         <a href="/@${post.owner.username}" class="inline-flex items-center justify-center text-gray-900">
                             <#if post.owner.avatar??>
-                                <img src="/api/post/image/${post.owner.avatar}"
+                                <img src="/api/posts/image/${post.owner.avatar}"
                                      alt="${post.owner.username}'s avatar"
                                      class="w-10 h-10 rounded-full mr-3 object-cover cursor-pointer" />
                             <#else>
@@ -49,14 +49,17 @@
                                 </div>
                             </#if>
                             <span class="text-gray-600">@${post.owner.username}</span>
-                            <span class="text-gray-400 ml-auto text-sm">${post.postedTime}</span>
+                            <span class="text-gray-400 ml-auto text-sm flex items-center">
+                                <i data-lucide="clock" class="w-3.5 h-3.5 mr-1"></i>
+                                ${post.postedTime.dayOfMonth}.${post.postedTime.monthValue}.${post.postedTime.year} ${post.postedTime.hour}:${post.postedTime.minute?string("00")}
+                            </span>
                         </a>
 
                         <#if post.image??>
-                            <img src="/api/post/image/${post.image}"
+                            <img src="/api/posts/image/${post.image}"
                                  alt="${post.content}"
                                  class="w-full h-60 object-cover rounded-lg my-3 cursor-pointer"
-                                 onclick="window.location.href='/${post.id}'" />
+                                 onclick="window.location.href='/posts/${post.id}'" />
                         </#if>
 
                         <p class="mt-2">${post.content}</p>

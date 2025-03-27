@@ -4,7 +4,7 @@ async function likePost(event, userId, postId) {
     const heartIcon = event.currentTarget.querySelector('[data-lucide="heart"]');
 
     try {
-        const response = await fetch('/api/like/like', {
+        const response = await fetch('/api/likes/like', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

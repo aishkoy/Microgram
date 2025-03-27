@@ -6,7 +6,7 @@ const commentBox = document.getElementById('commentBox');
 async function fetchComment(commentId) {
     try {
         console.log(commentId)
-        const response = await fetch(`/api/comment/${commentId}`)
+        const response = await fetch(`/api/comments/${commentId}`)
         const comment = await response.json();
         displayComments(comment);
     } catch (error) {
@@ -19,7 +19,7 @@ async function sendComment() {
     const comment = commentInput.value;
 
     try {
-        const urlFetch = await fetch(`/api/comment`, {
+        const urlFetch = await fetch(`/api/comments`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -80,7 +80,7 @@ function displayComments(comment) {
 async function deleteComment(id) {
     const cardWithCommentId = document.getElementById(id)
     try {
-        const urlFetch = await fetch(`/api/comment/${id}`, {
+        const urlFetch = await fetch(`/api/comments/${id}`, {
             method: 'DELETE',
         });
         if (urlFetch.ok) {

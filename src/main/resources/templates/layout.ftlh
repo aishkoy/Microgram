@@ -1,6 +1,6 @@
 <#macro layout>
     <!DOCTYPE html>
-    <html lang="en" class="light">
+    <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -8,18 +8,51 @@
         <title>Suslike</title>
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
-        <script>
-            // Check for saved theme preference or respect OS preference
-            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-                document.documentElement.classList.remove('light');
-            } else {
-                document.documentElement.classList.add('light');
-                document.documentElement.classList.remove('dark');
+        <style>
+            .nav-icon {
+                width: 28px;
+                height: 28px;
+                stroke-width: 1.5;
+                color: #6b7280;
+                transition: color 0.2s, transform 0.2s;
             }
-        </script>
+
+            .nav-icon:hover, .active-nav .nav-icon {
+                color: #d97706;
+                transform: scale(1.1);
+            }
+
+            .content-with-sidebar {
+                margin-left: 80px;
+                width: calc(100% - 80px);
+            }
+
+            @media (max-width: 640px) {
+                .nav-sidebar {
+                    width: 100%;
+                    height: auto;
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    z-index: 50;
+                }
+
+                .nav-sidebar ul {
+                    flex-direction: row;
+                    justify-content: space-around;
+                    width: 100%;
+                    padding: 0.5rem;
+                }
+
+                .content-with-sidebar {
+                    margin-left: 0;
+                    width: 100%;
+                    padding-bottom: 60px;
+                }
+            }
+        </style>
     </head>
-    <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-300">
+    <body class="bg-gray-50 text-gray-900 min-h-screen">
     <#-- Check if user is logged in -->
     <#assign known = SPRING_SECURITY_CONTEXT??>
     <#if known>
@@ -34,95 +67,54 @@
         <#assign myProfileUrl = "/login">
     </#if>
 
-
-    <!-- Navigation Sidebar - Desktop -->
-    <nav class="fixed left-0 top-0 w-20 h-screen bg-white dark:bg-gray-800 shadow-sm dark:shadow-gray-700 border-r border-gray-200 dark:border-gray-700 flex flex-col items-center py-6 z-50 transition-colors duration-300 sm:block hidden">
-        <div class="flex flex-col items-center h-full w-full">
-            <!-- Top Logo Area -->
-            <div class="mb-8">
-                <a href="/" class="text-xl font-bold">
-                    S
-                </a>
-            </div>
-
-            <!-- Main Navigation -->
-            <ul class="flex flex-col gap-8 flex-1">
-                <li>
-                    <a href="/" class="flex justify-center p-2 hover:scale-110 transition-transform duration-200">
-                        <i data-lucide="home" class="w-7 h-7 stroke-[1.5px] text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200"></i>
-                    </a>
-                </li>
-                <li>
-                    <a href="/search" class="flex justify-center p-2 hover:scale-110 transition-transform duration-200">
-                        <i data-lucide="search" class="w-7 h-7 stroke-[1.5px] text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200"></i>
-                    </a>
-                </li>
-                <li>
-                    <a href="/posts" class="flex justify-center p-2 hover:scale-110 transition-transform duration-200">
-                        <i data-lucide="plus-circle" class="w-7 h-7 stroke-[1.5px] text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200"></i>
-                    </a>
-                </li>
-                <li>
-                    <a href="posts/favorites" class="flex justify-center p-2 hover:scale-110 transition-transform duration-200">
-                        <i data-lucide="heart" class="w-7 h-7 stroke-[1.5px] text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200"></i>
-                    </a>
-                </li>
-                <li>
-                    <a href="${myProfileUrl}" class="flex justify-center p-2 hover:scale-110 transition-transform duration-200">
-                        <i data-lucide="user" class="w-7 h-7 stroke-[1.5px] text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors duration-200"></i>
-                    </a>
-                </li>
-            </ul>
-
-            <!-- Theme Switcher -->
-            <div class="mt-auto">
-                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
-                    <i data-lucide="sun" class="w-7 h-7 stroke-[1.5px] text-gray-500 dark:text-gray-400 hidden dark:block" id="dark-icon"></i>
-                    <i data-lucide="moon" class="w-7 h-7 stroke-[1.5px] text-gray-500 dark:text-gray-400 block dark:hidden" id="light-icon"></i>
-                </button>
-            </div>
+    <!-- Navigation Sidebar -->
+    <nav class="nav-sidebar w-20 h-screen bg-white shadow-sm fixed left-0 top-0 flex flex-col items-center justify-center py-6 border-r border-gray-200">
+        <div class="absolute top-6">
+            <a href="/" class="text-xl font-bold text-amber-600">
+                S
+            </a>
         </div>
-    </nav>
 
-    <!-- Navigation Bottom Bar - Mobile -->
-    <nav class="fixed bottom-0 left-0 w-full bg-white dark:bg-gray-800 shadow-sm dark:shadow-gray-700 border-t border-gray-200 dark:border-gray-700 py-3 px-4 z-50 transition-colors duration-300 sm:hidden block">
-        <ul class="flex justify-around items-center">
+        <ul class="flex flex-col gap-8">
             <li>
-                <a href="/" class="flex justify-center p-2">
-                    <i data-lucide="home" class="w-6 h-6 stroke-[1.5px] text-gray-500 dark:text-gray-400"></i>
+                <a href="/">
+                    <i data-lucide="home" class="nav-icon"></i>
                 </a>
             </li>
             <li>
-                <a href="/search" class="flex justify-center p-2">
-                    <i data-lucide="search" class="w-6 h-6 stroke-[1.5px] text-gray-500 dark:text-gray-400"></i>
+                <a href="/search">
+                    <i data-lucide="search" class="nav-icon"></i>
                 </a>
             </li>
             <li>
-                <a href="/posts" class="flex justify-center p-2">
-                    <i data-lucide="plus-circle" class="w-6 h-6 stroke-[1.5px] text-gray-500 dark:text-gray-400"></i>
+                <a href="/posts">
+                    <i data-lucide="plus-circle" class="nav-icon"></i>
                 </a>
             </li>
             <li>
-                <a href="/posts/favorites" class="flex justify-center p-2">
-                    <i data-lucide="heart" class="w-6 h-6 stroke-[1.5px] text-gray-500 dark:text-gray-400"></i>
+                <a href="/posts/favorites">
+                    <i data-lucide="heart" class="nav-icon"></i>
                 </a>
             </li>
             <li>
-                <a href="${myProfileUrl}" class="flex justify-center p-2">
-                    <i data-lucide="user" class="w-6 h-6 stroke-[1.5px] text-gray-500 dark:text-gray-400"></i>
+                <a href="${myProfileUrl}">
+                    <i data-lucide="user" class="nav-icon"></i>
                 </a>
-            </li>
-            <li>
-                <button id="mobile-theme-toggle" class="p-2 flex justify-center">
-                    <i data-lucide="sun" class="w-6 h-6 stroke-[1.5px] text-gray-500 dark:text-gray-400 hidden dark:block"></i>
-                    <i data-lucide="moon" class="w-6 h-6 stroke-[1.5px] text-gray-500 dark:text-gray-400 block dark:hidden"></i>
-                </button>
             </li>
         </ul>
+
+        <div class="absolute bottom-6">
+            <form action="/logout" method="post">
+                <button type="submit" class="flex items-center justify-center">
+                    <i data-lucide="log-out" class="nav-icon"></i>
+                </button>
+            </form>
+        </div>
+
     </nav>
 
     <!-- Main Content -->
-    <div class="sm:ml-20 sm:w-[calc(100%-5rem)] w-full pb-16 sm:pb-0 transition-all duration-300">
+    <div class="content-with-sidebar">
         <main class="container mx-auto px-4 py-5">
             <#nested>
         </main>
@@ -131,42 +123,36 @@
     <script>
         lucide.createIcons();
 
-        function toggleTheme() {
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark');
-                document.documentElement.classList.add('light');
-                localStorage.theme = 'light';
-            } else {
-                document.documentElement.classList.remove('light');
-                document.documentElement.classList.add('dark');
-                localStorage.theme = 'dark';
-            }
-
-            // Refresh icons to update theme
-            lucide.createIcons();
-        }
-
-        // Add event listeners to both desktop and mobile toggle buttons
-        document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
-        document.getElementById('mobile-theme-toggle').addEventListener('click', toggleTheme);
-
-        // Mark active links
         document.addEventListener('DOMContentLoaded', function() {
             const currentPath = window.location.pathname;
             const navLinks = document.querySelectorAll('nav a');
 
-            navLinks.forEach(link => {
+            const sortedLinks = Array.from(navLinks).sort((a, b) => {
+                return b.getAttribute('href').length - a.getAttribute('href').length;
+            });
+
+            let bestMatch = null;
+            let bestMatchLength = -1;
+
+            sortedLinks.forEach(link => {
                 const href = link.getAttribute('href');
-                if (currentPath === href ||
-                    (href !== '/' && currentPath.startsWith(href))) {
-                    // Add active classes with Tailwind
-                    const icon = link.querySelector('i');
-                    if (icon) {
-                        icon.classList.add('text-gray-900', 'dark:text-white');
-                        icon.classList.remove('text-gray-500', 'dark:text-gray-400');
-                    }
+
+                if (currentPath === href) {
+                    bestMatch = link;
+                    bestMatchLength = href.length;
+                }
+                else if (href !== '/' &&
+                    currentPath.startsWith(href) &&
+                    (currentPath.length === href.length || currentPath[href.length] === '/') &&
+                    href.length > bestMatchLength) {
+                    bestMatch = link;
+                    bestMatchLength = href.length;
                 }
             });
+
+            if (bestMatch) {
+                bestMatch.classList.add('active-nav');
+            }
         });
     </script>
     </body>

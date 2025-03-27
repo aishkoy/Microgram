@@ -8,7 +8,13 @@
             </h2>
 
             <form method="POST" enctype="multipart/form-data" action="/posts" class="space-y-6">
-                <!-- File Upload Field -->
+                <div class="text-sm text-gray-600 bg-gray-50 p-3 rounded-md border border-gray-200">
+                    <p class="flex items-center gap-2">
+                        <i data-lucide="info" class="text-amber-500 w-4 h-4"></i>
+                        Please provide either an image, text content, or both.
+                    </p>
+                </div>
+
                 <div class="space-y-2">
                     <label for="mFile" class="block text-sm font-medium text-gray-700 flex items-center gap-2">
                         <i data-lucide="upload" class="text-gray-500"></i>
@@ -18,10 +24,8 @@
                            class="hidden"
                            id="mFile"
                            name="mFile"
-                           onchange="previewImage(this, {
-           previewContainerId: 'filePreview',
-           previewImageId: 'previewImage'
-       })">
+                           onchange="document.getElementById('filePreview').classList.remove('hidden'); document.getElementById('previewImage').src = window.URL.createObjectURL(this.files[0]);"
+                    >
                     <label for="mFile" class="cursor-pointer block w-full px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md bg-amber-50 hover:bg-amber-100 transition-colors flex items-center gap-2">
                         <i data-lucide="image" class="text-gray-500"></i>
                         Choose a file
@@ -55,6 +59,18 @@
             </form>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                const fileInput = document.getElementById('mFile');
+                const contentInput = document.getElementById('content');
 
-    <script src="/js/imagePreview.js"></script>
+                if (fileInput.files.length === 0 && contentInput.value.trim() === '') {
+                    event.preventDefault();
+                    alert('Пожалуйста, добавьте либо изображение, либо текст, либо оба.');
+                }
+            });
+        });
+    </script>
 </@main.layout>

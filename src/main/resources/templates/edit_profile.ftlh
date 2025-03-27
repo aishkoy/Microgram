@@ -10,12 +10,12 @@
                 <h2 class="text-xl font-medium mb-4">Profile Picture</h2>
 
                 <div class="flex flex-col md:flex-row items-center gap-6">
-                    <div class="w-32 h-32 rounded-full border border-gray-300 overflow-hidden flex items-center justify-center bg-gray-100">
+                    <div class="w-32 h-32 rounded-full border border-gray-300 overflow-hidden flex items-center justify-center bg-gray-100" id="avatarPreviewContainer">
                         <#if profile.avatar??>
-                            <img src="/api/post/image/${profile.avatar}" alt="Current avatar"
-                                 class="w-full h-full object-cover"/>
+                            <img src="/api/posts/image/${profile.avatar}" alt="Current avatar"
+                                 class="w-full h-full object-cover" id="avatarPreview"/>
                         <#else>
-                            <i data-lucide="user" class="w-16 h-16 text-gray-400"></i>
+                            <i data-lucide="user" class="w-16 h-16 text-gray-400" id="avatarPlaceholder"></i>
                         </#if>
                     </div>
 
@@ -30,9 +30,15 @@
                                         name="avatar"
                                         accept="image/jpeg,image/png,image/jpg"
                                         class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        onchange="previewImage(this, {
-                                        previewContainerSelector: '.rounded-full',
-                                        iconSelector: '[data-lucide=\"user\"]'})"
+                                        onchange="if(this.files[0]) {
+                                            document.getElementById('avatarPlaceholder')?.remove();
+                                            const preview = document.getElementById('avatarPreview') || document.createElement('img');
+                                            preview.id = 'avatarPreview';
+                                            preview.className = 'w-full h-full object-cover';
+                                            preview.alt = 'Profile preview';
+                                            preview.src = window.URL.createObjectURL(this.files[0]);
+                                            document.getElementById('avatarPreviewContainer').appendChild(preview);
+                                        }"
                                 />
                             </div>
 
@@ -135,6 +141,4 @@
             </div>
         </div>
     </div>
-
-    <script src="/js/imagePreview.js"></script>
 </@l.layout>

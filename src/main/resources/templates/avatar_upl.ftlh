@@ -7,7 +7,7 @@
                 Upload Avatar
             </h2>
 
-            <form action="/profile/upload" method="post" enctype="multipart/form-data" class="space-y-6">
+            <form action="/profile/avatar" method="post" enctype="multipart/form-data" class="space-y-6">
                 <!-- File Upload Field -->
                 <div class="space-y-2">
                     <label for="avatar" class="block text-sm font-medium text-gray-700 flex items-center gap-2">
@@ -18,10 +18,8 @@
                            class="hidden"
                            id="avatar"
                            name="avatar"
-                           onchange="previewImage(this, {
-                               previewContainerId: 'filePreview',
-                               previewImageId: 'previewImage'
-                           })">
+                           onchange="document.getElementById('filePreview').classList.remove('hidden'); document.getElementById('previewImage').src = window.URL.createObjectURL(this.files[0]);"
+                    >
                     <label for="avatar"
                            class="cursor-pointer block w-full px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md bg-amber-50 hover:bg-amber-100 transition-colors flex items-center gap-2">
                         <i data-lucide="image" class="text-gray-500"></i>
@@ -62,6 +60,4 @@
             </form>
         </div>
     </div>
-
-    <script src="/js/imagePreview.js"></script>
 </@main.layout>

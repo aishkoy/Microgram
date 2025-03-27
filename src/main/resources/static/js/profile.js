@@ -1,5 +1,5 @@
 async function openModal(id, postId) {
-    const response = await fetch(`api/post/` + postId)
+    const response = await fetch(`api/posts/` + postId)
     const dataPost = await response.json()
 
     let right = document.getElementById('right')
@@ -18,7 +18,7 @@ async function openModal(id, postId) {
     right.appendChild(content)
     right.appendChild(dateOfAdding)
 
-    const responseComments = await fetch(`/api/comment/${dataPost.id}`);
+    const responseComments = await fetch(`/api/comments/${dataPost.id}`);
     const dataComments = await responseComments.json();
     console.log(dataComments);
 
@@ -56,8 +56,8 @@ window.onload = async function () {
         const likeCountElement = item.querySelector('.like-count');
         const commentCountElement = item.querySelector('.comment-count');
 
-        const likeResponse = await fetch(`/api/like/` + postId);
-        const commentResponse = await fetch(`/api/comment/` + postId);
+        const likeResponse = await fetch(`/api/likes/` + postId);
+        const commentResponse = await fetch(`/api/comments/` + postId);
         const likeData = await likeResponse.json();
         const commentData = await commentResponse.json();
         if (likeData.length > 0) {

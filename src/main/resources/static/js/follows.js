@@ -53,7 +53,7 @@ function setupFollowButtons(currentUserId, profileUserId) {
 
 async function fetchFollowCounts(userId) {
     try {
-        const response = await fetch(`/api/follows/count/${userId}`);
+        const response = await fetch(`/api/follows/${userId}`);
         if (!response.ok) {
             throw new Error('Failed to fetch follow counts');
         }
@@ -72,14 +72,14 @@ async function fetchFollowCounts(userId) {
 async function loadFollowLists(username) {
     try {
         // Fetch followers
-        const followersResponse = await fetch(`/api/user/follower/${username}`);
+        const followersResponse = await fetch(`/api/users/${username}/followers`);
         if (!followersResponse.ok) {
             throw new Error('Failed to fetch followers');
         }
         const followers = await followersResponse.json();
 
         // Fetch following
-        const followingResponse = await fetch(`/api/user/followings/${username}`);
+        const followingResponse = await fetch(`/api/users/${username}/followings`);
         if (!followingResponse.ok) {
             throw new Error('Failed to fetch following');
         }
@@ -107,7 +107,7 @@ function updateFollowersModal(followers) {
 
     modalContent.innerHTML = followers.map(user => {
         const avatar = user.avatar
-            ? `<img src="/api/post/image/${user.avatar}" alt="${user.username}'s avatar" class="w-10 h-10 rounded-full object-cover">`
+            ? `<img src="/api/posts/image/${user.avatar}" alt="${user.username}'s avatar" class="w-10 h-10 rounded-full object-cover">`
             : `<div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
                  <i data-lucide="user" class="w-6 h-6 text-gray-400"></i>
                </div>`;
@@ -137,7 +137,7 @@ function updateFollowingModal(following) {
 
     modalContent.innerHTML = following.map(user => {
         const avatar = user.avatar
-            ? `<img src="/api/post/image/${user.avatar}" alt="${user.username}'s avatar" class="w-10 h-10 rounded-full object-cover">`
+            ? `<img src="/api/posts/image/${user.avatar}" alt="${user.username}'s avatar" class="w-10 h-10 rounded-full object-cover">`
             : `<div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
                  <i data-lucide="user" class="w-6 h-6 text-gray-400"></i>
                </div>`;
