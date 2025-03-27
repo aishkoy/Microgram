@@ -25,7 +25,7 @@ public class FollowController {
 		followService.deleteFollow(dto);
 	}
 
-	@GetMapping("/count/{userId}")
+	@GetMapping("/{userId}")
 	public ResponseEntity<Map<String, Integer>> getFollowCounts(@PathVariable Long userId) {
 		Map<String, Integer> counts = new HashMap<>();
 		counts.put("followers", followService.getFollowersCount(userId));

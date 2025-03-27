@@ -69,8 +69,7 @@ public class SecurityConfig {
                                 "/login/**",
                                 "/logout",
                                 "/register",
-                                "/register/**",
-                                "/api/post/get/**"
+                                "/register/**"
                         ).permitAll()
                         .anyRequest().hasAnyAuthority("USER", "ADMIN")
                 ).rememberMe(remember -> remember

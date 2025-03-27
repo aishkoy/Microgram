@@ -59,28 +59,22 @@ public class UserService {
         dao.editUser(user);
     }
 
-    public Boolean userIsExist(String email) {
-        return dao.getUserByEmail(email).isPresent();
-    }
+    public void addUser(UserAddDto dto) {
+        try {
+            Long userId = dao.createUser(UserModel.builder()
+                    .email(dto.getEmail())
+                    .username(dto.getUsername())
+                    .name(dto.getName())
+                    .surname(dto.getSurname())
+                    .avatar(null)
+                    .gender(dto.getGender())
+                    .password(passwordEncoder.encode(dto.getPassword()))
+                    .build());
 
-    public void addUser(UserAddDto dto){
-        if (Boolean.FALSE.equals(userIsExist(dto.getEmail()))) {
-            try {
-                Long userId = dao.createUser(UserModel.builder()
-                        .email(dto.getEmail())
-                        .username(dto.getUsername())
-                        .name(dto.getName())
-                        .surname(dto.getSurname())
-                        .avatar(null)
-                        .gender(dto.getGender())
-                        .password(passwordEncoder.encode(dto.getPassword()))
-                        .build());
-
-                dao.addAuthority(userId, "USER");
-            } catch (Exception e) {
-                log.error(e.getMessage());
-            }
-        } else throw new IllegalArgumentException("User already exists!");
+            dao.addAuthority(userId, "USER");
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 
     public List<UserDto> getAllFollowers(String username) {

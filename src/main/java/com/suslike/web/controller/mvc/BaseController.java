@@ -13,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -54,15 +51,17 @@ public class BaseController {
     }
 
     @GetMapping("/search")
-    public String searchPage() {
+    public String searchPage(@RequestParam(value = "query", required = false) String search, Model model) {
+        if (search != null && !search.isEmpty()) {
+            List<UserDto> results = userService.searchByUsernameOrEmail(search);
+            model.addAttribute("results", results);
+        }
         return "search";
     }
 
     @PostMapping("/search")
-    public String searchByUsernameOrEmail(String search, Model model) {
-        List<UserDto> results = userService.searchByUsernameOrEmail(search);
-        model.addAttribute("results", results);
-        return "search";
+    public String searchByUsernameOrEmail(String search) {
+        return "redirect:/search?query=" + search;
     }
 
     @GetMapping("/@{username}")

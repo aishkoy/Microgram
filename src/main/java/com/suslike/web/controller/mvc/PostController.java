@@ -2,12 +2,15 @@ package com.suslike.web.controller.mvc;
 
 import com.suslike.web.AuthAdapter;
 import com.suslike.web.dto.comments.CommentDto;
+import com.suslike.web.dto.post.PostAddDto;
 import com.suslike.web.dto.post.PostDto;
 import com.suslike.web.service.CommentService;
 import com.suslike.web.service.PostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,20 +33,22 @@ public class PostController {
 	}
 
 	@PostMapping()
-	public String post(String content, MultipartFile mFile) {
+	public String post(@Valid PostAddDto postAddDto, BindingResult bindingResult, MultipartFile mFile) {
+		if (bindingResult.hasErrors()) {
+			return "post";
+		}
+
 		Long owner = adapter.getAuthUser().getId();
-		postService.addPost(content, mFile, owner);
+		postService.addPost(postAddDto.getContent(), mFile, owner);
 		return "redirect:/@" + adapter.getAuthUserName();
 	}
 
 	@GetMapping("{id}")
 	public String getPostsById(@PathVariable Long id, Model model){
-		String email = adapter.getAuthUserName();
 		PostDto post = postService.getPostById(id, adapter.getAuthId());
 		List<CommentDto> comments = commentService.getCommentsByPostId(id);
 		model.addAttribute("post",post);
 		model.addAttribute("comments",comments);
-		model.addAttribute("authEmail",email);
 		model.addAttribute("authorizedUserId", adapter.getAuthId());
 		return "postPage";
 	}

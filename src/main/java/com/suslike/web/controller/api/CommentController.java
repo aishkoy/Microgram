@@ -13,12 +13,12 @@ import java.util.List;
 
 @RestController("restComment")
 @RequiredArgsConstructor
-@RequestMapping("api/comment")
+@RequestMapping("api/comments")
 public class CommentController {
     private final CommentService service;
     private final AuthAdapter adapter;
 
-    @GetMapping("/post/{postId}")
+    @GetMapping("/posts/{postId}")
     public ResponseEntity<List<CommentDto>> getAllCommentsByPostId(@PathVariable Long postId) {
         return ResponseEntity.ok(service.getCommentsByPostId(postId));
     }

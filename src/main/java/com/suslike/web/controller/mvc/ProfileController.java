@@ -24,7 +24,7 @@ public class ProfileController {
     @PostMapping("avatar")
     public String uploadProfileAvatar(MultipartFile avatar) {
         userService.addAvatar(avatar, adapter.getAuthUserName());
-        return "redirect:/user";
+        return "redirect:/@" + adapter.getAuthUserName();
     }
     
     @GetMapping()
@@ -36,7 +36,7 @@ public class ProfileController {
     @PostMapping()
     public String editProfile(UserEditDto user) {
         userService.editUser(user, adapter.getAuthUserName());
-        return "redirect:/user";
+        return "redirect:/@" + adapter.getAuthUserName();
     }
 
 }

@@ -13,7 +13,6 @@
     <div class="w-full max-w-md">
         <div class="bg-white rounded-lg shadow-md p-8">
             <h2 class="text-2xl font-bold text-center mb-6">Вход в Suslike</h2>
-
             <form action="/login" method="post" class="space-y-6">
                 <div>
                     <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Email или имя пользователя</label>

@@ -14,20 +14,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserAddDto {
-	@Email(message = "Enter email")
-	@NotBlank
+	@Email(message = "Enter valid email")
+	@NotBlank(message = "Email is required")
 	private String email;
-	
+
 	private String gender;
 	private String name;
 	private String surname;
-	
-	@NotBlank
+
+	@NotBlank(message = "Username is required")
 	@Pattern(regexp = "^[a-zA-Z0-9_-]{3,16}$",
 			message = "Username must be between 3 and 16 characters" +
 					" and can contain only letters, numbers, underscores, and hyphens")
 	private String username;
-	@NotBlank
+
+	@NotBlank(message = "Password is required")
 	@Size(min = 4, max = 24, message = "Length must be >= 4 and <= 24")
 	@Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).+$",
 			message = "Should contain at least one uppercase letter, one number")

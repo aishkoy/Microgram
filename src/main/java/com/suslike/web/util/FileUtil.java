@@ -20,15 +20,20 @@ import java.util.UUID;
 @Slf4j
 public class FileUtil {
 	private static final String UPLOAD_DIR = "data/";
-	
+
 	@SneakyThrows
 	public String saveUploadedFile(MultipartFile file, String subDir) {
+		if (file == null || file.isEmpty()) {
+			log.info("Empty or null file received, not saving");
+			return null;
+		}
+
 		String uuidFile = UUID.randomUUID().toString();
 		String resultFileName = uuidFile + "_" + file.getOriginalFilename();
-		
+
 		Path pathDir = Paths.get(UPLOAD_DIR + subDir);
 		Files.createDirectories(pathDir);
-		
+
 		Path filePath = Paths.get(pathDir + "/" + resultFileName);
 		if (! Files.exists(filePath)) {
 			Files.createFile(filePath);
@@ -37,11 +42,17 @@ public class FileUtil {
 			os.write(file.getBytes());
 		} catch (IOException e) {
 			log.error(e.getMessage());
+			return null;
 		}
 		return resultFileName;
 	}
 
 	public ResponseEntity<InputStreamResource> getOutputFile(String fileName, String subDir) {
+		if (fileName == null) {
+			log.info("Null filename passed to getOutputFile");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+
 		try {
 			Path path = Paths.get(UPLOAD_DIR + subDir + "/" + fileName);
 			InputStreamResource resource = new InputStreamResource(Files.newInputStream(path));

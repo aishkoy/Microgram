@@ -32,7 +32,10 @@ public class PostService {
     }
 
     public void addPost(String content, MultipartFile mFile, Long id) {
-        String imgPath = fileUtil.saveUploadedFile(mFile, "img");
+        String imgPath = null;
+        if (mFile != null && !mFile.isEmpty()) {
+            imgPath = fileUtil.saveUploadedFile(mFile, "img");
+        }
 
         postDao.addPost(
                 Post.builder()
