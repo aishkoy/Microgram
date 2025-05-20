@@ -1,0 +1,42 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: instagram
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+  h2:
+    console:
+      enabled: true
+
+  output:
+    ansi:
+      enabled: always
+
+  security:
+    user:
+      name: email
+      password: password
+
+  freemarker:
+    expose-session-attributes: true
+  mvc:
+    static-path-pattern: /static/**
+
+logging:
+  level:
+    root: info
+    org:
+      springframework:
+        security: debug
+
+  file:
+    name: logs/spring.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 7
