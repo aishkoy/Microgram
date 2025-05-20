@@ -2,7 +2,7 @@ package kg.attractor.instagram.dto.user;
 
 import jakarta.validation.constraints.*;
 import kg.attractor.instagram.validation.annotation.UniqueEmail;
-import kg.attractor.instagram.validation.annotation.ValidUserByRole;
+import kg.attractor.instagram.validation.annotation.UniqueUsername;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -28,7 +28,7 @@ public class CreateUserDto extends UserDto {
     String username;
 
     @NotBlank
-    @Size(min = 8, max = 20")
+    @Size(min = 8, max = 20)
     @Pattern(
             regexp = "^(?=.*[A-Za-zА-Яа-я])(?=.*\\d)[A-Za-zА-Яа-я\\d@#$%^&+=!]{8,}$")
     String password;
