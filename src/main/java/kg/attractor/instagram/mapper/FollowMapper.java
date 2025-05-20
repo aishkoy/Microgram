@@ -1,8 +1,8 @@
 package kg.attractor.instagram.mapper;
 
 import kg.attractor.instagram.dto.FollowDto;
-import kg.attractor.instagram.enitity.Follow;
-import kg.attractor.instagram.enitity.FollowId;
+import kg.attractor.instagram.entity.Follow;
+import kg.attractor.instagram.entity.FollowId;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

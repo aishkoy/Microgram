@@ -1,8 +1,8 @@
 package kg.attractor.instagram.mapper;
 
 import kg.attractor.instagram.dto.LikeDto;
-import kg.attractor.instagram.enitity.Like;
-import kg.attractor.instagram.enitity.LikeId;
+import kg.attractor.instagram.entity.Like;
+import kg.attractor.instagram.entity.LikeId;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

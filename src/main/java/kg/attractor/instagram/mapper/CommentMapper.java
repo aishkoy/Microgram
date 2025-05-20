@@ -1,7 +1,7 @@
 package kg.attractor.instagram.mapper;
 
 import kg.attractor.instagram.dto.CommentDto;
-import kg.attractor.instagram.enitity.Comment;
+import kg.attractor.instagram.entity.Comment;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

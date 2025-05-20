@@ -1,7 +1,7 @@
 package kg.attractor.instagram.mapper;
 
 import kg.attractor.instagram.dto.PostDto;
-import kg.attractor.instagram.enitity.Post;
+import kg.attractor.instagram.entity.Post;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

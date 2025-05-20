@@ -1,4 +1,4 @@
-package kg.attractor.instagram.enitity;
+package kg.attractor.instagram.entity;
 
 
 import jakarta.persistence.*;

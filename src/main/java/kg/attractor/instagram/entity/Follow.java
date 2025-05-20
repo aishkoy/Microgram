@@ -1,4 +1,4 @@
-package kg.attractor.instagram.enitity;
+package kg.attractor.instagram.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,18 +12,18 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 @Entity
-@Table(name = "likes")
-public class Like {
+@Table(name = "follows")
+public class Follow {
     @EmbeddedId
-    LikeId id;
+    FollowId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id",
+    @JoinColumn(name = "follower_id",
             nullable = false)
-    Post post;
+    User follower;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id",
+    @JoinColumn(name = "following_id",
             nullable = false)
-    User user;
+    User following;
 }
