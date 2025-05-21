@@ -1,8 +1,7 @@
 package kg.attractor.instagram.dto.user;
 
 import jakarta.validation.constraints.*;
-import kg.attractor.instagram.dto.RoleDto;
-import kg.attractor.instagram.entity.RoleType;
+import kg.attractor.instagram.entity.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -22,7 +21,6 @@ public class UserDto {
     @Size(max = 55)
     String name;
 
-    @Pattern(regexp = "^[A-Za-zА-Яа-яЁё-]+$")
     @Size(max = 55)
     String surname;
 
@@ -44,5 +42,5 @@ public class UserDto {
     @Builder.Default
     Boolean enabled = true;
 
-    RoleType role;
+    Role role;
 }
