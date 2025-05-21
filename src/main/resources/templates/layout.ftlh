@@ -1,3 +1,5 @@
+<#import "/spring.ftl" as spring>
+
 <#macro page title="" styles="" activeNav="">
     <!DOCTYPE html>
     <html lang="ru">

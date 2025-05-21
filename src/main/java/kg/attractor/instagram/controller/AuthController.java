@@ -19,27 +19,18 @@ public class AuthController {
     private final UserService userService;
 
     @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
-        model.addAttribute("user", new CreateUserDto());
+    public String showRegisterForm(Model model) {
+        if (!model.containsAttribute("user")) {
+            model.addAttribute("user", new CreateUserDto());
+        }
         return "auth/register";
     }
 
     @PostMapping("/register")
-    public String registerUser(@Valid @ModelAttribute("createUserDto") CreateUserDto createUserDto,
-                               BindingResult bindingResult,
-                               Model model) {
+    public String registerUser(@Valid @ModelAttribute("user") CreateUserDto createUserDto,
+                               BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return "auth/register";
-        }
-
-        if (userService.existsUsername(createUserDto.getUsername())) {
-            model.addAttribute("usernameError", "Это имя пользователя уже занято");
-            return "auth/register";
-        }
-
-        if (userService.existsEmail(createUserDto.getEmail())) {
-            model.addAttribute("emailError", "Этот email уже зарегистрирован");
             return "auth/register";
         }
 

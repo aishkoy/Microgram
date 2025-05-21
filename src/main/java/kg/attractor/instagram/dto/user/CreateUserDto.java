@@ -13,33 +13,28 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
-
 public class CreateUserDto {
 
-    @NotBlank
-    @Pattern(regexp = "^[A-Za-zА-Яа-яЁё-]+$")
-    @Size(max = 55)
+    @NotBlank(message = "Имя не может быть пустым")
+    @Pattern(regexp = "^[A-Za-zА-Яа-яЁё-]+$", message = "Имя может содержать только буквы и дефис")
+    @Size(max = 55, message = "Имя не может быть длиннее 55 символов")
     String name;
 
-    @Pattern(regexp = "^[A-Za-zА-Яа-яЁё-]+$")
-    @Size(max = 55)
+    @Pattern(regexp = "^[A-Za-zА-Яа-яЁё-]+$", message = "Фамилия может содержать только буквы и дефис")
+    @Size(max = 55, message = "Фамилия не может быть длиннее 55 символов")
     String surname;
 
-    @Email
-    @NotBlank
-    @UniqueEmail
+    @Email(message = "Введите корректный email")
+    @NotBlank(message = "Email не может быть пустым")
+    @UniqueEmail(message = "Этот email уже занят")
     String email;
 
-    @NotBlank
-    @UniqueUsername
+    @NotBlank(message = "Имя пользователя не может быть пустым")
+    @UniqueUsername(message = "Это имя пользователя уже занято")
     String username;
 
-    @NotBlank
-    @Size(min = 6, max = 20)
-//    @Pattern(
-//            regexp = "^(?=.*[A-Za-zА-Яа-я])(?=.*\\d)[A-Za-zА-Яа-я\\d@#$%^&+=!]{8,}$")
-    String password;;
+    @NotBlank(message = "Пароль не может быть пустым")
+    @Size(min = 6, max = 20, message = "Пароль должен быть от 6 до 20 символов")
+    String password;
 }
