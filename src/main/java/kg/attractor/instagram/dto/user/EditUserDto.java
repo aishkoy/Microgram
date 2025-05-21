@@ -31,6 +31,4 @@ public class EditUserDto {
     String bio;
 
     MultipartFile avatarFile;
-
-    boolean deleteAvatar;
 }
