@@ -1,8 +1,8 @@
 package kg.attractor.instagram.service.impl;
 
 import kg.attractor.instagram.dto.user.CreateUserDto;
-import kg.attractor.instagram.dto.user.DisplayUserDto;
 import kg.attractor.instagram.dto.user.EditUserDto;
+import kg.attractor.instagram.dto.user.UserDto;
 import kg.attractor.instagram.entity.Role;
 import kg.attractor.instagram.entity.User;
 import kg.attractor.instagram.mapper.UserMapper;
@@ -19,8 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 import static kg.attractor.instagram.util.FileUtil.DEFAULT_AVATAR;
 
 @Service
@@ -30,7 +28,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    private final FileUtil fileUtil;
     private final RoleService roleService;
     private final FollowService followService;
 
@@ -55,18 +52,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public DisplayUserDto getByUsername(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        DisplayUserDto dto = userMapper.toDisplayDto(user);
-        dto.setFollowersCount(followService.countFollowers(user.getId()));
-        dto.setFollowingCount(followService.countFollowing(user.getId()));
-
-        return dto;
-    }
-
-    @Override
     public EditUserDto getEditUserDto(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -77,6 +62,19 @@ public class UserServiceImpl implements UserService {
                 .surname(user.getSurname())
                 .bio(user.getBio())
                 .build();
+    }
+
+    @Override
+    public UserDto findByUsername(String username) {
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        UserDto dto = userMapper.toDisplayDto(user);
+        dto.setFollowersCount(followService.countFollowers(user.getId()));
+        dto.setFollowingCount(followService.countFollowing(user.getId()));
+
+        return dto;
     }
 
     @Override

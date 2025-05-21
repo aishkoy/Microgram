@@ -43,4 +43,7 @@ public class UserDto {
     Boolean enabled = true;
 
     Role role;
+
+    long followersCount;
+    long followingCount;
 }

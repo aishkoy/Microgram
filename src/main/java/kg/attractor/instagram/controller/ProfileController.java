@@ -1,9 +1,11 @@
 package kg.attractor.instagram.controller;
 
-import kg.attractor.instagram.dto.user.DisplayUserDto;
+import jakarta.validation.Valid;
+import kg.attractor.instagram.dto.PostDto;
 import kg.attractor.instagram.dto.user.EditUserDto;
+import kg.attractor.instagram.dto.user.UserDto;
+import kg.attractor.instagram.service.PostService;
 import kg.attractor.instagram.service.UserService;
-import kg.attractor.instagram.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequestMapping("/profile")
@@ -22,12 +24,16 @@ import jakarta.validation.Valid;
 public class ProfileController {
 
     private final UserService userService;
-    private final FileUtil fileUtil;
+    private final PostService postService;
 
     @GetMapping
     public String profilePage(@AuthenticationPrincipal UserDetails currentUser, Model model) {
-        DisplayUserDto userDto = userService.getByUsername(currentUser.getUsername());
-        model.addAttribute("user", userDto);
+        UserDto user = userService.findByUsername(currentUser.getUsername());
+        List<PostDto> posts = postService.getUserPosts(user.getId());
+        model.addAttribute("user", user);
+        model.addAttribute("posts", posts);
+        model.addAttribute("isCurrentUser", true);
+
         return "user/profile";
     }
 

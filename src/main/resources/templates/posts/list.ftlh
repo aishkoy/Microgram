@@ -1,38 +1,5 @@
 <#import "../layout.ftlh" as layout>
-<@layout.page title="" styles="" activeNav="profile">
-    <script src="/static/Js/notifications.js"></script>
-
-    <#if successMessage??>
-        <div class="alert alert-success mb-4 shadow-sm">
-            ${successMessage}
-        </div>
-    </#if>
-
-    <#if errorMessage??>
-        <div class="alert alert-danger mb-4 shadow-sm">
-            ${errorMessage}
-        </div>
-    </#if>
-
-    <div class="d-flex align-items-center mb-4">
-        <img src="/api/users/${user.id}/avatar" alt="Аватар" class="rounded-circle me-4" width="100" height="100"
-             onerror="this.src='/static/avatar/default_avatar.jpg'">
-        <div>
-            <h4>${user.username}</h4>
-            <div class="d-flex gap-4 profile-stats">
-                <div><strong>${posts?size}</strong><br>публикаций</div>
-                <div><strong>${user.followersCount}</strong><br>подписчиков</div>
-                <div><strong>${user.followingCount}</strong><br>подписок</div>
-            </div>
-            <p class="mt-2 mb-0">
-                ${user.name}<#if user.surname?? && user.surname?has_content> ${user.surname}</#if>
-            </p>
-            <p>${user.bio?default("")}</p>
-            <a href="/profile/edit" class="btn btn-outline-secondary btn-sm">Редактировать профиль</a>
-        </div>
-    </div>
-
-    <hr>
+<@layout.page title="Все посты" styles="" activeNav="explore">
 
     <div class="row posts-grid mt-4">
         <#if posts?? && posts?size gt 0>
@@ -54,18 +21,11 @@
             </#list>
         <#else>
             <div class="text-center mt-5">
-                <p>Поделитесь фото</p>
-                <p class="text-muted">Фото, которыми вы делитесь, будут показываться в вашем профиле.</p>
-                <a href="/post/create" class="btn btn-primary">Поделитесь своим первым фото</a>
+                <p>Пока нет ни одного поста</p>
+                <a href="/post/create" class="btn btn-primary">Создать пост</a>
             </div>
         </#if>
     </div>
-
-    <#if isCurrentUser && posts?? && posts?size gt 0>
-        <div class="text-center mt-4">
-            <a href="/post/create" class="btn btn-primary">Добавить новый пост</a>
-        </div>
-    </#if>
 
     <style>
         .post-card {
@@ -104,4 +64,5 @@
             font-weight: bold;
         }
     </style>
+
 </@layout.page>
