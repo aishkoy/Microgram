@@ -7,14 +7,13 @@ import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 
+@Embeddable
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@EqualsAndHashCode
 @Builder
-
-@Embeddable
 public class LikeId implements Serializable {
     @Column(name = "post_id")
     Long postId;
