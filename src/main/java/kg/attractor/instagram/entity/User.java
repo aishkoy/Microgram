@@ -2,7 +2,6 @@ package kg.attractor.instagram.entity;
 
 
 import jakarta.persistence.*;
-import kg.attractor.instagram.converter.RoleTypeConverter;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -12,7 +11,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
 @Entity
 @Table(name = "users")
 public class User {
@@ -50,10 +48,10 @@ public class User {
     @Column(name = "avatar")
     String avatar;
 
-    @Convert(converter = RoleTypeConverter.class)
-    @Column(name = "role_id", nullable = false)
-    @Builder.Default
-    RoleType role = RoleType.USER;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id",
+            nullable = false)
+    Role role;
 
     @Column(name = "enabled",
             nullable = false)
