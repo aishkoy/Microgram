@@ -1,13 +1,10 @@
 package kg.attractor.instagram.mapper;
 
 import kg.attractor.instagram.dto.user.CreateUserDto;
-import kg.attractor.instagram.dto.user.DisplayUserDto;
-import kg.attractor.instagram.dto.user.EditUserDto;
 import kg.attractor.instagram.dto.user.UserDto;
 import kg.attractor.instagram.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 
@@ -22,7 +19,6 @@ public interface UserMapper {
 
     @Mapping(target = "followersCount", ignore = true)
     @Mapping(target = "followingCount", ignore = true)
-    DisplayUserDto toDisplayDto(User user);
+    UserDto toDisplayDto(User user);
 
-    void updateUserFromEditDto(EditUserDto editUserDto, @MappingTarget User user);
 }
