@@ -25,7 +25,7 @@
                             </#if>
                             <div class="mb-3">
                                 <label for="login" class="form-label">Email или имя пользователя</label>
-                                <input type="text" class="form-control" id="login" name="login" required>
+                                <input type="text" class="form-control" id="login" name="login">
                                 <#if loginError??>
                                     <div class="text-danger small mt-1">${loginError}</div>
                                 </#if>
@@ -33,7 +33,7 @@
 
                             <div class="mb-3">
                                 <label for="password" class="form-label">Пароль</label>
-                                <input type="password" class="form-control" id="password" name="password" required>
+                                <input type="password" class="form-control" id="password" name="password">
                                 <#if passwordError??>
                                     <div class="text-danger small mt-1">${passwordError}</div>
                                 </#if>
