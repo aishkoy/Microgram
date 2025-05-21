@@ -44,10 +44,10 @@
         <h4 class="mb-4">Instagram</h4>
 
         <nav class="nav flex-column">
-            <a class="nav-link" href="#"><i class="bi bi-house-door"></i> Главная</a>
+            <a class="nav-link" href="/post/all"><i class="bi bi-house-door"></i> Главная</a>
             <a class="nav-link" href="#"><i class="bi bi-search"></i> Поисковый запрос</a>
             <a class="nav-link" href="#"><i class="bi bi-compass"></i> Интересное</a>
-            <a class="nav-link" href="#"><i class="bi bi-plus-square"></i> Создать</a>
+            <a class="nav-link" href="/post/create"><i class="bi bi-plus-square"></i> Создать</a>
 
             <#if Session.SPRING_SECURITY_CONTEXT??>
                 <a class="nav-link" href="/profile"><i class="bi bi-person"></i> Профиль</a>
@@ -58,7 +58,7 @@
                     </form>
                 </#if>
             <#else>
-                <a class="nav-link <#if activeNav == "login">active</#if>" href="/login"><i class="bi bi-box-arrow-in-right"></i> Войти</a>
+                <a class="nav-link <#if activeNav == "login">active</#if>" href="auth/login"><i class="bi bi-box-arrow-in-right"></i> Войти</a>
             </#if>
         </nav>
     </div>
