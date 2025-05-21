@@ -1,4 +1,4 @@
-package kg.attractor.instagram.service;
+package kg.attractor.instagram.service.impl;
 
 import kg.attractor.instagram.entity.User;
 import org.springframework.security.core.GrantedAuthority;
