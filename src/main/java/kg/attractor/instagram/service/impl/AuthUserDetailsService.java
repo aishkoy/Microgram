@@ -1,4 +1,4 @@
-package kg.attractor.instagram.service;
+package kg.attractor.instagram.service.impl;
 
 import kg.attractor.instagram.entity.User;
 import kg.attractor.instagram.repository.UserRepository;
@@ -14,15 +14,15 @@ public class AuthUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String loginIdentifier) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         User user;
         
-        if (loginIdentifier.contains("@")) {
-            user = userRepository.findByEmail(loginIdentifier)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + loginIdentifier));
+        if (login.contains("@")) {
+            user = userRepository.findByEmail(login)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + login));
         } else {
-            user = userRepository.findByUsername(loginIdentifier)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + loginIdentifier));
+            user = userRepository.findByUsername(login)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + login));
         }
 
         return new CustomUserDetails(user);
