@@ -3,7 +3,7 @@ create table users
 (
     id       long auto_increment primary key not null,
     name     varchar(55)                     not null,
-    surname  varchar(55)                     not null,
+    surname  varchar(55),
     username varchar(100)                    not null unique,
     email    varchar(255)                    not null unique,
     password varchar(255)                    not null,
