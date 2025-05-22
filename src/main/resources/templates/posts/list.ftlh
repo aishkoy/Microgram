@@ -5,14 +5,14 @@
         <#if posts?? && posts?size gt 0>
             <#list posts as post>
                 <div class="col-md-4 col-sm-6 mb-4">
-                    <a href="/post/${post.id}" class="post-item">
+                    <a href="/posts/${post.id}" class="post-item">
                         <div class="card post-card">
-                            <img src="/posts/${post.id}/image" class="card-img-top" alt="Пост"
+                            <img src="/api/posts/${post.id}/image" class="card-img-top" alt="Пост"
                                  style="height: 300px; object-fit: cover;">
                             <div class="post-overlay">
                                 <div class="post-info">
-                                    <span><i class="bi bi-heart-fill"></i> ${post.likesCount?default("0")}</span>
-                                    <span><i class="bi bi-chat-fill"></i> ${post.commentsCount?default("0")}</span>
+                                    <span><i class="bi bi-heart-fill"></i> ${post.likes!"0"}</span>
+                                    <span><i class="bi bi-chat-fill"></i> ${post.comments!"0"}</span>
                                 </div>
                             </div>
                         </div>
@@ -22,7 +22,7 @@
         <#else>
             <div class="text-center mt-5">
                 <p>Пока нет ни одного поста</p>
-                <a href="/post/create" class="btn btn-primary">Создать пост</a>
+                <a href="/posts/create" class="btn btn-primary">Создать пост</a>
             </div>
         </#if>
     </div>

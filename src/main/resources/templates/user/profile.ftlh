@@ -21,13 +21,13 @@
             <h4>${user.username}</h4>
             <div class="d-flex gap-4 profile-stats">
                 <div><strong>${posts?size}</strong><br>публикаций</div>
-                <div><strong>${user.followersCount}</strong><br>подписчиков</div>
-                <div><strong>${user.followingCount}</strong><br>подписок</div>
+                <div><strong>${user.followers}</strong><br>подписчиков</div>
+                <div><strong>${user.followings}</strong><br>подписок</div>
             </div>
             <p class="mt-2 mb-0">
                 ${user.name}<#if user.surname?? && user.surname?has_content> ${user.surname}</#if>
             </p>
-            <p>${user.bio?default("")}</p>
+            <p>${user.bio!""}</p>
             <a href="/profile/edit" class="btn btn-outline-secondary btn-sm">Редактировать профиль</a>
         </div>
     </div>
@@ -38,14 +38,14 @@
         <#if posts?? && posts?size gt 0>
             <#list posts as post>
                 <div class="col-md-4 col-sm-6 mb-4">
-                    <a href="/post/${post.id}" class="post-item">
+                    <a href="/posts/${post.id}" class="post-item">
                         <div class="card post-card">
-                            <img src="/posts/${post.id}/image" class="card-img-top" alt="Пост"
+                            <img src="/api/posts/${post.id}/image" class="card-img-top" alt="Пост"
                                  style="height: 300px; object-fit: cover;">
                             <div class="post-overlay">
                                 <div class="post-info">
-                                    <span><i class="bi bi-heart-fill"></i> ${post.likesCount?default("0")}</span>
-                                    <span><i class="bi bi-chat-fill"></i> ${post.commentsCount?default("0")}</span>
+                                    <span><i class="bi bi-heart-fill"></i> ${post.likes!"0"}</span>
+                                    <span><i class="bi bi-chat-fill"></i> ${post.comments!"0"}</span>
                                 </div>
                             </div>
                         </div>
@@ -56,14 +56,14 @@
             <div class="text-center mt-5">
                 <p>Поделитесь фото</p>
                 <p class="text-muted">Фото, которыми вы делитесь, будут показываться в вашем профиле.</p>
-                <a href="/post/create" class="btn btn-primary">Поделитесь своим первым фото</a>
+                <a href="/posts/create" class="btn btn-primary">Поделитесь своим первым фото</a>
             </div>
         </#if>
     </div>
 
     <#if isCurrentUser && posts?? && posts?size gt 0>
         <div class="text-center mt-4">
-            <a href="/post/create" class="btn btn-primary">Добавить новый пост</a>
+            <a href="/posts/create" class="btn btn-primary">Добавить новый пост</a>
         </div>
     </#if>
 
