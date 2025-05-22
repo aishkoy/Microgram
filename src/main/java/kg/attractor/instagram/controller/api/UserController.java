@@ -1,6 +1,7 @@
 package kg.attractor.instagram.controller.api;
 
-import kg.attractor.instagram.service.PostService;
+import jakarta.validation.Valid;
+import kg.attractor.instagram.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,16 +9,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/posts")
+@RestController("restUser")
+@RequestMapping("api/users")
 @RequiredArgsConstructor
-public class PostRestController {
+public class UserController {
+    private final UserService userService;
 
-    private final PostService postService;
-
-    @GetMapping("/{postId}/image")
-    public ResponseEntity<?> getPostImage(@PathVariable Long postId) {
-        return postService.getPostImageById(postId);
+    @GetMapping("/{userId}/avatar")
+    public ResponseEntity<?> getUserAvatar(@PathVariable @Valid Long userId) {
+            return userService.getAvatarByUserId(userId);
     }
-
 }
