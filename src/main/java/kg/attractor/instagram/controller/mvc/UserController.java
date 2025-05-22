@@ -7,10 +7,12 @@ import kg.attractor.instagram.service.FollowService;
 import kg.attractor.instagram.service.PostService;
 import kg.attractor.instagram.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
@@ -41,6 +43,7 @@ public class UserController {
         return "user/profile";
     }
 
+    @PreAuthorize("@userService.isCurrentUser(#userId)")
     @GetMapping("{userId}/edit")
     public String editProfilePage(@PathVariable Long userId, Model model) {
         UserDto editUserDto = userService.getAuthUser();
@@ -48,6 +51,7 @@ public class UserController {
         return "user/editProfile";
     }
 
+    @PreAuthorize("@userService.isCurrentUser(#userId)")
     @PostMapping("{userId}/edit")
     public String updateProfile(
             @PathVariable Long userId,
@@ -59,9 +63,15 @@ public class UserController {
             return "user/editProfile";
         }
 
-        UserDto currentUser = userService.getAuthUser();
-        userService.updateUser(currentUser.getUsername(), editUserDto);
+        userService.updateUser(editUserDto);
         redirectAttributes.addFlashAttribute("successMessage", "Профиль успешно обновлен");
-        return "redirect:/profile";
+        return "redirect:/users/" + userId;
+    }
+
+    @PostMapping("{userId}/avatar")
+    public String uploadAvatar(@PathVariable Long userId,
+                               @RequestParam("file") MultipartFile file) {
+        userService.uploadAvatar(file, userId);
+        return "redirect:/users/" + userId + "/edit";
     }
 }

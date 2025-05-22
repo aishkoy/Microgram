@@ -39,7 +39,7 @@
             <p>${user.bio!""}</p>
 
             <#if known && currentUserId == user.id>
-                <a href="/profile/edit" class="btn btn-outline-secondary btn-sm">Редактировать профиль</a>
+                <a href="/users/${currentUserId}/edit" class="btn btn-outline-secondary btn-sm">Редактировать профиль</a>
             </#if>
 
             <#if known && currentUserId != user.id>
