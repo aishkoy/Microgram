@@ -2,11 +2,11 @@ package kg.attractor.instagram.util;
 
 import lombok.SneakyThrows;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-@Component
+@UtilityClass
 public class FileUtil {
 
     private static final String IMAGE_DIR = "data/";
@@ -24,7 +24,7 @@ public class FileUtil {
     public static final String IMAGES_SUBDIR = "images/";
 
     @SneakyThrows
-    public static String saveUploadFile(MultipartFile file, String subDir) {
+    public String saveUploadFile(MultipartFile file, String subDir) {
         String uuidFile = UUID.randomUUID().toString();
         String resultFileName = uuidFile + "_" + file.getOriginalFilename();
 
@@ -38,7 +38,7 @@ public class FileUtil {
         return resultFileName;
     }
 
-    public static ResponseEntity<?> getOutputFile(String filename, MediaType mediaType) {
+    public ResponseEntity<?> getOutputFile(String filename, MediaType mediaType) {
         try {
             Path filePath = filename.equals(DEFAULT_AVATAR)
                     ? Paths.get(IMAGE_DIR + filename)
