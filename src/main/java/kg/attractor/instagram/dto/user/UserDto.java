@@ -1,7 +1,7 @@
 package kg.attractor.instagram.dto.user;
 
 import jakarta.validation.constraints.*;
-import kg.attractor.instagram.entity.Role;
+import kg.attractor.instagram.dto.RoleDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -16,24 +16,21 @@ import lombok.experimental.SuperBuilder;
 public class UserDto {
     Long id;
 
-    @NotBlank
-    @Pattern(regexp = "^[A-Za-zА-Яа-яЁё-]+$")
-    @Size(max = 55)
+    @NotBlank(message = "Имя не может быть пустым")
+    @Pattern(regexp = "^[A-Za-zА-Яа-яЁё-]+$", message = "Имя может содержать только буквы и дефис")
+    @Size(max = 55, message = "Длина имени не может превышать 55 символов")
     String name;
 
-    @Size(max = 55)
+    @Size(max = 55, message = "Длина фамилии не может превышать 55 символов")
     String surname;
 
-    @NotBlank
-    @Max(100)
     String username;
 
-    @Size(max = 55)
     String email;
 
     String password;
 
-    @Size(max = 255)
+    @Size(max = 255, message = "Длина биографии не может превышать 255 символов")
     String bio;
 
     @Builder.Default
@@ -42,8 +39,8 @@ public class UserDto {
     @Builder.Default
     Boolean enabled = true;
 
-    Role role;
+    RoleDto role;
 
-    long followersCount;
-    long followingCount;
+    Integer followers;
+    Integer following;
 }

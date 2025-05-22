@@ -1,5 +1,6 @@
 package kg.attractor.instagram.dto;
 
+import kg.attractor.instagram.dto.user.UserDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -13,7 +14,6 @@ import lombok.experimental.FieldDefaults;
 public class CommentDto {
     Long id;
     String content;
-    String username;
-    String avatar;
-    String createdAt;
+    UserDto user;
+    PostDto post;
 }
