@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface LikeRepository extends JpaRepository<Like, LikeId> {
+    boolean existByPostIdAndUserId(Long postId, Long userId);
     List<Like> findByIdPostId(Long postId);
     Long countByIdPostId(Long postId);
 }
