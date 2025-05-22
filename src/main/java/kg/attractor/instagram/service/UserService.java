@@ -3,6 +3,8 @@ package kg.attractor.instagram.service;
 import kg.attractor.instagram.dto.user.CreateUserDto;
 import kg.attractor.instagram.dto.user.UserDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,13 +21,18 @@ public interface UserService {
 
     UserDto findByUsername(String username);
 
-    void updateUser(String username, UserDto dto);
+    @Transactional
+    void updateUser(UserDto dto);
 
     UserDto getAuthUser();
 
     Long getAuthId();
 
+    boolean isCurrentUser(Long userId);
+
     ResponseEntity<?> getAvatarByUserId(Long userId);
 
     List<UserDto> searchUsers(String query);
+
+    void uploadAvatar(MultipartFile file, Long userId);
 }
