@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -18,5 +19,7 @@ public class PostDto {
     String image;
     String description;
     UserDto user;
-    Timestamp createdAt;
+
+    @Builder.Default
+    Timestamp createdAt = Timestamp.from(Instant.now());
 }
