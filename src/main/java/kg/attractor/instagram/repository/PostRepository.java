@@ -12,5 +12,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findAllByOrderByCreatedAtDesc();
 
-    boolean existByIdAndUserId(Long id, Long userId);
+    boolean existsByIdAndUser_Id(Long id, Long userId);
 }

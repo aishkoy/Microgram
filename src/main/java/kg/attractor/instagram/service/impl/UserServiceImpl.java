@@ -20,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
+
 import static kg.attractor.instagram.util.FileUtil.DEFAULT_AVATAR;
 
 @Service
@@ -101,10 +103,14 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("Пользователь не авторизован");
         }
 
-        String email = authentication.getName();
-        log.debug("Authenticated user email: {}", email);
+        String login = authentication.getName();
+        log.debug("Authenticated user email: {}", login);
 
-        return getUserByEmail(email);
+        try{
+            return getUserByEmail(login);
+        } catch (NoSuchElementException e){
+            return findByUsername(login);
+        }
     }
 
 

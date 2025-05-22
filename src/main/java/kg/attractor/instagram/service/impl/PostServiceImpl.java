@@ -45,7 +45,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Boolean hasAccessToPost(Long postId, Long userId) {
-        return postRepository.existByIdAndUserId(postId, userId);
+        return postRepository.existsByIdAndUser_Id(postId, userId);
     }
 
     @Override
