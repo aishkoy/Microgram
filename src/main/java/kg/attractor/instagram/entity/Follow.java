@@ -18,10 +18,14 @@ public class Follow {
     FollowId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "follower_id")
+    @MapsId("followerId")
+    @JoinColumn(name = "follower_id",
+            nullable = false)
     User follower;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "following_id")
+    @MapsId("followingId")
+    @JoinColumn(name = "following_id",
+            nullable = false)
     User following;
 }

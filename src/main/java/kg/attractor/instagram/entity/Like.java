@@ -18,10 +18,12 @@ public class Like {
     LikeId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("postId")
     @JoinColumn(name = "post_id", nullable = false)
     Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("userId")
     @JoinColumn(name = "user_id", nullable = false)
     User user;
 }

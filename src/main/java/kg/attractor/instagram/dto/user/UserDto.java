@@ -42,5 +42,5 @@ public class UserDto {
     RoleDto role;
 
     Integer followers;
-    Integer following;
+    Integer followings;
 }
