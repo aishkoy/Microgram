@@ -3,6 +3,7 @@ package kg.attractor.instagram.controller.mvc;
 import jakarta.validation.Valid;
 import kg.attractor.instagram.dto.PostDto;
 import kg.attractor.instagram.dto.user.UserDto;
+import kg.attractor.instagram.service.FollowService;
 import kg.attractor.instagram.service.PostService;
 import kg.attractor.instagram.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,22 +17,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-@Controller
+@Controller("mvcUser")
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
     private final PostService postService;
+    private final FollowService followService;
 
     @GetMapping("{userId}")
     public String userPage(@PathVariable Long userId, Model model) {
         UserDto user = userService.getUserById(userId);
+
         List<PostDto> posts = new ArrayList<>();
         try {
             posts = postService.getUserPosts(userId);
         } catch (NoSuchElementException ignored) {
         }
+
         model.addAttribute("user", user);
         model.addAttribute("posts", posts);
         return "user/profile";
