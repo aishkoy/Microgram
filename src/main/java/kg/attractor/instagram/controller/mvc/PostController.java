@@ -122,11 +122,4 @@ public class PostController {
         }
         return "redirect:/profile";
     }
-
-    @GetMapping()
-    public String viewAllPosts(Model model) {
-        List<PostDto> posts = postService.getAllPosts();
-        model.addAttribute("posts", posts);
-        return "posts/list";
-    }
 }

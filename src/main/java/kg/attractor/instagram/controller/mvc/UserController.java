@@ -17,37 +17,36 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Controller
-@RequestMapping("/profile")
+@RequestMapping("/users")
 @RequiredArgsConstructor
-public class ProfileController {
+public class UserController {
 
     private final UserService userService;
     private final PostService postService;
 
-    @GetMapping
-    public String profilePage(Model model) {
-        UserDto user = userService.getAuthUser();
+    @GetMapping("{userId}")
+    public String userPage(@PathVariable Long userId, Model model) {
+        UserDto user = userService.getUserById(userId);
         List<PostDto> posts = new ArrayList<>();
         try {
-            posts = postService.getUserPosts(user.getId());
+            posts = postService.getUserPosts(userId);
         } catch (NoSuchElementException ignored) {
         }
         model.addAttribute("user", user);
         model.addAttribute("posts", posts);
-        model.addAttribute("isCurrentUser", true);
-
         return "user/profile";
     }
 
-    @GetMapping("/edit")
-    public String editProfilePage(Model model) {
+    @GetMapping("{userId}/edit")
+    public String editProfilePage(@PathVariable Long userId, Model model) {
         UserDto editUserDto = userService.getAuthUser();
         model.addAttribute("editUserDto", editUserDto);
         return "user/editProfile";
     }
 
-    @PostMapping("/edit")
+    @PostMapping("{userId}/edit")
     public String updateProfile(
+            @PathVariable Long userId,
             @Valid @ModelAttribute("editUserDto") UserDto editUserDto,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes) {
