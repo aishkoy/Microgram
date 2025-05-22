@@ -23,6 +23,8 @@ public interface UserService {
 
     UserDto getAuthUser();
 
+    Long getAuthId();
+
     ResponseEntity<?> getAvatarByUserId(Long userId);
 
     List<UserDto> searchUsers(String query);

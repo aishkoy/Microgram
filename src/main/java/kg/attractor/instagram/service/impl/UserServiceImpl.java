@@ -114,6 +114,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public Long getAuthId(){
+        return getAuthUser().getId();
+    }
+
 
     @Override
     public ResponseEntity<?> getAvatarByUserId(Long userId) {
