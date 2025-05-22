@@ -10,9 +10,21 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface LikeMapper {
+    @Mapping(target = "user.followings", ignore = true)
+    @Mapping(target = "user.followers", ignore = true)
+    @Mapping(target = "post.user.followers", ignore = true)
+    @Mapping(target = "post.user.followings", ignore = true)
+    @Mapping(target = "post.likes", ignore = true)
+    @Mapping(target = "post.comments", ignore = true)
     LikeDto toDto(Like like);
 
     @Mapping(target = "id", expression = "java(createLikeId(dto))")
+    @Mapping(target = "user.followings", ignore = true)
+    @Mapping(target = "user.followers", ignore = true)
+    @Mapping(target = "post.user.followers", ignore = true)
+    @Mapping(target = "post.user.followings", ignore = true)
+    @Mapping(target = "post.likes", ignore = true)
+    @Mapping(target = "post.comments", ignore = true)
     Like toEntity(LikeDto dto);
 
     default LikeId createLikeId(LikeDto dto) {

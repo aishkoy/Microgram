@@ -22,4 +22,6 @@ public class PostDto {
 
     @Builder.Default
     Timestamp createdAt = Timestamp.from(Instant.now());
+    Integer comments;
+    Integer likes;
 }
