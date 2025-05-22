@@ -6,8 +6,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface CommentService {
+    Boolean hasAccessToComment(Long commentId, Long userId);
+
     @Transactional(readOnly = true)
     List<CommentDto> getPostComments(Long postId);
+
+    CommentDto getCommentById(Long id);
 
     @Transactional(readOnly = true)
     Long getPostCommentsCount(Long postId);
