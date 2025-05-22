@@ -2,6 +2,7 @@ package kg.attractor.instagram.service.impl;
 
 import kg.attractor.instagram.dto.RoleDto;
 import kg.attractor.instagram.entity.Role;
+import kg.attractor.instagram.exception.nsee.RoleNotFoundException;
 import kg.attractor.instagram.mapper.RoleMapper;
 import kg.attractor.instagram.repository.RoleRepository;
 import kg.attractor.instagram.service.RoleService;
@@ -20,8 +21,8 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public RoleDto getByName(String name) {
         Role role = roleRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Role " + name + " not found"));
-        log.info("Получена роль с именем " + role.getName());
+                .orElseThrow(() -> new RoleNotFoundException("Роль " + name + " не была найдена"));
+        log.info("Получена роль по имени {}", role.getName());
         return roleMapper.toDto(role);
     }
 }
