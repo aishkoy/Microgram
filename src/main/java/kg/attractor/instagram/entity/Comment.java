@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -33,4 +35,8 @@ public class Comment {
     @JoinColumn(name = "post_id",
             nullable = false)
     Post post;
+
+    @Column(name = "created_at",
+            nullable = false)
+    Timestamp createdAt;
 }

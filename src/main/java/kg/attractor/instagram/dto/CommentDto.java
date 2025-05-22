@@ -4,6 +4,8 @@ import kg.attractor.instagram.dto.user.UserDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,4 +18,5 @@ public class CommentDto {
     String content;
     UserDto user;
     PostDto post;
+    Timestamp createdAt;
 }
