@@ -1,5 +1,6 @@
 package kg.attractor.instagram.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import kg.attractor.instagram.dto.user.UserDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -16,12 +17,20 @@ import java.time.Instant;
 
 public class PostDto {
     Long id;
+
+    @NotBlank(message = "Изображение обязательно")
     String image;
+
     String description;
+
     UserDto user;
 
     @Builder.Default
     Timestamp createdAt = Timestamp.from(Instant.now());
-    Integer comments;
-    Integer likes;
+
+    @Builder.Default
+    Integer comments = 0;
+
+    @Builder.Default
+    Integer likes = 0;
 }

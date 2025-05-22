@@ -1,10 +1,13 @@
 package kg.attractor.instagram.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import kg.attractor.instagram.dto.user.UserDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -15,8 +18,16 @@ import java.sql.Timestamp;
 
 public class CommentDto {
     Long id;
+
+    @NotBlank(message = "Комментарий не может быть пустым")
     String content;
+
+    @NotNull
     UserDto user;
+
+    @NotNull
     PostDto post;
-    Timestamp createdAt;
+
+    @Builder.Default
+    Timestamp createdAt = Timestamp.from(Instant.now());
 }
