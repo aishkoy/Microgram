@@ -4,8 +4,11 @@ import kg.attractor.instagram.dto.user.CreateUserDto;
 import kg.attractor.instagram.dto.user.UserDto;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 public interface UserService {
     boolean existsUsername(String username);
+
     boolean existsEmail(String email);
 
     UserDto getUserById(Long id);
@@ -13,6 +16,7 @@ public interface UserService {
     UserDto getUserByEmail(String email);
 
     void registerUser(CreateUserDto createUserDto);
+
     UserDto findByUsername(String username);
 
     void updateUser(String username, UserDto dto);
@@ -20,4 +24,6 @@ public interface UserService {
     UserDto getAuthUser();
 
     ResponseEntity<?> getAvatarByUserId(Long userId);
+
+    List<UserDto> searchUsers(String query);
 }

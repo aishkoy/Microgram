@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static kg.attractor.instagram.util.FileUtil.DEFAULT_AVATAR;
@@ -121,5 +122,18 @@ public class UserServiceImpl implements UserService {
 
         log.info("Получен аватар пользователя {}", avatarPath);
         return FileUtil.getOutputFile(avatarPath, MediaType.IMAGE_JPEG);
+    }
+
+    @Override
+    public List<UserDto> searchUsers(String query) {
+        List<UserDto> users = userRepository.searchUsers(query)
+                .stream().map(userMapper::toDto)
+                .toList();
+        if(users.isEmpty()){
+            throw new UserNotFoundException("Пользователи не найдены");
+        }
+
+        log.info("Получены пользователи по запросу {}", users.size());
+        return users;
     }
 }
