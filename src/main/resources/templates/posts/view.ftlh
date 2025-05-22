@@ -7,7 +7,7 @@
                 <div class="card shadow post-card">
                     <div class="row g-0">
                         <div class="col-md-8 post-image-container">
-                            <img src="/posts/${post.id}/image" class="img-fluid rounded-start post-image" alt="Изображение поста">
+                            <img src="/api/posts/${post.id}/image" class="img-fluid rounded-start post-image" alt="Изображение поста">
                         </div>
 
                         <div class="col-md-4 d-flex flex-column">
@@ -26,7 +26,7 @@
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="postOptionsDropdown">
                                             <li>
-                                                <form action="/post/${post.id}" method="post" class="delete-post-form">
+                                                <form action="/posts/${post.id}" method="post" class="delete-post-form">
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <button type="submit" class="dropdown-item text-danger">Удалить пост</button>
                                                 </form>
@@ -37,7 +37,7 @@
                             </div>
 
                             <div class="p-3 border-bottom">
-                                <p class="mb-0">${post.description?default("")}</p>
+                                <p class="mb-0">${post.description!""}</p>
                                 <small class="text-muted">${post.createdAt?datetime}</small>
                             </div>
 
@@ -47,7 +47,7 @@
                                         <button class="btn btn-sm btn-link p-0 like-button" data-post-id="${post.id}">
                                             <i class="bi <#if isLiked>bi-heart-fill text-danger<#else>bi-heart</#if> fs-5"></i>
                                         </button>
-                                        <span class="ms-2 likes-count">${likesCount}</span> likes
+                                        <span class="ms-2 likes-count">${post.likes}</span> likes
                                     </div>
                                 </div>
 
@@ -56,21 +56,21 @@
                                         <#list comments as comment>
                                             <div class="comment mb-3" data-comment-id="${comment.id}">
                                                 <div class="d-flex">
-                                                    <a href="/profile/${comment.userId}" class="text-decoration-none me-2">
-                                                        <img src="${comment.avatar}" class="rounded-circle" width="24" height="24"
+                                                    <a href="/profile/${comment.user.id}" class="text-decoration-none me-2">
+                                                        <img src="/api/users/${comment.user.id}/avatar" class="rounded-circle" width="24" height="24"
                                                              alt="Аватар" onerror="this.src='/static/avatar/default_avatar.jpg'">
                                                     </a>
                                                     <div>
                                                         <div class="comment-text">
-                                                            <a href="/profile/${comment.userId}" class="fw-bold text-decoration-none me-2">
-                                                                ${comment.username}
+                                                            <a href="/profile/${comment.user.id}" class="fw-bold text-decoration-none me-2">
+                                                                ${comment.user.username}
                                                             </a>
                                                             ${comment.content}
                                                         </div>
                                                         <small class="text-muted">${comment.createdAt}</small>
                                                     </div>
 
-                                                    <#if currentUser.id == comment.userId>
+                                                    <#if currentUser.id == comment.user.id>
                                                         <div class="ms-auto">
                                                             <button class="btn btn-sm text-secondary delete-comment"
                                                                     data-comment-id="${comment.id}">
@@ -110,7 +110,7 @@
                 const likeIcon = this.querySelector('i');
                 const likesCountEl = document.querySelector('.likes-count');
 
-                fetch(`/post/${postId}/like`, {
+                fetch(`/posts/${postId}/like`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -140,7 +140,7 @@
                 const content = document.getElementById('comment-content').value;
                 if (!content.trim()) return;
 
-                fetch(`/post/${post.id}/comment`, {
+                fetch(`/posts/${post.id}/comment`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -160,14 +160,14 @@
                         commentElement.setAttribute('data-comment-id', comment.id);
                         commentElement.innerHTML = `
                         <div class="d-flex">
-                            <a href="/profile/${comment.userId}" class="text-decoration-none me-2">
-                                <img src="${comment.avatar}" class="rounded-circle" width="24" height="24"
+                            <a href="/profile/${comment.user.id}" class="text-decoration-none me-2">
+                                <img src="/api/users/${comment.user.id}/avatar" class="rounded-circle" width="24" height="24"
                                      alt="Аватар" onerror="this.src='/static/avatar/default_avatar.jpg'">
                             </a>
                             <div>
                                 <div class="comment-text">
-                                    <a href="/profile/${comment.userId}" class="fw-bold text-decoration-none me-2">
-                                        ${comment.username}
+                                    <a href="/profile/${comment.user.id}" class="fw-bold text-decoration-none me-2">
+                                        ${comment.user.username}
                                     </a>
                                     ${comment.content}
                                 </div>
@@ -195,7 +195,7 @@
                 const commentElement = document.querySelector(`.comment[data-comment-id="${commentId}"]`);
 
                 if (confirm('Вы уверены, что хотите удалить этот комментарий?')) {
-                    fetch(`/post/comment/${commentId}`, {
+                    fetch(`/posts/comment/${commentId}`, {
                         method: 'DELETE'
                     })
                         .then(response => response.text())

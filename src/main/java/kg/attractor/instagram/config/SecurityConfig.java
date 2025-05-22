@@ -33,6 +33,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/",
+                                "/search",
+                                "/api/users/search",
+                                "/users/*",
                                 "/auth/**",
                                 "/static/**",
                                 "/favicon.ico",

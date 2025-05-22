@@ -2,43 +2,57 @@ package kg.attractor.instagram.service.impl;
 
 import kg.attractor.instagram.dto.CommentDto;
 import kg.attractor.instagram.entity.Comment;
-import kg.attractor.instagram.entity.Post;
-import kg.attractor.instagram.entity.User;
+import kg.attractor.instagram.exception.nsee.CommentNotFoundException;
 import kg.attractor.instagram.mapper.CommentMapper;
 import kg.attractor.instagram.repository.CommentRepository;
-import kg.attractor.instagram.repository.PostRepository;
-import kg.attractor.instagram.repository.UserRepository;
 import kg.attractor.instagram.service.CommentService;
+import kg.attractor.instagram.service.PostService;
+import kg.attractor.instagram.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
-    private final UserRepository userRepository;
-    private final PostRepository postRepository;
     private final CommentMapper commentMapper;
 
-    @Transactional(readOnly = true)
+    private final UserService userService;
+    private final PostService postService;
+
     @Override
-    public List<CommentDto> getPostComments(Long postId) {
-        return commentRepository.findByPostIdOrderByIdDesc(postId).stream()
-                .map(comment -> {
-                    CommentDto dto = commentMapper.toDto(comment);
-                    dto.setUsername(comment.getUser().getUsername());
-                    dto.setAvatar("/api/users/" + comment.getUser().getId() + "/avatar");
-                    return dto;
-                })
-                .collect(Collectors.toList());
+    public Boolean hasAccessToComment(Long commentId, Long userId) {
+        return commentRepository.existsByIdAndUserId(commentId, userId);
     }
 
-    @Transactional(readOnly = true)
+    @Override
+    public List<CommentDto> getPostComments(Long postId) {
+        List<CommentDto> comments = commentRepository.findByPostIdOrderByIdDesc(postId)
+                .stream().map(commentMapper::toDto)
+                .toList();
+
+        if (comments.isEmpty()) {
+            throw new CommentNotFoundException("Комментарии этого поста не были найдены!");
+        }
+        log.info("Получено комментариев: {}", comments.size());
+        return comments;
+    }
+
+    @Override
+    public CommentDto getCommentById(Long id) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new CommentNotFoundException("Комментарий не найден"));
+        log.info("Получен комментарий с id {}", comment.getId());
+        return commentMapper.toDto(comment);
+    }
+
     @Override
     public Long getPostCommentsCount(Long postId) {
         return commentRepository.countByPostId(postId);
@@ -47,37 +61,27 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public CommentDto addComment(Long postId, Long userId, String content) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
-
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("Пост не найден"));
-
-        Comment comment = Comment.builder()
-                .user(user)
-                .post(post)
+        CommentDto dto = CommentDto.builder()
+                .user(userService.getUserById(userId))
+                .post(postService.getPostById(postId))
                 .content(content)
                 .build();
 
-        Comment savedComment = commentRepository.save(comment);
-
-        CommentDto dto = commentMapper.toDto(savedComment);
-        dto.setUsername(user.getUsername());
-        dto.setAvatar("/api/users/" + user.getId() + "/avatar");
+        Comment savedComment = commentRepository.save(commentMapper.toEntity(dto));
+        log.info("Создан комментарий с id {}", savedComment.getId());
         return dto;
     }
 
     @Transactional
     @Override
     public void deleteComment(Long commentId, Long userId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("Комментарий не найден"));
+        getCommentById(commentId);
+        Boolean hasAccess = hasAccessToComment(commentId, userId);
 
-        if (!comment.getUser().getId().equals(userId) &&
-            !comment.getPost().getUser().getId().equals(userId)) {
-            throw new IllegalArgumentException("У вас нет прав для удаления этого комментария");
+        if (Boolean.TRUE.equals(hasAccess)) {
+            commentRepository.deleteById(commentId);
+        } else {
+            throw new AccessDeniedException("У вас нет права удалять это комментарий!");
         }
-
-        commentRepository.delete(comment);
     }
 }

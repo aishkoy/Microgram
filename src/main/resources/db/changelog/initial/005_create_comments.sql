@@ -2,10 +2,11 @@
 
 create table comments
 (
-    id      long auto_increment primary key not null,
-    content varchar(255)                    not null,
-    user_id long                            not null,
-    post_id long                            not null,
+    id         long auto_increment primary key not null,
+    content    varchar(255)                    not null,
+    user_id    long                            not null,
+    post_id    long                            not null,
+    created_at timestamp                       not null default now(),
 
     constraint fk_comments_user
         foreign key (user_id)

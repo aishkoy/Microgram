@@ -10,9 +10,17 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface FollowMapper {
+    @Mapping(target = "follower.followers", ignore = true)
+    @Mapping(target = "follower.followings", ignore = true)
+    @Mapping(target = "following.followers", ignore = true)
+    @Mapping(target = "following.followings", ignore = true)
     FollowDto toDto(Follow follow);
 
     @Mapping(target = "id", expression = "java(createFollowId(dto))")
+    @Mapping(target = "follower.followers", ignore = true)
+    @Mapping(target = "follower.followings", ignore = true)
+    @Mapping(target = "following.followers", ignore = true)
+    @Mapping(target = "following.followings", ignore = true)
     Follow toEntity(FollowDto dto);
 
     default FollowId createFollowId(FollowDto dto) {

@@ -15,7 +15,7 @@
                             </div>
                         </#if>
 
-                        <form action="/post/create" method="post" enctype="multipart/form-data">
+                        <form action="/posts/create" method="post" enctype="multipart/form-data">
                             <#if _csrf??>
                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             </#if>
@@ -46,7 +46,6 @@
     </div>
 
     <script>
-        // Предварительный просмотр изображения
         document.getElementById('image').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (file) {

@@ -1,6 +1,14 @@
 <#import "../layout.ftlh" as layout>
 <@layout.page title="" styles="" activeNav="profile">
-    <script src="/static/Js/notifications.js"></script>
+    <#assign role = user.role.id />
+    <#assign known = SPRING_SECURITY_CONTEXT?? >
+    <#if known>
+        <#assign
+        currentUserId = SPRING_SECURITY_CONTEXT.authentication.principal.getUserId()
+        >
+    </#if>
+
+    <script src="/static/js/notifications.js"></script>
 
     <#if successMessage??>
         <div class="alert alert-success mb-4 shadow-sm">
@@ -14,21 +22,24 @@
         </div>
     </#if>
 
-    <div class="d-flex align-items-center mb-4">
+    <div class="d-flex align-items-center gap-4 mb-4 p-4 bg-white shadow-sm rounded">
         <img src="/api/users/${user.id}/avatar" alt="Аватар" class="rounded-circle me-4" width="100" height="100"
              onerror="this.src='/static/avatar/default_avatar.jpg'">
         <div>
             <h4>${user.username}</h4>
             <div class="d-flex gap-4 profile-stats">
                 <div><strong>${posts?size}</strong><br>публикаций</div>
-                <div><strong>${user.followersCount}</strong><br>подписчиков</div>
-                <div><strong>${user.followingCount}</strong><br>подписок</div>
+                <div><strong>${user.followers}</strong><br>подписчиков</div>
+                <div><strong>${user.followings}</strong><br>подписок</div>
             </div>
             <p class="mt-2 mb-0">
                 ${user.name}<#if user.surname?? && user.surname?has_content> ${user.surname}</#if>
             </p>
-            <p>${user.bio?default("")}</p>
-            <a href="/profile/edit" class="btn btn-outline-secondary btn-sm">Редактировать профиль</a>
+            <p>${user.bio!""}</p>
+
+            <#if known && currentUserId == user.id>
+                <a href="/profile/edit" class="btn btn-outline-secondary btn-sm">Редактировать профиль</a>
+            </#if>
         </div>
     </div>
 
@@ -38,14 +49,14 @@
         <#if posts?? && posts?size gt 0>
             <#list posts as post>
                 <div class="col-md-4 col-sm-6 mb-4">
-                    <a href="/post/${post.id}" class="post-item">
+                    <a href="/posts/${post.id}" class="post-item">
                         <div class="card post-card">
-                            <img src="/posts/${post.id}/image" class="card-img-top" alt="Пост"
+                            <img src="/api/posts/${post.id}/image" class="card-img-top" alt="Пост"
                                  style="height: 300px; object-fit: cover;">
                             <div class="post-overlay">
                                 <div class="post-info">
-                                    <span><i class="bi bi-heart-fill"></i> ${post.likesCount?default("0")}</span>
-                                    <span><i class="bi bi-chat-fill"></i> ${post.commentsCount?default("0")}</span>
+                                    <span><i class="bi bi-heart-fill"></i> ${post.likes!"0"}</span>
+                                    <span><i class="bi bi-chat-fill"></i> ${post.comments!"0"}</span>
                                 </div>
                             </div>
                         </div>
@@ -53,17 +64,23 @@
                 </div>
             </#list>
         <#else>
-            <div class="text-center mt-5">
-                <p>Поделитесь фото</p>
-                <p class="text-muted">Фото, которыми вы делитесь, будут показываться в вашем профиле.</p>
-                <a href="/post/create" class="btn btn-primary">Поделитесь своим первым фото</a>
-            </div>
+            <#if known && currentUserId == user.id>
+                <div class="text-center mt-5">
+                    <p>Поделитесь фото</p>
+                    <p class="text-muted">Фото, которыми вы делитесь, будут показываться в вашем профиле.</p>
+                    <a href="/posts/create" class="btn btn-primary">Поделитесь своим первым фото</a>
+                </div>
+                <#else>
+                    <div class="text-center mt-5">
+                        <p>В профиле нет фотографий</p>
+                    </div>
+            </#if>
         </#if>
     </div>
 
-    <#if isCurrentUser && posts?? && posts?size gt 0>
+    <#if known &&  currentUserId == user.id && posts?? && posts?size gt 0>
         <div class="text-center mt-4">
-            <a href="/post/create" class="btn btn-primary">Добавить новый пост</a>
+            <a href="/posts/create" class="btn btn-primary">Добавить новый пост</a>
         </div>
     </#if>
 
@@ -71,6 +88,13 @@
         .post-card {
             position: relative;
             overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .post-card:hover {
+            transform: scale(1.02);
         }
 
         .post-overlay {

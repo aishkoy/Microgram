@@ -1,41 +1,35 @@
 package kg.attractor.instagram.service.impl;
 
+import kg.attractor.instagram.dto.LikeDto;
 import kg.attractor.instagram.entity.Like;
 import kg.attractor.instagram.entity.LikeId;
-import kg.attractor.instagram.entity.Post;
-import kg.attractor.instagram.entity.User;
 import kg.attractor.instagram.mapper.LikeMapper;
 import kg.attractor.instagram.repository.LikeRepository;
-import kg.attractor.instagram.repository.PostRepository;
-import kg.attractor.instagram.repository.UserRepository;
 import kg.attractor.instagram.service.LikeService;
+import kg.attractor.instagram.service.PostService;
+import kg.attractor.instagram.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class LikeServiceImpl implements LikeService {
-
     private final LikeRepository likeRepository;
-    private final UserRepository userRepository;
-    private final PostRepository postRepository;
     private final LikeMapper likeMapper;
 
-    @Transactional(readOnly = true)
+    private final PostService postService;
+    private final UserService userService;
+
     @Override
     public boolean isPostLikedByUser(Long postId, Long userId) {
-        LikeId likeId = LikeId.builder()
-                .postId(postId)
-                .userId(userId)
-                .build();
-        return likeRepository.existsById(likeId);
+        return likeRepository.existsByPost_IdAndUser_Id(postId, userId);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public Long getPostLikesCount(Long postId) {
         return likeRepository.countByIdPostId(postId);
@@ -52,29 +46,16 @@ public class LikeServiceImpl implements LikeService {
         Optional<Like> existingLike = likeRepository.findById(likeId);
 
         if (existingLike.isPresent()) {
-            likeRepository.delete(existingLike.get());
+            likeRepository.deleteById(likeId);
         } else {
-            Post post = postRepository.findById(postId)
-                    .orElseThrow(() -> new IllegalArgumentException("Пост не найден"));
-
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
-
-            Like like = Like.builder()
-                    .id(likeId)
-                    .post(post)
-                    .user(user)
+            LikeDto like = LikeDto.builder()
+                    .post(postService.getPostById(postId))
+                    .user(userService.getUserById(userId))
                     .build();
 
-            likeRepository.save(like);
+            likeRepository.save(likeMapper.toEntity(like));
         }
-    }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<User> getPostLikers(Long postId) {
-        return likeRepository.findByIdPostId(postId).stream()
-                .map(Like::getUser)
-                .toList();
+        log.info("Пользователь {} {} лайк на пост {}", userId, existingLike.isPresent() ? "отменил" : "поставил", postId);
     }
 }

@@ -1,4 +1,4 @@
-package kg.attractor.instagram.controller;
+package kg.attractor.instagram.controller.mvc;
 
 import kg.attractor.instagram.dto.CommentDto;
 import kg.attractor.instagram.dto.PostDto;
@@ -8,19 +8,17 @@ import kg.attractor.instagram.service.LikeService;
 import kg.attractor.instagram.service.PostService;
 import kg.attractor.instagram.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
-@Controller
-@RequestMapping("/post")
+@Controller("mvcPost")
+@RequestMapping("posts")
 @RequiredArgsConstructor
 public class PostController {
 
@@ -29,45 +27,43 @@ public class PostController {
     private final CommentService commentService;
     private final UserService userService;
 
-    @GetMapping("/create")
+    @GetMapping("create")
     public String showCreatePostForm() {
         return "posts/create";
     }
 
-    @PostMapping("/create")
+    @PostMapping("create")
     public String createPost(
             @RequestParam("image") MultipartFile image,
             @RequestParam("description") String description,
-            @AuthenticationPrincipal UserDetails userDetails,
             RedirectAttributes redirectAttributes
     ) {
         try {
-            UserDto currentUser = userService.findByUsername(userDetails.getUsername());
+            UserDto currentUser = userService.getAuthUser();
             postService.createPost(description, image, currentUser.getId());
             redirectAttributes.addFlashAttribute("successMessage", "Пост успешно создан");
             return "redirect:/profile";
-        } catch (IOException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при загрузке изображения: " + e.getMessage());
-            return "redirect:/posts/create";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при создании поста: " + e.getMessage());
             return "redirect:/posts/create";
         }
     }
 
-    @GetMapping("/{postId}")
-    public String viewPost(@PathVariable Long postId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    @GetMapping("{postId}")
+    public String viewPost(@PathVariable Long postId, Model model) {
         try {
             PostDto post = postService.getPostById(postId);
-            UserDto currentUser = userService.findByUsername(userDetails.getUsername());
+            UserDto currentUser = userService.getAuthUser();
 
-            List<CommentDto> comments = commentService.getPostComments(postId);
-            Long likesCount = likeService.getPostLikesCount(postId);
+            List<CommentDto> comments = List.of();
+            try{
+                comments = commentService.getPostComments(postId);
+            } catch (NoSuchElementException ignored){}
+
             boolean isLiked = likeService.isPostLikedByUser(postId, currentUser.getId());
 
             model.addAttribute("post", post);
             model.addAttribute("comments", comments);
-            model.addAttribute("likesCount", likesCount);
             model.addAttribute("isLiked", isLiked);
             model.addAttribute("currentUser", currentUser);
 
@@ -78,11 +74,10 @@ public class PostController {
         }
     }
 
-    @PostMapping("/{postId}/like")
-    @ResponseBody
-    public String toggleLike(@PathVariable Long postId, @AuthenticationPrincipal UserDetails userDetails) {
+    @PostMapping("{postId}/like")
+    public String toggleLike(@PathVariable Long postId) {
         try {
-            UserDto currentUser = userService.findByUsername(userDetails.getUsername());
+            UserDto currentUser = userService.getAuthUser();
             likeService.toggleLike(postId, currentUser.getId());
             Long likesCount = likeService.getPostLikesCount(postId);
             return String.valueOf(likesCount);
@@ -91,25 +86,21 @@ public class PostController {
         }
     }
 
-    @PostMapping("/{postId}/comment")
-    @ResponseBody
+    @PostMapping("{postId}/comment")
     public CommentDto addComment(
             @PathVariable Long postId,
-            @RequestParam String content,
-            @AuthenticationPrincipal UserDetails userDetails
+            @RequestParam String content
     ) {
-        UserDto currentUser = userService.findByUsername(userDetails.getUsername());
+        UserDto currentUser = userService.getAuthUser();
         return commentService.addComment(postId, currentUser.getId(), content);
     }
 
-    @DeleteMapping("/comment/{commentId}")
-    @ResponseBody
+    @DeleteMapping("comment/{commentId}")
     public String deleteComment(
-            @PathVariable Long commentId,
-            @AuthenticationPrincipal UserDetails userDetails
+            @PathVariable Long commentId
     ) {
         try {
-            UserDto currentUser = userService.findByUsername(userDetails.getUsername());
+            UserDto currentUser = userService.getAuthUser();
             commentService.deleteComment(commentId, currentUser.getId());
             return "success";
         } catch (Exception e) {
@@ -117,14 +108,13 @@ public class PostController {
         }
     }
 
-    @DeleteMapping("/{postId}")
+    @DeleteMapping("{postId}")
     public String deletePost(
             @PathVariable Long postId,
-            @AuthenticationPrincipal UserDetails userDetails,
             RedirectAttributes redirectAttributes
     ) {
         try {
-            UserDto currentUser = userService.findByUsername(userDetails.getUsername());
+            UserDto currentUser = userService.getAuthUser();
             postService.deletePost(postId, currentUser.getId());
             redirectAttributes.addFlashAttribute("successMessage", "Пост успешно удален");
         } catch (Exception e) {
@@ -132,12 +122,4 @@ public class PostController {
         }
         return "redirect:/profile";
     }
-
-    @GetMapping("/all")
-    public String viewAllPosts(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        List<PostDto> posts = postService.getAllPosts();
-        model.addAttribute("posts", posts);
-        return "posts/list";
-    }
-
 }

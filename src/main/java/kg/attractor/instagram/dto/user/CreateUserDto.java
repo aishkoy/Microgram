@@ -13,16 +13,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateUserDto {
-
-    @NotBlank(message = "Имя не может быть пустым")
-    @Pattern(regexp = "^[A-Za-zА-Яа-яЁё-]+$", message = "Имя может содержать только буквы и дефис")
-    @Size(max = 55, message = "Имя не может быть длиннее 55 символов")
-    String name;
-
-    @Size(max = 55, message = "Фамилия не может быть длиннее 55 символов")
-    String surname;
-
+public class CreateUserDto extends UserDto{
     @Email(message = "Введите корректный email")
     @NotBlank(message = "Email не может быть пустым")
     @UniqueEmail(message = "Этот email уже занят")

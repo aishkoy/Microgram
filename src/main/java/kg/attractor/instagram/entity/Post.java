@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @Setter
@@ -37,4 +38,10 @@ public class Post {
     @JoinColumn(name = "user_id",
             nullable = false)
     User user;
+
+    @OneToMany(mappedBy = "post")
+    List<Like> likes;
+
+    @OneToMany(mappedBy = "post")
+    List<Comment> comments;
 }

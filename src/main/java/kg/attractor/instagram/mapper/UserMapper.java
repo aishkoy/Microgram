@@ -9,16 +9,15 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 
 public interface UserMapper {
+    @Mapping(target = "followers", ignore = true)
+    @Mapping(target = "followings", ignore = true)
     User toEntity(UserDto dto);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "username", source = "username")
+    @Mapping(target = "followers", ignore = true)
+    @Mapping(target = "followings", ignore = true)
     User toEntity(CreateUserDto createDto);
 
-    UserDto toDto(User entity);
-
-    @Mapping(target = "followersCount", ignore = true)
-    @Mapping(target = "followingCount", ignore = true)
-    UserDto toDisplayDto(User user);
-
+    @Mapping(target = "followers", expression = "java(user.getFollowers() != null ? user.getFollowers().size() : 0)")
+    @Mapping(target = "followings", expression = "java(user.getFollowings() != null ? user.getFollowings().size() : 0)")
+    UserDto toDto(User user);
 }

@@ -1,5 +1,13 @@
 <#import "/spring.ftl" as spring>
 
+<#assign role = user.role.id />
+<#assign known = SPRING_SECURITY_CONTEXT?? >
+<#if known>
+    <#assign
+    currentUserId = SPRING_SECURITY_CONTEXT.authentication.principal.getUserId()
+    >
+</#if>
+
 <#macro page title="" styles="" activeNav="">
     <!DOCTYPE html>
     <html lang="ru">
@@ -12,31 +20,56 @@
             body {
                 background-color: #fafafa;
             }
+
             .sidebar {
                 position: fixed;
-                left: 0;
                 top: 0;
                 bottom: 0;
-                width: 250px;
-                background-color: white;
-                border-right: 1px solid #dbdbdb;
-                padding: 20px;
+                left: 0;
+                width: 240px;
+                background: #fff;
+                border-right: 1px solid #ddd;
+                padding: 24px 16px;
+                box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+                z-index: 1000;
             }
+
             .main-content {
-                margin-left: 250px;
-                padding: 20px;
+                margin-left: 240px;
+                padding: 32px;
+                min-height: 100vh;
+                background-color: #f9f9f9;
             }
+
             .nav-link {
-                color: #262626;
-                margin-bottom: 10px;
+                display: flex;
+                align-items: center;
+                color: #333;
+                padding: 10px 12px;
+                border-radius: 8px;
+                transition: background 0.2s ease;
                 font-size: 16px;
+                margin-bottom: 8px;
+                text-decoration: none;
             }
+
+            .nav-link:hover {
+                background-color: #f0f0f0;
+            }
+
             .nav-link.active {
-                font-weight: bold;
+                background-color: #e9ecef;
+                font-weight: 600;
             }
+
             .profile-stats div {
                 text-align: center;
             }
+
+            .nav-link i {
+                margin-right: 8px;
+            }
+
         </style>
     </head>
     <body>
@@ -44,21 +77,23 @@
         <h4 class="mb-4">Instagram</h4>
 
         <nav class="nav flex-column">
-            <a class="nav-link" href="/post/all"><i class="bi bi-house-door"></i> Главная</a>
-            <a class="nav-link" href="#"><i class="bi bi-search"></i> Поисковый запрос</a>
+            <a class="nav-link" href="/posts"><i class="bi bi-house-door"></i> Главная</a>
+            <a class="nav-link" href="/search"><i class="bi bi-search"></i> Поисковый запрос</a>
             <a class="nav-link" href="#"><i class="bi bi-compass"></i> Интересное</a>
-            <a class="nav-link" href="/post/create"><i class="bi bi-plus-square"></i> Создать</a>
+            <a class="nav-link" href="/posts/create"><i class="bi bi-plus-square"></i> Создать</a>
 
-            <#if Session.SPRING_SECURITY_CONTEXT??>
-                <a class="nav-link" href="/profile"><i class="bi bi-person"></i> Профиль</a>
+            <#if known>
+                <a class="nav-link" href="/users/${currentUserId}"><i class="bi bi-person"></i> Профиль</a>
                 <#if  activeNav == "profile" && _csrf??>
                     <form action="/logout" method="post" class="d-inline">
-                        <input type="hidden" name="${(_csrf.parameterName)!'csrf'}" value="${(_csrf.token)!'--no-token--'}"/>
+                        <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                               value="${(_csrf.token)!'--no-token--'}"/>
                         <button type="submit" class="nav-link"><i class="bi bi-box-arrow-right"></i> Выйти</button>
                     </form>
                 </#if>
             <#else>
-                <a class="nav-link <#if activeNav == "login">active</#if>" href="auth/login"><i class="bi bi-box-arrow-in-right"></i> Войти</a>
+                <a class="nav-link <#if activeNav == "login">active</#if>" href="auth/login"><i
+                            class="bi bi-box-arrow-in-right"></i> Войти</a>
             </#if>
         </nav>
     </div>

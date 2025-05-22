@@ -1,24 +1,22 @@
-package kg.attractor.instagram.controller;
+package kg.attractor.instagram.controller.mvc;
 
 import jakarta.validation.Valid;
 import kg.attractor.instagram.dto.user.CreateUserDto;
 import kg.attractor.instagram.service.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
 @Controller
-@RequestMapping("/auth")
+@RequestMapping("auth")
 @RequiredArgsConstructor
 public class AuthController {
 
     private final UserService userService;
 
-    @GetMapping("/register")
+    @GetMapping("register")
     public String showRegisterForm(Model model) {
         if (!model.containsAttribute("user")) {
             model.addAttribute("user", new CreateUserDto());
@@ -26,7 +24,7 @@ public class AuthController {
         return "auth/register";
     }
 
-    @PostMapping("/register")
+    @PostMapping("register")
     public String registerUser(@Valid @ModelAttribute("user") CreateUserDto createUserDto,
                                BindingResult bindingResult) {
 
@@ -38,7 +36,7 @@ public class AuthController {
         return "redirect:/auth/login?registered";
     }
 
-    @GetMapping("/login")
+    @GetMapping("login")
     public String showLoginForm(
             @RequestParam(value = "error", required = false) String error,
             @RequestParam(value = "registered", required = false) String registered,

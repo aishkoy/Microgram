@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/posts")
+@RestController("restPost")
+@RequestMapping("api/posts")
 @RequiredArgsConstructor
-public class PostRestController {
+public class PostController {
 
     private final PostService postService;
 
-    @GetMapping("/{postId}/image")
+    @GetMapping("{postId}/image")
     public ResponseEntity<?> getPostImage(@PathVariable Long postId) {
         return postService.getPostImageById(postId);
     }

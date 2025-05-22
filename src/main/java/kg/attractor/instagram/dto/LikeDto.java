@@ -1,5 +1,6 @@
 package kg.attractor.instagram.dto;
 
+import jakarta.validation.constraints.NotNull;
 import kg.attractor.instagram.dto.user.UserDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -12,6 +13,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class LikeDto {
-    UserDto user;
+    @NotNull
     PostDto post;
+
+    @NotNull
+    UserDto user;
 }

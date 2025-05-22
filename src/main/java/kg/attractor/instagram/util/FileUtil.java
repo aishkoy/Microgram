@@ -2,21 +2,24 @@ package kg.attractor.instagram.util;
 
 import lombok.SneakyThrows;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-@Component
+@UtilityClass
 public class FileUtil {
 
     private static final String IMAGE_DIR = "data/";
@@ -24,7 +27,7 @@ public class FileUtil {
     public static final String IMAGES_SUBDIR = "images/";
 
     @SneakyThrows
-    public static String saveUploadFile(MultipartFile file, String subDir) {
+    public String saveUploadFile(MultipartFile file, String subDir) {
         String uuidFile = UUID.randomUUID().toString();
         String resultFileName = uuidFile + "_" + file.getOriginalFilename();
 
@@ -38,18 +41,22 @@ public class FileUtil {
         return resultFileName;
     }
 
-    public static ResponseEntity<?> getOutputFile(String filename, MediaType mediaType) {
+    public ResponseEntity<?> getOutputFile(String filename, MediaType mediaType) {
         try {
             Path filePath = filename.equals(DEFAULT_AVATAR)
                     ? Paths.get(IMAGE_DIR + filename)
                     : Paths.get(IMAGE_DIR + IMAGES_SUBDIR + filename);
 
             byte[] fileContent = Files.readAllBytes(filePath);
-            ByteArrayResource resource = new ByteArrayResource(fileContent);
+            String originalFileName = filename.substring(filename.indexOf('_') + 1);
+            String encodedFileName = URLEncoder.encode(originalFileName, StandardCharsets.UTF_8)
+                    .replace("+", "%20");
+
+            Resource resource = new ByteArrayResource(fileContent);
 
             return ResponseEntity.ok()
                     .contentType(mediaType)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filePath.getFileName() + "\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename*=UTF-8''" + encodedFileName)
                     .body(resource);
         } catch (IOException e) {
             return ResponseEntity.notFound().build();

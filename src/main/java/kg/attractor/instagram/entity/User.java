@@ -5,12 +5,15 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -55,6 +58,11 @@ public class User {
 
     @Column(name = "enabled",
             nullable = false)
-    @Builder.Default
-    Boolean enabled = true;
+    Boolean enabled;
+
+    @OneToMany(mappedBy = "following")
+    List<Follow> followers;
+
+    @OneToMany(mappedBy = "follower")
+    List<Follow> followings;
 }

@@ -1,7 +1,7 @@
 package kg.attractor.instagram.service;
 
-import kg.attractor.instagram.entity.Role;
+import kg.attractor.instagram.dto.RoleDto;
 
 public interface RoleService {
-    Role getByName(String name);
+    RoleDto getByName(String name);
 }

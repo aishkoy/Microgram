@@ -5,10 +5,8 @@ import kg.attractor.instagram.entity.LikeId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface LikeRepository extends JpaRepository<Like, LikeId> {
-    List<Like> findByIdPostId(Long postId);
+    boolean existsByPost_IdAndUser_Id(Long postId, Long userId);
     Long countByIdPostId(Long postId);
 }
