@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -45,11 +48,15 @@ public class FileUtil {
                     : Paths.get(IMAGE_DIR + IMAGES_SUBDIR + filename);
 
             byte[] fileContent = Files.readAllBytes(filePath);
-            ByteArrayResource resource = new ByteArrayResource(fileContent);
+            String originalFileName = filename.substring(filename.indexOf('_') + 1);
+            String encodedFileName = URLEncoder.encode(originalFileName, StandardCharsets.UTF_8)
+                    .replace("+", "%20");
+
+            Resource resource = new ByteArrayResource(fileContent);
 
             return ResponseEntity.ok()
                     .contentType(mediaType)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filePath.getFileName() + "\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename*=UTF-8''" + encodedFileName)
                     .body(resource);
         } catch (IOException e) {
             return ResponseEntity.notFound().build();
