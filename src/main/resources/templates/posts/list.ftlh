@@ -9,6 +9,18 @@
             </a>
         </div>
 
+        <#if successMessage??>
+            <div class="alert alert-success mb-4 shadow-sm">
+                ${successMessage}
+            </div>
+        </#if>
+
+        <#if errorMessage??>
+            <div class="alert alert-danger mb-4 shadow-sm">
+                ${errorMessage}
+            </div>
+        </#if>
+
         <div class="row g-4">
             <#if posts?? && posts?size gt 0>
                 <#list posts as post>
