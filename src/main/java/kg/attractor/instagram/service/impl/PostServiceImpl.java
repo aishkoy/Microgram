@@ -5,9 +5,9 @@ import kg.attractor.instagram.entity.Post;
 import kg.attractor.instagram.exception.nsee.ImageNotfoundException;
 import kg.attractor.instagram.exception.nsee.PostNotFoundException;
 import kg.attractor.instagram.mapper.PostMapper;
+import kg.attractor.instagram.repository.LikeRepository;
 import kg.attractor.instagram.repository.PostRepository;
-import kg.attractor.instagram.service.PostService;
-import kg.attractor.instagram.service.UserService;
+import kg.attractor.instagram.service.*;
 import kg.attractor.instagram.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +30,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
     private final UserService userService;
+    private final PostCleanupService postCleanupService;
 
     @Override
     public List<PostDto> getAllPosts() {
@@ -99,6 +100,9 @@ public class PostServiceImpl implements PostService {
             } catch (IOException e) {
                 log.error("Не удалось удалить файл изображения: {}", e.getMessage());
             }
+
+            postCleanupService.cleanupPostDependencies(postId);
+
             postRepository.deleteById(postId);
             log.info("Удален пост с id {}", postId);
         } else {
