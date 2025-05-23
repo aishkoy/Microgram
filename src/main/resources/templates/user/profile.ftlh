@@ -1,5 +1,5 @@
 <#import "../layout.ftlh" as layout>
-<@layout.page title="" styles="" activeNav="profile">
+<@layout.page title="" styles="/static/css/profile.css" activeNav="profile">
     <#assign role = user.role.id />
     <#assign known = SPRING_SECURITY_CONTEXT?? >
     <#if known>
@@ -101,66 +101,4 @@
             <a href="/posts/create" class="btn btn-primary">Добавить новый пост</a>
         </div>
     </#if>
-
-    <style>
-        .post-card {
-            position: relative;
-            overflow: hidden;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease;
-        }
-
-        .post-card:hover {
-            transform: scale(1.02);
-        }
-
-        .post-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s;
-            color: white;
-        }
-
-        .post-item:hover .post-overlay {
-            opacity: 1;
-        }
-
-        .post-info {
-            display: flex;
-            gap: 20px;
-        }
-
-        .post-info span {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-weight: bold;
-        }
-
-        .clickable-stat {
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-
-        .clickable-stat:hover {
-            color: #0d6efd;
-        }
-
-        .modal-body .border-bottom:last-child {
-            border-bottom: none !important;
-        }
-
-        .modal-body a:hover {
-            text-decoration: underline !important;
-        }
-    </style>
 </@layout.page>

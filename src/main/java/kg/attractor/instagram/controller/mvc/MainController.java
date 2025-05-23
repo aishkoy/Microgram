@@ -18,6 +18,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class MainController {
     private final PostService postService;
+    private final UserService userService;
 
     @GetMapping("search")
     public String searchPage() {

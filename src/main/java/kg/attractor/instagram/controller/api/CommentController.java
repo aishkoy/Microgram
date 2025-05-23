@@ -1,6 +1,7 @@
 package kg.attractor.instagram.controller.api;
 
 import kg.attractor.instagram.dto.CommentDto;
+import kg.attractor.instagram.dto.user.UserDto;
 import kg.attractor.instagram.service.CommentService;
 import kg.attractor.instagram.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -52,8 +53,8 @@ public class CommentController {
                         .body(Map.of("error", "Комментарий не может быть длиннее 500 символов"));
             }
 
-            CommentDto comment = commentService.addComment(postId, currentUser.getId(), content.trim());
-            log.info("Пользователь {} добавил комментарий к посту {}", currentUser.getId(), postId);
+            CommentDto comment = commentService.addComment(postId, userService.getAuthId(), content.trim());
+            log.info("Пользователь {} добавил комментарий к посту {}", userService.getAuthId(), postId);
 
             return ResponseEntity.ok(comment);
         } catch (IllegalArgumentException e) {

@@ -49,19 +49,6 @@ public class CommentServiceImpl implements CommentService {
         return comments;
     }
 
-    @Override
-    public CommentDto getCommentById(Long id) {
-        Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new CommentNotFoundException("Комментарий не найден"));
-        log.info("Получен комментарий с id {}", comment.getId());
-        return commentMapper.toDto(comment);
-    }
-
-    @Override
-    public Long getPostCommentsCount(Long postId) {
-        return commentRepository.countByPostId(postId);
-    }
-
     @Transactional
     @Override
     public CommentDto addComment(Long postId, Long userId, String content) {

@@ -11,10 +11,6 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findByPostIdOrderByIdDesc(Long postId);
 
-    Optional<Comment> findByIdAndUserId(Long id, Long userId);
-
-    Long countByPostId(Long postId);
-
     boolean existsByIdAndUserId(Long id, Long userId);
 
     int deleteByPostId(Long postId);
