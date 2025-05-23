@@ -7,32 +7,43 @@
                 <div class="card shadow post-card">
                     <div class="row g-0">
                         <div class="col-md-8 post-image-container">
-                            <img src="/api/posts/${post.id}/image" class="img-fluid rounded-start post-image" alt="Изображение поста">
+                            <img src="/api/posts/${post.id}/image" class="img-fluid rounded-start post-image"
+                                 alt="Изображение поста">
                         </div>
 
                         <div class="col-md-4 d-flex flex-column">
                             <div class="card-header bg-white border-bottom d-flex align-items-center p-3">
                                 <a href="/users/${post.user.id}" class="text-decoration-none">
-                                    <img src="/api/users/${post.user.id}/avatar" class="rounded-circle me-2" width="32" height="32"
-                                         alt="Аватар пользователя" onerror="this.src='/static/avatar/default_avatar.jpg'">
+                                    <img src="/api/users/${post.user.id}/avatar" class="rounded-circle me-2" width="32"
+                                         height="32"
+                                         alt="Аватар пользователя"
+                                         onerror="this.src='/static/avatar/default_avatar.jpg'">
                                     <span class="fw-bold">${post.user.username}</span>
                                 </a>
 
-                                <#if currentUser.id == post.user.id>
-                                    <div class="ms-auto dropdown">
-                                        <button class="btn btn-sm text-secondary" type="button" id="postOptionsDropdown"
-                                                data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-three-dots"></i>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="postOptionsDropdown">
-                                            <li>
-                                                <form action="/posts/delete/${post.id}" method="post" class="delete-post-form">
-                                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                                                    <button type="submit" class="dropdown-item text-danger">Удалить пост</button>
-                                                </form>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                <#if currentUser??>
+                                    <#if currentUser.id == post.user.id>
+                                        <div class="ms-auto dropdown">
+                                            <button class="btn btn-sm text-secondary" type="button"
+                                                    id="postOptionsDropdown"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end"
+                                                aria-labelledby="postOptionsDropdown">
+                                                <li>
+                                                    <form action="/posts/delete/${post.id}" method="post"
+                                                          class="delete-post-form">
+                                                        <input type="hidden" name="${_csrf.parameterName}"
+                                                               value="${_csrf.token}"/>
+                                                        <button type="submit" class="dropdown-item text-danger">Удалить
+                                                            пост
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </#if>
                                 </#if>
                             </div>
 
@@ -44,9 +55,14 @@
                             <div class="comments-container flex-grow-1 overflow-auto p-0">
                                 <div class="p-3 border-bottom">
                                     <div class="d-flex align-items-center">
-                                        <button class="btn btn-sm btn-link p-0 like-button" data-post-id="${post.id}">
-                                            <i class="bi <#if isLiked>bi-heart-fill text-danger<#else>bi-heart</#if> fs-5"></i>
-                                        </button>
+                                        <#if currentUser??>
+                                            <button class="btn btn-sm btn-link p-0 like-button"
+                                                    data-post-id="${post.id}">
+                                                <i class="bi <#if isLiked>bi-heart-fill text-danger<#else>bi-heart</#if> fs-5"></i>
+                                            </button>
+                                            <#else>
+                                                <i class="bi bi-heart fs-5"></i>
+                                        </#if>
                                         <span class="ms-2 likes-count">${likesCount!0}</span> likes
                                     </div>
                                 </div>
@@ -56,13 +72,17 @@
                                         <#list comments as comment>
                                             <div class="comment mb-3" data-comment-id="${comment.id}">
                                                 <div class="d-flex">
-                                                    <a href="/users/${comment.user.id}" class="text-decoration-none me-2">
-                                                        <img src="/api/users/${comment.user.id}/avatar" class="rounded-circle" width="24" height="24"
-                                                             alt="Аватар" onerror="this.src='/static/avatar/default_avatar.jpg'">
+                                                    <a href="/users/${comment.user.id}"
+                                                       class="text-decoration-none me-2">
+                                                        <img src="/api/users/${comment.user.id}/avatar"
+                                                             class="rounded-circle" width="24" height="24"
+                                                             alt="Аватар"
+                                                             onerror="this.src='/static/avatar/default_avatar.jpg'">
                                                     </a>
                                                     <div class="flex-grow-1">
                                                         <div class="comment-text">
-                                                            <a href="/users/${comment.user.id}" class="fw-bold text-decoration-none me-2">
+                                                            <a href="/users/${comment.user.id}"
+                                                               class="fw-bold text-decoration-none me-2">
                                                                 ${comment.user.username}
                                                             </a>
                                                             ${comment.content}
@@ -70,13 +90,15 @@
                                                         <small class="text-muted">${comment.createdAt}</small>
                                                     </div>
 
-                                                    <#if currentUser.id == comment.user.id>
-                                                        <div class="ms-auto">
-                                                            <button class="btn btn-sm text-secondary delete-comment"
-                                                                    data-comment-id="${comment.id}">
-                                                                <i class="bi bi-x"></i>
-                                                            </button>
-                                                        </div>
+                                                    <#if currentUser??>
+                                                        <#if currentUser.id == comment.user.id>
+                                                            <div class="ms-auto">
+                                                                <button class="btn btn-sm text-secondary delete-comment"
+                                                                        data-comment-id="${comment.id}">
+                                                                    <i class="bi bi-x"></i>
+                                                                </button>
+                                                            </div>
+                                                        </#if>
                                                     </#if>
                                                 </div>
                                             </div>
@@ -87,15 +109,24 @@
                                 </div>
                             </div>
 
-                            <div class="p-3 border-top mt-auto">
-                                <form id="comment-form" class="d-flex">
-                                    <input type="text" id="comment-content" class="form-control"
-                                           placeholder="Добавьте комментарий...">
-                                    <button type="submit" class="btn btn-primary ms-2">
-                                        <i class="bi bi-send"></i>
-                                    </button>
-                                </form>
-                            </div>
+                            <#if currentUser??>
+                                <div class="p-3 border-top mt-auto">
+                                    <form id="comment-form" class="d-flex">
+                                        <input type="text" id="comment-content" class="form-control"
+                                               placeholder="Добавьте комментарий...">
+                                        <button type="submit" class="btn btn-primary ms-2">
+                                            <i class="bi bi-send"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            <#else>
+                                <div class="p-3 border-top mt-auto">
+                                    <a href="/auth/login" class="d-flex">
+                                        <p>Авторизуйтесь чтобы написать комментарий</p>
+                                    </a>
+                                </div>
+                            </#if>
+
                         </div>
                     </div>
                 </div>
@@ -105,12 +136,12 @@
 
     <script>
         // Функционал лайков
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const likeButton = document.querySelector('.like-button');
             const likesCountElement = document.querySelector('.likes-count');
 
             if (likeButton) {
-                likeButton.addEventListener('click', function() {
+                likeButton.addEventListener('click', function () {
                     const postId = this.getAttribute('data-post-id');
 
                     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
@@ -147,7 +178,7 @@
             const noCommentsMessage = document.querySelector('.no-comments-message');
 
             if (commentForm) {
-                commentForm.addEventListener('submit', function(e) {
+                commentForm.addEventListener('submit', function (e) {
                     e.preventDefault();
 
                     const commentInput = document.getElementById('comment-content');
@@ -170,7 +201,7 @@
                             'Content-Type': 'application/json',
                             [csrfHeader]: csrfToken
                         },
-                        body: JSON.stringify({ content: content })
+                        body: JSON.stringify({content: content})
                     })
 
                         .then(response => response.json())
@@ -199,7 +230,7 @@
             }
 
             // Обработчики удаления комментариев
-            document.addEventListener('click', function(e) {
+            document.addEventListener('click', function (e) {
                 if (e.target.classList.contains('delete-comment') || e.target.parentElement.classList.contains('delete-comment')) {
                     e.preventDefault();
 
@@ -215,7 +246,7 @@
             // Обработчик удаления поста
             const deletePostForm = document.querySelector('.delete-post-form');
             if (deletePostForm) {
-                deletePostForm.addEventListener('submit', function(e) {
+                deletePostForm.addEventListener('submit', function (e) {
                     if (!confirm('Вы уверены, что хотите удалить этот пост?')) {
                         e.preventDefault();
                     }
