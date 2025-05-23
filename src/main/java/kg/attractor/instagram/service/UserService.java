@@ -17,6 +17,10 @@ public interface UserService {
 
     UserDto getUserByEmail(String email);
 
+    List<UserDto> getUserFollowers(Long userId);
+
+    List<UserDto> getUserFollowings(Long userId);
+
     void registerUser(CreateUserDto createUserDto);
 
     UserDto findByUsername(String username);

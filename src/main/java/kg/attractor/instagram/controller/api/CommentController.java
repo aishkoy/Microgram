@@ -1,7 +1,6 @@
 package kg.attractor.instagram.controller.api;
 
 import kg.attractor.instagram.dto.CommentDto;
-import kg.attractor.instagram.dto.user.UserDto;
 import kg.attractor.instagram.service.CommentService;
 import kg.attractor.instagram.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -40,13 +39,13 @@ public class CommentController {
             @RequestBody Map<String, String> request
     ) {
         try {
-            UserDto currentUser = userService.getAuthUser();
             String content = request.get("content");
 
             if (content == null || content.trim().isEmpty()) {
                 return ResponseEntity.badRequest()
                         .body(Map.of("error", "Содержимое комментария не может быть пустым"));
             }
+
 
             if (content.trim().length() > 500) {
                 return ResponseEntity.badRequest()
@@ -71,6 +70,7 @@ public class CommentController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable Long id) {
         try {
+
             UserDto currentUser = userService.getAuthUser();
             commentService.deleteComment(id, currentUser.getId());
             log.info("Пользователь {} удалил комментарий {}", currentUser.getId(), id);

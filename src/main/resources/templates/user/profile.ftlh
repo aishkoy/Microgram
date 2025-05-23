@@ -10,6 +10,7 @@
 
     <script src="/static/js/notifications.js"></script>
     <script src="/static/js/follow.js"></script>
+    <script src="/static/js/follows-followers.js"></script>
 
     <#if successMessage??>
         <div class="alert alert-success mb-4 shadow-sm">
@@ -30,8 +31,15 @@
             <h4>${user.username}</h4>
             <div class="d-flex gap-4 profile-stats">
                 <div><strong>${posts?size}</strong><br>публикаций</div>
-                <div><strong>${user.followers}</strong><br>подписчиков</div>
-                <div><strong>${user.followings}</strong><br>подписок</div>
+
+                <div class="d-flex gap-4 profile-stats">
+                    <div data-stat="followers" class="clickable-stat">
+                        <strong>${user.followers}</strong><br>подписчиков
+                    </div>
+                    <div data-stat="followings" class="clickable-stat">
+                        <strong>${user.followings}</strong><br>подписок
+                    </div>
+                </div>
             </div>
             <p class="mt-2 mb-0">
                 ${user.name}<#if user.surname?? && user.surname?has_content> ${user.surname}</#if>
@@ -39,7 +47,8 @@
             <p>${user.bio!""}</p>
 
             <#if known && currentUserId == user.id>
-                <a href="/users/${currentUserId}/edit" class="btn btn-outline-secondary btn-sm">Редактировать профиль</a>
+                <a href="/users/${currentUserId}/edit" class="btn btn-outline-secondary btn-sm">Редактировать
+                    профиль</a>
             </#if>
 
             <#if known && currentUserId != user.id>
@@ -136,7 +145,22 @@
             gap: 5px;
             font-weight: bold;
         }
+
+        .clickable-stat {
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .clickable-stat:hover {
+            color: #0d6efd;
+        }
+
+        .modal-body .border-bottom:last-child {
+            border-bottom: none !important;
+        }
+
+        .modal-body a:hover {
+            text-decoration: underline !important;
+        }
     </style>
-
-
 </@layout.page>
