@@ -25,7 +25,7 @@
                                     <img id="imagePreview" src="/static/images/placeholder.jpg"
                                          class="img-fluid rounded" style="max-height: 300px; display: none;">
                                 </div>
-                                <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+                                <input type="file" class="form-control" id="image" name="image" accept="image/*">
                                 <small class="text-muted">Выберите изображение для публикации</small>
                             </div>
 

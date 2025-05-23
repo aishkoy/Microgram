@@ -15,7 +15,6 @@ import java.util.List;
 @RequestMapping("/")
 @RequiredArgsConstructor
 public class MainController {
-    private final UserService userService;
     private final PostService postService;
 
     @GetMapping("search")

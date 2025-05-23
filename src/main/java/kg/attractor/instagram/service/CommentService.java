@@ -20,5 +20,5 @@ public interface CommentService {
     CommentDto addComment(Long postId, Long userId, String content);
 
     @Transactional
-    void deleteComment(Long commentId, Long userId);
+    void deleteComment(Long id, Long userId);
 }

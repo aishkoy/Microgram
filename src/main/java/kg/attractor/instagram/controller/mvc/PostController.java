@@ -39,6 +39,11 @@ public class PostController {
             RedirectAttributes redirectAttributes
     ) {
         try {
+            if (image == null || image.isEmpty()) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Ошибка: изображение не выбрано");
+                return "redirect:/posts/create";
+            }
+
             UserDto currentUser = userService.getAuthUser();
             postService.createPost(description, image, currentUser.getId());
             redirectAttributes.addFlashAttribute("successMessage", "Пост успешно создан");
