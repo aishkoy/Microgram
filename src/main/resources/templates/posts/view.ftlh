@@ -90,15 +90,15 @@
                                                         <small class="text-muted">${comment.createdAt}</small>
                                                     </div>
 
-                                                    <#if currentUser??>
-                                                        <#if currentUser.id == comment.user.id>
-                                                            <div class="ms-auto">
-                                                                <button class="btn btn-sm text-secondary delete-comment"
-                                                                        data-comment-id="${comment.id}">
-                                                                    <i class="bi bi-x"></i>
-                                                                </button>
-                                                            </div>
-                                                        </#if>
+
+                                                    <#if currentUser.id == comment.user.id || currentUser.id == post.user.id>
+                                                        <div class="ms-auto">
+                                                            <button class="btn btn-sm text-secondary delete-comment"
+                                                                    data-comment-id="${comment.id}">
+                                                                <i class="bi bi-x"></i>
+                                                            </button>
+                                                        </div>
+
                                                     </#if>
                                                 </div>
                                             </div>
@@ -134,9 +134,13 @@
         </div>
     </div>
 
+    <div style="display: none;">
+        <span id="current-user-data" data-user-id="${currentUser.id}" data-username="${currentUser.username}"></span>
+        <span id="post-data" data-post-id="${post.id}" data-owner-id="${post.user.id}"></span>
+    </div>
+
     <script>
-        // Функционал лайков
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const likeButton = document.querySelector('.like-button');
             const likesCountElement = document.querySelector('.likes-count');
 
@@ -172,7 +176,6 @@
                 });
             }
 
-            // Функционал комментариев
             const commentForm = document.getElementById('comment-form');
             const commentsList = document.querySelector('.comments-list');
             const noCommentsMessage = document.querySelector('.no-comments-message');
@@ -184,13 +187,15 @@
                     const commentInput = document.getElementById('comment-content');
                     const content = commentInput.value.trim();
 
-
                     if (!content) {
                         alert('Комментарий не может быть пустым');
                         return;
                     }
 
-                    const postId = getPostIdFromUrl();
+                    const postId = getPostId();
+                    const submitButton = this.querySelector('button[type="submit"]');
+
+                    submitButton.disabled = true;
 
                     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
                     const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
@@ -203,34 +208,36 @@
                         },
                         body: JSON.stringify({content: content})
                     })
-
-                        .then(response => response.json())
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Ошибка сервера: ' + response.status);
+                            }
+                            return response.json();
+                        })
                         .then(data => {
                             if (data.error) {
                                 alert('Ошибка: ' + data.error);
                                 return;
                             }
 
-                            // Скрываем сообщение "Нет комментариев"
                             if (noCommentsMessage) {
                                 noCommentsMessage.style.display = 'none';
                             }
-
-                            // Добавляем новый комментарий в начало списка
                             addCommentToList(data, true);
 
-                            // Очищаем поле ввода
                             commentInput.value = '';
                         })
                         .catch(error => {
                             console.error('Ошибка при добавлении комментария:', error);
                             alert('Ошибка при добавлении комментария');
+                        })
+                        .finally(() => {
+                            submitButton.disabled = false;
                         });
                 });
             }
 
-            // Обработчики удаления комментариев
-            document.addEventListener('click', function (e) {
+            document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('delete-comment') || e.target.parentElement.classList.contains('delete-comment')) {
                     e.preventDefault();
 
@@ -243,7 +250,6 @@
                 }
             });
 
-            // Обработчик удаления поста
             const deletePostForm = document.querySelector('.delete-post-form');
             if (deletePostForm) {
                 deletePostForm.addEventListener('submit', function (e) {
@@ -254,10 +260,25 @@
             }
         });
 
-        function getPostIdFromUrl() {
-            const path = window.location.pathname;
-            const parts = path.split('/');
-            return parts[parts.length - 1];
+        function getPostId() {
+            const postData = document.getElementById('post-data');
+            return postData.getAttribute('data-post-id');
+        }
+
+        function getCurrentUser() {
+            const userData = document.getElementById('current-user-data');
+            return {
+                id: parseInt(userData.getAttribute('data-user-id')),
+                username: userData.getAttribute('data-username')
+            };
+        }
+
+        function isPostOwner() {
+            const currentUser = getCurrentUser();
+            const postData = document.getElementById('post-data');
+            const postOwnerId = parseInt(postData.getAttribute('data-owner-id'));
+
+            return currentUser.id === postOwnerId;
         }
 
         function addCommentToList(comment, prepend) {
@@ -281,13 +302,13 @@
 
             commentElement.innerHTML =
                 '<div class="d-flex">' +
-                '<a href="/profile/' + comment.user.id + '" class="text-decoration-none me-2">' +
+                '<a href="/users/' + comment.user.id + '" class="text-decoration-none me-2">' +
                 '<img src="/api/users/' + comment.user.id + '/avatar" class="rounded-circle" width="24" height="24"' +
                 ' alt="Аватар" onerror="this.src=\'/static/avatar/default_avatar.jpg\'">' +
                 '</a>' +
                 '<div class="flex-grow-1">' +
                 '<div class="comment-text">' +
-                '<a href="/profile/' + comment.user.id + '" class="fw-bold text-decoration-none me-2">' +
+                '<a href="/users/' + comment.user.id + '" class="fw-bold text-decoration-none me-2">' +
                 comment.user.username +
                 '</a>' +
                 comment.content +
@@ -305,26 +326,33 @@
         }
 
         function deleteComment(commentId) {
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
             fetch('/api/comments/' + commentId, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
                 }
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ошибка сервера: ' + response.status);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.error) {
                         alert('Ошибка: ' + data.error);
                         return;
                     }
 
-                    // Удаляем элемент комментария из DOM
                     const commentElement = document.querySelector('[data-comment-id="' + commentId + '"]');
                     if (commentElement) {
                         commentElement.remove();
                     }
 
-                    // Показываем сообщение "Нет комментариев", если список пуст
                     const remainingComments = document.querySelectorAll('.comment');
                     const noCommentsMessage = document.querySelector('.no-comments-message');
                     if (remainingComments.length === 0 && noCommentsMessage) {
@@ -335,22 +363,6 @@
                     console.error('Ошибка при удалении комментария:', error);
                     alert('Ошибка при удалении комментария');
                 });
-        }
-
-        function getCurrentUser() {
-            // Эта функция должна возвращать данные текущего пользователя
-            // В реальном приложении это может быть получено из глобальной переменной или API
-            const userElement = document.querySelector('[data-current-user]');
-            return userElement ? JSON.parse(userElement.getAttribute('data-current-user')) : null;
-        }
-
-        function isPostOwner() {
-            const currentUser = getCurrentUser();
-            const postOwnerElement = document.querySelector('[data-post-owner-id]');
-            if (!currentUser || !postOwnerElement) return false;
-
-            const postOwnerId = parseInt(postOwnerElement.getAttribute('data-post-owner-id'));
-            return currentUser.id === postOwnerId;
         }
     </script>
 </@layout.page>

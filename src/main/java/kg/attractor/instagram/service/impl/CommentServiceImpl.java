@@ -41,13 +41,11 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<CommentDto> getPostComments(Long postId) {
         List<CommentDto> comments = commentRepository.findByPostIdOrderByIdDesc(postId)
-                .stream().map(commentMapper::toDto)
+                .stream()
+                .map(commentMapper::toDto)
                 .toList();
 
-        if (comments.isEmpty()) {
-            throw new CommentNotFoundException("Комментарии этого поста не были найдены!");
-        }
-        log.info("Получено комментариев: {}", comments.size());
+        log.info("Получено комментариев для поста {}: {}", postId, comments.size());
         return comments;
     }
 
@@ -69,28 +67,42 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto addComment(Long postId, Long userId, String content) {
         postService.getPostById(postId);
 
+        if (content == null || content.trim().isEmpty()) {
+            throw new IllegalArgumentException("Содержимое комментария не может быть пустым");
+        }
+
+        if (content.trim().length() > 500) {
+            throw new IllegalArgumentException("Комментарий не может быть длиннее 500 символов");
+        }
+
         CommentDto dto = CommentDto.builder()
                 .user(userService.getUserById(userId))
                 .post(postService.getPostById(postId))
-                .content(content)
+                .content(content.trim())
                 .build();
 
         Comment savedComment = commentRepository.save(commentMapper.toEntity(dto));
-        log.info("Создан комментарий с id {} для поста {}", savedComment.getId(), postId);
-        return commentMapper.toDto(savedComment);
+        CommentDto result = commentMapper.toDto(savedComment);
+
+        log.info("Создан комментарий с id {} для поста {} пользователем {}",
+                savedComment.getId(), postId, userId);
+
+        return result;
     }
 
     @Transactional
     @Override
-    public void deleteComment(Long commentId, Long userId) {
-        CommentDto comment = getCommentById(commentId);
+    public void deleteComment(Long id, Long userId) {
+        if (!commentRepository.existsById(id)) {
+            throw new CommentNotFoundException("Комментарий не найден");
+        }
 
-        Boolean isCommentOwner = hasAccessToComment(commentId, userId);
-        Boolean isPostOwner = isPostOwner(commentId, userId);
+        Boolean isCommentOwner = hasAccessToComment(id, userId);
+        Boolean isPostOwner = isPostOwner(id, userId);
 
         if (Boolean.TRUE.equals(isCommentOwner) || Boolean.TRUE.equals(isPostOwner)) {
-            commentRepository.deleteById(commentId);
-            log.info("Удален комментарий с id {} пользователем {}", commentId, userId);
+            commentRepository.deleteById(id);
+            log.info("Удален комментарий с id {} пользователем {}", id, userId);
         } else {
             throw new AccessDeniedException("У вас нет права удалять этот комментарий!");
         }
