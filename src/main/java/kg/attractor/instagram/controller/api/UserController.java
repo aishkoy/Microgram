@@ -33,4 +33,14 @@ public class UserController {
         followService.toggleFollow(userService.getAuthId(), userId, isFollow);
         return "redirect:/users/" + userId;
     }
+
+    @GetMapping("{userId}/followings")
+    public ResponseEntity<List<UserDto>> getUserFollows(@PathVariable Long userId) {
+        return ResponseEntity.ofNullable(userService.getUserFollowers(userId));
+    }
+
+    @GetMapping("{userId}/followers")
+    public ResponseEntity<List<UserDto>> getUserFollowings(@PathVariable Long userId) {
+        return ResponseEntity.ofNullable(userService.getUserFollowings(userId));
+    }
 }

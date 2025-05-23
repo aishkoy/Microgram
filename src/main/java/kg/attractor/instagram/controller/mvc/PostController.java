@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Controller("mvcPost")
 @RequestMapping("posts")
@@ -53,14 +52,16 @@ public class PostController {
     public String viewPost(@PathVariable Long postId, Model model) {
         try {
             PostDto post = postService.getPostById(postId);
-            UserDto currentUser = userService.getAuthUser();
-
+            UserDto currentUser = null;
             List<CommentDto> comments = List.of();
-            try {
-                comments = commentService.getPostComments(postId);
-            } catch (NoSuchElementException ignored) {}
+            boolean isLiked = false;
 
-            boolean isLiked = likeService.isPostLikedByUser(postId, currentUser.getId());
+            try{
+                currentUser = userService.getAuthUser();
+                comments = commentService.getPostComments(postId);
+                isLiked = likeService.isPostLikedByUser(postId, currentUser.getId());
+            }catch (Exception ignored){}
+
             Long likesCount = likeService.getPostLikesCount(postId);
 
             model.addAttribute("post", post);

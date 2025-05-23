@@ -9,7 +9,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping("/")
@@ -25,7 +27,22 @@ public class MainController {
 
     @GetMapping()
     public String viewAllPosts(Model model) {
-        List<PostDto> posts = postService.getAllPosts();
+        List<PostDto> posts = new ArrayList<>();
+        try{
+            posts = postService.getAllPosts();
+        } catch (NoSuchElementException ignored) {
+        }
+        model.addAttribute("posts", posts);
+        return "posts/list";
+    }
+
+    @GetMapping("feed")
+    public String viewFollowingPosts(Model model) {
+        List<PostDto> posts = new ArrayList<>();
+        try{
+            posts = postService.getFeedPosts(userService.getAuthId());
+        } catch (NoSuchElementException ignored) {
+        }
         model.addAttribute("posts", posts);
         return "posts/list";
     }

@@ -63,6 +63,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserDto> getUserFollowers(Long userId) {
+        List<UserDto> users = userRepository.getFollowers(userId)
+                .stream().map(userMapper::toDto)
+                .toList();
+        if (users.isEmpty()) {
+            throw new UserNotFoundException("Пользователи не найдены");
+        }
+        log.info("Получено подписчиков пользователя {}", users.size());
+        return users;
+    }
+
+    @Override
+    public List<UserDto> getUserFollowings(Long userId) {
+        List<UserDto> users = userRepository.getFollowing(userId)
+                .stream().map(userMapper::toDto)
+                .toList();
+        if (users.isEmpty()) {
+            throw new UserNotFoundException("Пользователи не найдены");
+        }
+        log.info("Получено подписок пользователя {}", users.size());
+        return users;
+    }
+
+    @Override
     public void registerUser(CreateUserDto createUserDto) {
         createUserDto.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
         createUserDto.setRole(roleService.getByName("USER"));

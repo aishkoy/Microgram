@@ -22,5 +22,7 @@ public interface PostService {
     @Transactional
     void deletePost(Long postId, Long userId);
 
+    List<PostDto> getFeedPosts(Long userId);
+
     ResponseEntity<?> getPostImageById(Long postId);
 }
