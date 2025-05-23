@@ -1,6 +1,7 @@
 package kg.attractor.instagram.controller.api;
 
 import kg.attractor.instagram.service.PostService;
+import kg.attractor.instagram.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
 
     private final PostService postService;
+    private final UserService userService;
 
     @GetMapping("{postId}/image")
     public ResponseEntity<?> getPostImage(@PathVariable Long postId) {

@@ -42,7 +42,7 @@ public class PostController {
             UserDto currentUser = userService.getAuthUser();
             postService.createPost(description, image, currentUser.getId());
             redirectAttributes.addFlashAttribute("successMessage", "Пост успешно создан");
-            return "redirect:/profile";
+            return "redirect:/";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при создании поста: " + e.getMessage());
             return "redirect:/posts/create";
@@ -56,15 +56,17 @@ public class PostController {
             UserDto currentUser = userService.getAuthUser();
 
             List<CommentDto> comments = List.of();
-            try{
+            try {
                 comments = commentService.getPostComments(postId);
-            } catch (NoSuchElementException ignored){}
+            } catch (NoSuchElementException ignored) {}
 
             boolean isLiked = likeService.isPostLikedByUser(postId, currentUser.getId());
+            Long likesCount = likeService.getPostLikesCount(postId);
 
             model.addAttribute("post", post);
             model.addAttribute("comments", comments);
             model.addAttribute("isLiked", isLiked);
+            model.addAttribute("likesCount", likesCount);
             model.addAttribute("currentUser", currentUser);
 
             return "posts/view";
@@ -74,52 +76,16 @@ public class PostController {
         }
     }
 
-    @PostMapping("{postId}/like")
-    public String toggleLike(@PathVariable Long postId) {
-        try {
-            UserDto currentUser = userService.getAuthUser();
-            likeService.toggleLike(postId, currentUser.getId());
-            Long likesCount = likeService.getPostLikesCount(postId);
-            return String.valueOf(likesCount);
-        } catch (Exception e) {
-            return "error";
-        }
-    }
-
-    @PostMapping("{postId}/comment")
-    public CommentDto addComment(
-            @PathVariable Long postId,
-            @RequestParam String content
-    ) {
-        UserDto currentUser = userService.getAuthUser();
-        return commentService.addComment(postId, currentUser.getId(), content);
-    }
-
-    @DeleteMapping("comment/{commentId}")
-    public String deleteComment(
-            @PathVariable Long commentId
-    ) {
-        try {
-            UserDto currentUser = userService.getAuthUser();
-            commentService.deleteComment(commentId, currentUser.getId());
-            return "success";
-        } catch (Exception e) {
-            return "error: " + e.getMessage();
-        }
-    }
-
-    @DeleteMapping("{postId}")
-    public String deletePost(
-            @PathVariable Long postId,
-            RedirectAttributes redirectAttributes
-    ) {
+    @PostMapping("/delete/{postId}")
+    public String deletePost(@PathVariable Long postId, RedirectAttributes redirectAttributes) {
         try {
             UserDto currentUser = userService.getAuthUser();
             postService.deletePost(postId, currentUser.getId());
             redirectAttributes.addFlashAttribute("successMessage", "Пост успешно удален");
+            return "redirect:/";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при удалении поста: " + e.getMessage());
+            return "redirect:/posts/" + postId;
         }
-        return "redirect:/profile";
     }
 }
