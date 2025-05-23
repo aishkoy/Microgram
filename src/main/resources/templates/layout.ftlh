@@ -80,7 +80,7 @@
         <nav class="nav flex-column">
             <a class="nav-link" href="/"><i class="bi bi-house-door"></i> Главная</a>
             <a class="nav-link" href="/search"><i class="bi bi-search"></i> Поисковый запрос</a>
-            <a class="nav-link" href="/posts"><i class="bi bi-compass"></i> Интересное</a>
+            <a class="nav-link" href="/feed"><i class="bi bi-compass"></i> Интересное</a>
             <a class="nav-link" href="/posts/create"><i class="bi bi-plus-square"></i> Создать</a>
 
             <#if known>

@@ -107,6 +107,19 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<PostDto> getFeedPosts(Long userId) {
+        List<PostDto> posts = postRepository.findPostsByFollowedUsers(userId)
+                .stream().map(postMapper::toDto)
+                .toList();
+        if (posts.isEmpty()) {
+            throw new PostNotFoundException("Посты из ленты не найдены");
+        }
+        log.info("Получено {} постов из ленты пользователя по id {} ", posts.size(), userId);
+        return posts;
+    }
+
+
+    @Override
     public ResponseEntity<?> getPostImageById(Long postId) {
         String imageFilename = postRepository.findById(postId)
                 .map(Post::getImage)
