@@ -62,8 +62,8 @@ public class PostController {
             boolean isLiked = false;
 
             try{
-                currentUser = userService.getAuthUser();
                 comments = commentService.getPostComments(postId);
+                currentUser = userService.getAuthUser();
                 isLiked = likeService.isPostLikedByUser(postId, currentUser.getId());
             }catch (Exception ignored){}
 

@@ -90,15 +90,16 @@
                                                         <small class="text-muted">${comment.createdAt}</small>
                                                     </div>
 
+                                                    <#if currentUser??>
+                                                        <#if currentUser.id == comment.user.id || currentUser.id == post.user.id>
+                                                            <div class="ms-auto">
+                                                                <button class="btn btn-sm text-secondary delete-comment"
+                                                                        data-comment-id="${comment.id}">
+                                                                    <i class="bi bi-x"></i>
+                                                                </button>
+                                                            </div>
 
-                                                    <#if currentUser.id == comment.user.id || currentUser.id == post.user.id>
-                                                        <div class="ms-auto">
-                                                            <button class="btn btn-sm text-secondary delete-comment"
-                                                                    data-comment-id="${comment.id}">
-                                                                <i class="bi bi-x"></i>
-                                                            </button>
-                                                        </div>
-
+                                                        </#if>
                                                     </#if>
                                                 </div>
                                             </div>
