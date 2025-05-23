@@ -1,7 +1,6 @@
 package kg.attractor.instagram.controller.api;
 
 import kg.attractor.instagram.dto.CommentDto;
-import kg.attractor.instagram.dto.user.UserDto;
 import kg.attractor.instagram.service.CommentService;
 import kg.attractor.instagram.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +31,6 @@ public class CommentController {
             @RequestBody Map<String, String> request
     ) {
         try {
-            UserDto currentUser = userService.getAuthUser();
             String content = request.get("content");
 
             if (content == null || content.trim().isEmpty()) {
@@ -40,7 +38,7 @@ public class CommentController {
                         .body(Map.of("error", "Содержимое комментария не может быть пустым"));
             }
 
-            CommentDto comment = commentService.addComment(postId, currentUser.getId(), content.trim());
+            CommentDto comment = commentService.addComment(postId, userService.getAuthId(), content.trim());
             return ResponseEntity.ok(comment);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -51,8 +49,7 @@ public class CommentController {
     @DeleteMapping("/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable Long commentId) {
         try {
-            UserDto currentUser = userService.getAuthUser();
-            commentService.deleteComment(commentId, currentUser.getId());
+            commentService.deleteComment(commentId, userService.getAuthId());
             return ResponseEntity.ok(Map.of("message", "Комментарий успешно удален"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
