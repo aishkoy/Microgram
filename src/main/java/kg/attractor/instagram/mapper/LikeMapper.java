@@ -38,11 +38,4 @@ public interface LikeMapper {
                 .userId(dto.getUser().getId())
                 .build();
     }
-
-    @AfterMapping
-    default void setLikeId(@MappingTarget Like entity, LikeDto dto) {
-        if (entity.getId() == null) {
-            entity.setId(createLikeId(dto));
-        }
-    }
 }

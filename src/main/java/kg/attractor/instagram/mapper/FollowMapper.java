@@ -34,11 +34,4 @@ public interface FollowMapper {
                 .followingId(dto.getFollowing().getId())
                 .build();
     }
-
-    @AfterMapping
-    default void setFollowId(@MappingTarget Follow entity, FollowDto dto) {
-        if (entity.getId() == null) {
-            entity.setId(createFollowId(dto));
-        }
-    }
 }
