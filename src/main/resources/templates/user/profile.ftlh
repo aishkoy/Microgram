@@ -9,6 +9,7 @@
     </#if>
 
     <script src="/static/js/notifications.js"></script>
+    <script src="/static/js/follow.js"></script>
 
     <#if successMessage??>
         <div class="alert alert-success mb-4 shadow-sm">
@@ -38,7 +39,15 @@
             <p>${user.bio!""}</p>
 
             <#if known && currentUserId == user.id>
-                <a href="/profile/edit" class="btn btn-outline-secondary btn-sm">Редактировать профиль</a>
+                <a href="/users/${currentUserId}/edit" class="btn btn-outline-secondary btn-sm">Редактировать профиль</a>
+            </#if>
+
+            <#if known && currentUserId != user.id>
+                <button id="followBtn"
+                        class="btn btn-sm"
+                        data-user-id="${user.id}">
+                    Загрузка...
+                </button>
             </#if>
         </div>
     </div>
@@ -70,10 +79,10 @@
                     <p class="text-muted">Фото, которыми вы делитесь, будут показываться в вашем профиле.</p>
                     <a href="/posts/create" class="btn btn-primary">Поделитесь своим первым фото</a>
                 </div>
-                <#else>
-                    <div class="text-center mt-5">
-                        <p>В профиле нет фотографий</p>
-                    </div>
+            <#else>
+                <div class="text-center mt-5">
+                    <p>В профиле нет фотографий</p>
+                </div>
             </#if>
         </#if>
     </div>
@@ -128,4 +137,6 @@
             font-weight: bold;
         }
     </style>
+
+
 </@layout.page>

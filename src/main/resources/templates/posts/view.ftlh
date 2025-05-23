@@ -56,13 +56,13 @@
                                         <#list comments as comment>
                                             <div class="comment mb-3" data-comment-id="${comment.id}">
                                                 <div class="d-flex">
-                                                    <a href="/profile/${comment.user.id}" class="text-decoration-none me-2">
+                                                    <a href="/users/${comment.user.id}" class="text-decoration-none me-2">
                                                         <img src="/api/users/${comment.user.id}/avatar" class="rounded-circle" width="24" height="24"
                                                              alt="Аватар" onerror="this.src='/static/avatar/default_avatar.jpg'">
                                                     </a>
                                                     <div class="flex-grow-1">
                                                         <div class="comment-text">
-                                                            <a href="/profile/${comment.user.id}" class="fw-bold text-decoration-none me-2">
+                                                            <a href="/users/${comment.user.id}" class="fw-bold text-decoration-none me-2">
                                                                 ${comment.user.username}
                                                             </a>
                                                             ${comment.content}
@@ -152,6 +152,7 @@
 
                     const commentInput = document.getElementById('comment-content');
                     const content = commentInput.value.trim();
+
 
                     if (!content) {
                         alert('Комментарий не может быть пустым');

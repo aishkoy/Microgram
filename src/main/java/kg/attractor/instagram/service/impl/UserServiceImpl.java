@@ -19,13 +19,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import static kg.attractor.instagram.util.FileUtil.DEFAULT_AVATAR;
 
-@Service
+@Service("userService")
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -82,16 +83,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void updateUser(String username, UserDto dto) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-
+    public void updateUser(UserDto dto) {
+        UserDto user = getUserById(getAuthId());
         user.setName(dto.getName());
         user.setSurname(dto.getSurname());
         user.setBio(dto.getBio());
 
         log.info("Обновлен пользователь с никнеймом {}", user.getUsername());
-        userRepository.save(user);
+        userRepository.save(userMapper.toEntity(user));
     }
 
     @Override
@@ -107,13 +106,33 @@ public class UserServiceImpl implements UserService {
         String login = authentication.getName();
         log.debug("Authenticated user email: {}", login);
 
-        try{
+        try {
             return getUserByEmail(login);
-        } catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             return findByUsername(login);
         }
     }
 
+    @Override
+    public Long getAuthId() {
+        return getAuthUser().getId();
+    }
+
+    @Override
+    public boolean isCurrentUser(Long userId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return false;
+        }
+
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof CustomUserDetails) {
+            Long currentUserId = ((CustomUserDetails) principal).getUserId();
+            return userId.equals(currentUserId);
+        }
+
+        return false;
+    }
 
     @Override
     public ResponseEntity<?> getAvatarByUserId(Long userId) {
@@ -129,11 +148,27 @@ public class UserServiceImpl implements UserService {
         List<UserDto> users = userRepository.searchUsers(query)
                 .stream().map(userMapper::toDto)
                 .toList();
-        if(users.isEmpty()){
+        if (users.isEmpty()) {
             throw new UserNotFoundException("Пользователи не найдены");
         }
 
         log.info("Получены пользователи по запросу {}", users.size());
         return users;
     }
+
+    @Override
+    public void uploadAvatar(MultipartFile file, Long authId) {
+        String contentType = file.getContentType();
+        if (contentType == null || (!contentType.equals("image/jpeg") && !contentType.equals("image/png"))) {
+            throw new IllegalArgumentException("Только файлы JPEG и PNG разрешены для загрузки");
+        }
+
+        log.info("Загружен аватар пользователя с id {}", authId);
+        userRepository.updateUserAvatar(authId, saveImage(file));
+    }
+
+    public String saveImage(MultipartFile file) {
+        return FileUtil.saveUploadFile(file, "images/");
+    }
+
 }

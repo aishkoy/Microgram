@@ -20,6 +20,11 @@ public class FollowServiceImpl implements FollowService {
     private final UserService userService;
 
     @Override
+    public boolean isUserFollowed(Long followerId, Long followedId) {
+        return followRepository.existsByFollower_idAndFollowing_id(followerId, followedId);
+    }
+
+    @Override
     public void followUser(Long followerId, Long followedId) {
         FollowDto dto = FollowDto.builder()
                 .follower(userService.getUserById(followerId))
@@ -29,6 +34,15 @@ public class FollowServiceImpl implements FollowService {
         Follow entity = followMapper.toEntity(dto);
         followRepository.save(entity);
         log.info("Пользователь {} подписался на пользователя {}", followerId, followedId);
+    }
+
+    @Override
+    public void toggleFollow(Long followerId, Long followedId, boolean isFollow) {
+        if(isFollow){
+            unfollowUser(followerId, followedId);
+        } else {
+            followUser(followerId, followedId);
+        }
     }
 
     @Override
