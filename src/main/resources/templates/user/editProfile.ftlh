@@ -10,59 +10,58 @@
                         <h4>Редактирование профиля</h4>
                     </div>
                     <div class="card-body">
-                        <form action="/profile/edit" method="post" enctype="multipart/form-data">
+                        <div class="mb-3 text-center">
+                            <img src="/api/users/${editUserDto.id}/avatar" alt="Аватар" class="rounded-circle me-4"
+                                 width="100" height="100"
+                                 onerror="this.src='/static/avatar/default_avatar.jpg'">
+                            <br>
+                            <form method="POST" action="/users/${editUserDto.id}/avatar" enctype="multipart/form-data"
+                                  class="mt-4">
+                                <#if _csrf??>
+                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                </#if>
+                                <label for="avatar-upload"
+                                       class="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    Изменить фото
+                                </label>
+                                <input id="avatar-upload" name="file" type="file" accept="image/jpeg, image/png"
+                                       class="hidden"
+                                       onchange="this.form.submit()">
+                            </form>
+                        </div>
+                        <form action="/users/${editUserDto.id}/edit" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="id" value="${editUserDto.id}">
                             <#if _csrf??>
                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             </#if>
-                            <div class="mb-3 text-center">
-                                <img src="/api/users/${editUserDto.id}/avatar" alt="Аватар" class="rounded-circle me-4"  width="100" height="100"
-                                     onerror="this.src='/static/avatar/default_avatar.jpg'">
-                                <br>
-                                <button type="button" class="btn btn-sm btn-outline-primary mt-2" data-bs-toggle="modal" data-bs-target="#avatarModal">Изменить аватар</button>
-                            </div>
-
-                            <div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="avatarModalLabel">Обновить аватар</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <input type="file" class="form-control mb-2" name="avatarFile" accept="image/*">
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                                            <button type="submit" class="btn btn-primary">Готово</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
                             <div class="mb-3">
                                 <label for="name" class="form-label">Имя</label>
                                 <@spring.bind "editUserDto.name"/>
-                                <input type="text" class="form-control ${spring.status.error?string('is-invalid', '')}" id="name" name="name" value="${spring.status.value!}">
+                                <input type="text" class="form-control ${spring.status.error?string('is-invalid', '')}"
+                                       id="name" name="name" value="${spring.status.value!}">
                                 <@spring.showErrors "<div class='invalid-feedback'>", "</div>"/>
                             </div>
 
                             <div class="mb-3">
                                 <label for="surname" class="form-label">Фамилия</label>
                                 <@spring.bind "editUserDto.surname"/>
-                                <input type="text" class="form-control ${spring.status.error?string('is-invalid', '')}" id="surname" name="surname" value="${spring.status.value!}">
+                                <input type="text" class="form-control ${spring.status.error?string('is-invalid', '')}"
+                                       id="surname" name="surname" value="${spring.status.value!}">
                                 <@spring.showErrors "<div class='invalid-feedback'>", "</div>"/>
                             </div>
 
                             <div class="mb-3">
                                 <label for="bio" class="form-label">Био</label>
                                 <@spring.bind "editUserDto.bio"/>
-                                <textarea class="form-control ${spring.status.error?string('is-invalid', '')}" id="bio" name="bio" rows="3">${spring.status.value!}</textarea>
+                                <textarea class="form-control ${spring.status.error?string('is-invalid', '')}" id="bio"
+                                          name="bio" rows="3">${spring.status.value!}</textarea>
                                 <@spring.showErrors "<div class='invalid-feedback'>", "</div>"/>
                             </div>
 
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-                                <a href="/profile" class="btn btn-outline-secondary">Отмена</a>
+                                <a href="/users/${editUserDto.id}" class="btn btn-outline-secondary">Отмена</a>
                             </div>
                         </form>
                     </div>

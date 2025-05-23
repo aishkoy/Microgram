@@ -12,7 +12,7 @@
 
                         <div class="col-md-4 d-flex flex-column">
                             <div class="card-header bg-white border-bottom d-flex align-items-center p-3">
-                                <a href="/profile/${post.user.id}" class="text-decoration-none">
+                                <a href="/users/${post.user.id}" class="text-decoration-none">
                                     <img src="/api/users/${post.user.id}/avatar" class="rounded-circle me-2" width="32" height="32"
                                          alt="Аватар пользователя" onerror="this.src='/static/avatar/default_avatar.jpg'">
                                     <span class="fw-bold">${post.user.username}</span>
@@ -56,13 +56,13 @@
                                         <#list comments as comment>
                                             <div class="comment mb-3" data-comment-id="${comment.id}">
                                                 <div class="d-flex">
-                                                    <a href="/profile/${comment.user.id}" class="text-decoration-none me-2">
+                                                    <a href="/users/${comment.user.id}" class="text-decoration-none me-2">
                                                         <img src="/api/users/${comment.user.id}/avatar" class="rounded-circle" width="24" height="24"
                                                              alt="Аватар" onerror="this.src='/static/avatar/default_avatar.jpg'">
                                                     </a>
                                                     <div>
                                                         <div class="comment-text">
-                                                            <a href="/profile/${comment.user.id}" class="fw-bold text-decoration-none me-2">
+                                                            <a href="/users/${comment.user.id}" class="fw-bold text-decoration-none me-2">
                                                                 ${comment.user.username}
                                                             </a>
                                                             ${comment.content}
@@ -160,13 +160,13 @@
                         commentElement.setAttribute('data-comment-id', comment.id);
                         commentElement.innerHTML = `
                         <div class="d-flex">
-                            <a href="/profile/${comment.user.id}" class="text-decoration-none me-2">
+                            <a href="/users/${comment.user.id}" class="text-decoration-none me-2">
                                 <img src="/api/users/${comment.user.id}/avatar" class="rounded-circle" width="24" height="24"
                                      alt="Аватар" onerror="this.src='/static/avatar/default_avatar.jpg'">
                             </a>
                             <div>
                                 <div class="comment-text">
-                                    <a href="/profile/${comment.user.id}" class="fw-bold text-decoration-none me-2">
+                                    <a href="/users/${comment.user.id}" class="fw-bold text-decoration-none me-2">
                                         ${comment.user.username}
                                     </a>
                                     ${comment.content}
