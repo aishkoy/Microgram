@@ -39,7 +39,9 @@ public class SecurityConfig {
                                 "/auth/**",
                                 "/static/**",
                                 "/favicon.ico",
-                                "/error"
+                                "/error",
+                                "/api/posts/**",
+                                "/api/users/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -48,7 +50,7 @@ public class SecurityConfig {
                         .loginProcessingUrl("/login")
                         .usernameParameter("login")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/profile", true)
+                        .defaultSuccessUrl("/", true)
                         .failureUrl("/auth/login?error=true")
                         .permitAll()
                 )

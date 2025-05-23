@@ -23,13 +23,19 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
-
     private final UserService userService;
     private final PostService postService;
 
     @Override
     public Boolean hasAccessToComment(Long commentId, Long userId) {
         return commentRepository.existsByIdAndUserId(commentId, userId);
+    }
+
+    private Boolean isPostOwner(Long commentId, Long userId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException("Комментарий не найден"));
+
+        return postService.hasAccessToPost(comment.getPost().getId(), userId);
     }
 
     @Override
@@ -61,6 +67,8 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public CommentDto addComment(Long postId, Long userId, String content) {
+        postService.getPostById(postId);
+
         CommentDto dto = CommentDto.builder()
                 .user(userService.getUserById(userId))
                 .post(postService.getPostById(postId))
@@ -68,20 +76,23 @@ public class CommentServiceImpl implements CommentService {
                 .build();
 
         Comment savedComment = commentRepository.save(commentMapper.toEntity(dto));
-        log.info("Создан комментарий с id {}", savedComment.getId());
-        return dto;
+        log.info("Создан комментарий с id {} для поста {}", savedComment.getId(), postId);
+        return commentMapper.toDto(savedComment);
     }
 
     @Transactional
     @Override
     public void deleteComment(Long commentId, Long userId) {
-        getCommentById(commentId);
-        Boolean hasAccess = hasAccessToComment(commentId, userId);
+        CommentDto comment = getCommentById(commentId);
 
-        if (Boolean.TRUE.equals(hasAccess)) {
+        Boolean isCommentOwner = hasAccessToComment(commentId, userId);
+        Boolean isPostOwner = isPostOwner(commentId, userId);
+
+        if (Boolean.TRUE.equals(isCommentOwner) || Boolean.TRUE.equals(isPostOwner)) {
             commentRepository.deleteById(commentId);
+            log.info("Удален комментарий с id {} пользователем {}", commentId, userId);
         } else {
-            throw new AccessDeniedException("У вас нет права удалять это комментарий!");
+            throw new AccessDeniedException("У вас нет права удалять этот комментарий!");
         }
     }
 }
